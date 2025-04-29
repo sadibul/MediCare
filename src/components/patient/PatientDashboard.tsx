@@ -54,31 +54,47 @@ const PatientDashboard = () => {
 
       {/* Header */}
       <motion.header
-        className="sticky top-0 z-50 bg-gradient-to-r from-blue-600 to-blue-800 border-b border-blue-700/20 backdrop-blur-sm shadow-lg"
+        className="sticky top-0 z-50 bg-white border-b border-gray-200/50 backdrop-blur-sm shadow-sm"
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4 }}
       >
         <div className="flex items-center justify-between px-6 py-4">
           <div className="flex items-center space-x-3">
-            <Activity size={32} className="text-white" />
-            <h1 className="text-3xl font-bold text-white tracking-tight">
+            <div className="relative">
+              <Activity
+                size={32}
+                className="text-blue-600"
+                style={{
+                  filter: 'url(#blue-gradient)',
+                }}
+              />
+              <svg width="0" height="0" className="absolute">
+                <defs>
+                  <linearGradient
+                    id="blue-gradient"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="0%"
+                  >
+                    <stop offset="0%" style={{ stopColor: '#3B82F6' }} />
+                    <stop offset="100%" style={{ stopColor: '#1D4ED8' }} />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-500 to-blue-700 text-transparent bg-clip-text">
               MediCare
             </h1>
           </div>
           <div className="flex items-center space-x-6">
-            <div className="relative">
-              <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
-                <Bell size={20} className="text-white" />
-                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
-              </button>
-            </div>
             <div className="flex items-center space-x-3">
               <div className="text-right mr-2">
-                <p className="text-white text-sm font-medium">John Doe</p>
-                <p className="text-blue-200 text-xs">Patient ID: P-12345</p>
+                <p className="text-gray-700 text-sm font-medium">John Doe</p>
+                <p className="text-gray-500 text-xs">Patient ID: P-12345</p>
               </div>
-              <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-white/30">
+              <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-gray-200">
                 <img
                   src="https://ui-avatars.com/api/?name=John+Doe&background=random"
                   alt="Profile"
@@ -86,7 +102,13 @@ const PatientDashboard = () => {
                 />
               </div>
             </div>
-            <button className="flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white transition-all duration-200 ease-in-out transform hover:scale-105">
+            <div className="relative">
+              <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <Bell size={20} className="text-gray-600" />
+                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
+              </button>
+            </div>
+            <button className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200 ease-in-out transform hover:scale-105">
               <LogOut size={20} className="mr-2" />
               <span>Logout</span>
             </button>
