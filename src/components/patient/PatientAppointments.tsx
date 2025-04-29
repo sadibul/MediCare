@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
-import { Calendar, PlusCircle, Search, ArrowRight, ArrowLeft, User, Clock, MapPin, Star, Phone, Mail } from 'lucide-react';
+import {
+  Calendar,
+  PlusCircle,
+  Search,
+  ArrowRight,
+  ArrowLeft,
+  User,
+  Clock,
+  MapPin,
+  Star,
+  Phone,
+  Mail,
+} from 'lucide-react';
+import { motion } from 'framer-motion';
 import BookAppointment from './BookAppointment';
 
 interface Doctor {
@@ -28,8 +41,9 @@ interface Appointment {
 const PatientAppointments = () => {
   const [showBooking, setShowBooking] = useState(false);
   const [search, setSearch] = useState('');
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
-  
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
+
   // Mock data
   const appointments: Appointment[] = [
     {
@@ -49,8 +63,9 @@ const PatientAppointments = () => {
         phone: '+1 (555) 123-4567',
         email: 'sarah.johnson@medicare.com',
         education: 'MD - Harvard Medical School',
-        about: 'Dr. Sarah Johnson is a board-certified cardiologist with extensive experience in treating various heart conditions. She specializes in preventive cardiology and heart disease management.'
-      }
+        about:
+          'Dr. Sarah Johnson is a board-certified cardiologist with extensive experience in treating various heart conditions. She specializes in preventive cardiology and heart disease management.',
+      },
     },
     {
       id: '2',
@@ -69,8 +84,9 @@ const PatientAppointments = () => {
         phone: '+1 (555) 234-5678',
         email: 'robert.chen@medicare.com',
         education: 'MD - Johns Hopkins University',
-        about: 'Dr. Robert Chen is a skilled orthopedic surgeon specializing in sports medicine and joint replacement surgery. He is committed to helping patients regain mobility and improve their quality of life.'
-      }
+        about:
+          'Dr. Robert Chen is a skilled orthopedic surgeon specializing in sports medicine and joint replacement surgery. He is committed to helping patients regain mobility and improve their quality of life.',
+      },
     },
     {
       id: '3',
@@ -89,16 +105,18 @@ const PatientAppointments = () => {
         phone: '+1 (555) 345-6789',
         email: 'emily.martinez@medicare.com',
         education: 'MD - Stanford University',
-        about: 'Dr. Emily Martinez is a board-certified dermatologist specializing in medical and cosmetic dermatology. She is known for her expertise in treating various skin conditions and her patient-centered approach.'
-      }
-    }
+        about:
+          'Dr. Emily Martinez is a board-certified dermatologist specializing in medical and cosmetic dermatology. She is known for her expertise in treating various skin conditions and her patient-centered approach.',
+      },
+    },
   ];
-  
-  const filteredAppointments = appointments.filter(appointment => 
-    appointment.doctorName.toLowerCase().includes(search.toLowerCase()) ||
-    appointment.specialty.toLowerCase().includes(search.toLowerCase())
+
+  const filteredAppointments = appointments.filter(
+    (appointment) =>
+      appointment.doctorName.toLowerCase().includes(search.toLowerCase()) ||
+      appointment.specialty.toLowerCase().includes(search.toLowerCase())
   );
-  
+
   const getStatusClass = (status: string) => {
     switch (status) {
       case 'upcoming':
@@ -117,11 +135,15 @@ const PatientAppointments = () => {
       <Star
         key={index}
         size={16}
-        className={index < Math.floor(rating) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'}
+        className={
+          index < Math.floor(rating)
+            ? 'text-yellow-400 fill-yellow-400'
+            : 'text-gray-300'
+        }
       />
     ));
   };
-  
+
   const renderAppointmentsList = () => (
     <>
       <div className="flex justify-between items-center mb-6">
@@ -134,7 +156,7 @@ const PatientAppointments = () => {
           Book Appointment
         </button>
       </div>
-      
+
       <div className="mb-6 relative">
         <input
           type="text"
@@ -143,36 +165,50 @@ const PatientAppointments = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <Search
+          size={18}
+          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+        />
       </div>
-      
+
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="divide-y divide-gray-200">
           {filteredAppointments.length > 0 ? (
-            filteredAppointments.map(appointment => (
-              <div key={appointment.id} className="p-4 hover:bg-gray-50 transition duration-150">
+            filteredAppointments.map((appointment) => (
+              <div
+                key={appointment.id}
+                className="p-4 hover:bg-gray-50 transition duration-150"
+              >
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="font-medium">{appointment.doctorName}</h3>
-                    <p className="text-sm text-gray-500">{appointment.specialty}</p>
+                    <p className="text-sm text-gray-500">
+                      {appointment.specialty}
+                    </p>
                   </div>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusClass(appointment.status)}`}>
-                    {appointment.status.charAt(0).toUpperCase() + appointment.status.slice(1)}
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusClass(
+                      appointment.status
+                    )}`}
+                  >
+                    {appointment.status.charAt(0).toUpperCase() +
+                      appointment.status.slice(1)}
                   </span>
                 </div>
                 <div className="mt-2 flex items-center text-sm text-gray-500">
                   <Calendar size={16} className="mr-1" />
                   <span>
-                    {new Date(appointment.date).toLocaleDateString('en-US', { 
-                      weekday: 'short', 
-                      month: 'short', 
-                      day: 'numeric', 
-                      year: 'numeric' 
-                    })} at {appointment.time}
+                    {new Date(appointment.date).toLocaleDateString('en-US', {
+                      weekday: 'short',
+                      month: 'short',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}{' '}
+                    at {appointment.time}
                   </span>
                 </div>
                 <div className="mt-2 flex justify-end">
-                  <button 
+                  <button
                     className="text-teal-500 text-sm font-medium flex items-center hover:text-teal-600"
                     onClick={() => setSelectedAppointment(appointment)}
                   >
@@ -185,9 +221,13 @@ const PatientAppointments = () => {
           ) : (
             <div className="p-8 text-center">
               <Calendar size={48} className="mx-auto mb-2 text-gray-400" />
-              <h3 className="text-lg font-medium text-gray-900">No appointments found</h3>
+              <h3 className="text-lg font-medium text-gray-900">
+                No appointments found
+              </h3>
               <p className="mt-1 text-gray-500">
-                {search ? 'Try adjusting your search' : 'Book your first appointment to get started'}
+                {search
+                  ? 'Try adjusting your search'
+                  : 'Book your first appointment to get started'}
               </p>
               {!search && (
                 <button
@@ -224,18 +264,26 @@ const PatientAppointments = () => {
             <Calendar size={20} className="text-gray-500 mr-2" />
             <div>
               <p className="font-medium">
-                {new Date(selectedAppointment?.date || '').toLocaleDateString('en-US', {
-                  weekday: 'long',
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric'
-                })}
+                {new Date(selectedAppointment?.date || '').toLocaleDateString(
+                  'en-US',
+                  {
+                    weekday: 'long',
+                    month: 'long',
+                    day: 'numeric',
+                    year: 'numeric',
+                  }
+                )}
               </p>
               <p className="text-gray-500">{selectedAppointment?.time}</p>
             </div>
           </div>
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusClass(selectedAppointment?.status || '')}`}>
-            {selectedAppointment?.status.charAt(0).toUpperCase() + selectedAppointment?.status.slice(1)}
+          <span
+            className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusClass(
+              selectedAppointment?.status || ''
+            )}`}
+          >
+            {selectedAppointment?.status.charAt(0).toUpperCase() +
+              selectedAppointment?.status.slice(1)}
           </span>
         </div>
 
@@ -246,11 +294,17 @@ const PatientAppointments = () => {
               <User size={32} className="text-gray-500" />
             </div>
             <div className="ml-4">
-              <h3 className="text-xl font-semibold">{selectedAppointment?.doctor.name}</h3>
-              <p className="text-gray-600">{selectedAppointment?.doctor.specialty}</p>
+              <h3 className="text-xl font-semibold">
+                {selectedAppointment?.doctor.name}
+              </h3>
+              <p className="text-gray-600">
+                {selectedAppointment?.doctor.specialty}
+              </p>
               <div className="flex items-center mt-1">
                 {renderStars(selectedAppointment?.doctor.rating || 0)}
-                <span className="ml-2 text-sm text-gray-500">{selectedAppointment?.doctor.rating}</span>
+                <span className="ml-2 text-sm text-gray-500">
+                  {selectedAppointment?.doctor.rating}
+                </span>
               </div>
             </div>
           </div>
@@ -261,14 +315,18 @@ const PatientAppointments = () => {
                 <Clock className="w-5 h-5 text-gray-400 mt-1 mr-3" />
                 <div>
                   <p className="font-medium">Experience</p>
-                  <p className="text-gray-600">{selectedAppointment?.doctor.experience}</p>
+                  <p className="text-gray-600">
+                    {selectedAppointment?.doctor.experience}
+                  </p>
                 </div>
               </div>
               <div className="flex items-start">
                 <MapPin className="w-5 h-5 text-gray-400 mt-1 mr-3" />
                 <div>
                   <p className="font-medium">Location</p>
-                  <p className="text-gray-600">{selectedAppointment?.doctor.location}</p>
+                  <p className="text-gray-600">
+                    {selectedAppointment?.doctor.location}
+                  </p>
                 </div>
               </div>
             </div>
@@ -278,14 +336,18 @@ const PatientAppointments = () => {
                 <Phone className="w-5 h-5 text-gray-400 mt-1 mr-3" />
                 <div>
                   <p className="font-medium">Phone</p>
-                  <p className="text-gray-600">{selectedAppointment?.doctor.phone}</p>
+                  <p className="text-gray-600">
+                    {selectedAppointment?.doctor.phone}
+                  </p>
                 </div>
               </div>
               <div className="flex items-start">
                 <Mail className="w-5 h-5 text-gray-400 mt-1 mr-3" />
                 <div>
                   <p className="font-medium">Email</p>
-                  <p className="text-gray-600">{selectedAppointment?.doctor.email}</p>
+                  <p className="text-gray-600">
+                    {selectedAppointment?.doctor.email}
+                  </p>
                 </div>
               </div>
             </div>
@@ -293,7 +355,9 @@ const PatientAppointments = () => {
 
           <div className="mt-6">
             <h4 className="font-medium mb-2">Education</h4>
-            <p className="text-gray-600">{selectedAppointment?.doctor.education}</p>
+            <p className="text-gray-600">
+              {selectedAppointment?.doctor.education}
+            </p>
           </div>
 
           <div className="mt-6">
@@ -315,14 +379,125 @@ const PatientAppointments = () => {
       </div>
     </>
   );
-  
+
   if (showBooking) {
     return <BookAppointment onClose={() => setShowBooking(false)} />;
   }
 
   return (
-    <div className="h-full">
-      {selectedAppointment ? renderAppointmentDetails() : renderAppointmentsList()}
+    <div className="space-y-8">
+      <div className="flex justify-between items-center">
+        <div className="space-y-1">
+          <h2 className="text-2xl font-bold text-gray-800">My Appointments</h2>
+          <p className="text-gray-500">
+            Manage your upcoming and past appointments
+          </p>
+        </div>
+        <motion.button
+          onClick={() => setShowBooking(true)}
+          className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg shadow-lg shadow-blue-500/30 flex items-center space-x-2 hover:translate-y-[-2px] transition-all duration-200"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <PlusCircle size={20} className="mr-2" />
+          <span>Book Appointment</span>
+        </motion.button>
+      </div>
+
+      {/* Search Bar */}
+      <div className="relative">
+        <input
+          type="text"
+          placeholder="Search appointments..."
+          className="w-full pl-10 pr-4 py-3 bg-white rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <Search
+          size={20}
+          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+        />
+      </div>
+
+      {/* Appointments List */}
+      {!selectedAppointment ? (
+        <div className="grid gap-4">
+          {filteredAppointments.map((appointment) => (
+            <motion.div
+              key={appointment.id}
+              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-gray-200/50"
+              whileHover={{ y: -2 }}
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
+                      <User size={24} className="text-blue-500" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">
+                        {appointment.doctorName}
+                      </h3>
+                      <p className="text-gray-500 text-sm">
+                        {appointment.specialty}
+                      </p>
+                      <div className="flex items-center mt-1">
+                        {renderStars(appointment.doctor.rating)}
+                        <span className="ml-2 text-sm text-gray-500">
+                          {appointment.doctor.rating}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusClass(
+                      appointment.status
+                    )}`}
+                  >
+                    {appointment.status.charAt(0).toUpperCase() +
+                      appointment.status.slice(1)}
+                  </span>
+                </div>
+
+                <div className="mt-4 flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center text-gray-500">
+                      <Calendar size={16} className="mr-2" />
+                      <span className="text-sm">
+                        {new Date(appointment.date).toLocaleDateString(
+                          'en-US',
+                          {
+                            weekday: 'short',
+                            month: 'short',
+                            day: 'numeric',
+                          }
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex items-center text-gray-500">
+                      <Clock size={16} className="mr-2" />
+                      <span className="text-sm">{appointment.time}</span>
+                    </div>
+                  </div>
+                  <motion.button
+                    className="text-blue-500 hover:text-blue-600 font-medium text-sm flex items-center"
+                    onClick={() => setSelectedAppointment(appointment)}
+                    whileHover={{ x: 4 }}
+                  >
+                    View Details
+                    <ArrowRight size={16} className="ml-1" />
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      ) : (
+        renderAppointmentDetails()
+      )}
+
+      {/* Show booking component */}
+      {showBooking && <BookAppointment onClose={() => setShowBooking(false)} />}
     </div>
   );
 };

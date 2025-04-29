@@ -42,13 +42,15 @@ const PatientDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 relative">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 relative">
       {/* Background Pattern */}
       <div
         className="absolute inset-0 bg-grid-gray-200/50 pointer-events-none"
         style={{
           backgroundImage:
             'url("data:image/svg+xml,%3Csvg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%239C92AC" fill-opacity="0.05" fill-rule="evenodd"%3E%3Cpath d="M0 40L40 0H20L0 20M40 40V20L20 40"/%3E%3C/g%3E%3C/svg%3E")',
+          maskImage: 'linear-gradient(to bottom, transparent, black)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent, black)',
         }}
       />
 
@@ -118,29 +120,41 @@ const PatientDashboard = () => {
 
       {/* Main content */}
       <div className="flex-grow flex">
-        {/* Side navigation */}
+        {/* Side navigation - enhanced styling */}
         <motion.nav
-          className="w-64 bg-white/80 backdrop-blur-sm shadow-lg border-r border-gray-200/50 py-8 sticky top-[73px] h-[calc(100vh-73px)]"
+          className="w-72 bg-white/90 backdrop-blur-md shadow-xl border-r border-gray-200/50 py-8 sticky top-[73px] h-[calc(100vh-73px)]"
           initial={{ x: -20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
+          <div className="px-6 mb-8">
+            <div className="space-y-1">
+              <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                Main Menu
+              </h2>
+              <div className="h-1 w-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" />
+            </div>
+          </div>
+
           {sidebarItems.map((item, index) => (
             <motion.button
               key={item.id}
               className={`w-full px-6 py-4 flex items-center space-x-4 relative group transition-all duration-200 ease-in-out ${
                 activeTab === item.id
-                  ? 'bg-blue-50 text-blue-600'
-                  : 'text-gray-600 hover:bg-gray-50'
+                  ? 'bg-gradient-to-r from-blue-50 to-transparent text-blue-600'
+                  : 'text-gray-600 hover:bg-blue-50/50'
               }`}
               onClick={() => setActiveTab(item.id as Tab)}
               whileHover={{ x: 5 }}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.2, delay: index * 0.1 }}
             >
               <div
-                className={`p-2.5 rounded-xl shadow-sm ${
+                className={`p-2.5 rounded-xl shadow-sm transition-all duration-200 ${
                   activeTab === item.id
-                    ? 'bg-blue-100 shadow-blue-100/50'
-                    : 'bg-gray-100 group-hover:bg-blue-50 group-hover:shadow-blue-100/50'
+                    ? 'bg-blue-100 shadow-blue-200/50 ring-2 ring-blue-200'
+                    : 'bg-white shadow-gray-200/50 group-hover:bg-blue-50 group-hover:ring-2 group-hover:ring-blue-100'
                 }`}
               >
                 <item.icon size={20} />
@@ -148,7 +162,7 @@ const PatientDashboard = () => {
               <span className="font-medium">{item.label}</span>
               {activeTab === item.id && (
                 <motion.div
-                  className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600 rounded-r"
+                  className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-blue-600 rounded-r"
                   layoutId="activeTab"
                   transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 />
@@ -157,7 +171,7 @@ const PatientDashboard = () => {
           ))}
         </motion.nav>
 
-        {/* Content area */}
+        {/* Content area - enhanced styling */}
         <motion.div
           className="flex-grow p-8 overflow-auto"
           initial={{ opacity: 0 }}
@@ -167,6 +181,7 @@ const PatientDashboard = () => {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeTab}
+              className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
