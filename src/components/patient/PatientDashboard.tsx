@@ -42,7 +42,7 @@ const PatientDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50/30 relative">
+    <div className="min-h-screen bg-gray-50 relative">
       {/* Background Pattern */}
       <div
         className="absolute inset-0 bg-grid-gray-200/50 pointer-events-none"
@@ -54,65 +54,61 @@ const PatientDashboard = () => {
         }}
       />
 
-      {/* Header */}
+      {/* Enhanced Header */}
       <motion.header
         className="sticky top-0 z-50 bg-white border-b border-gray-200/50 backdrop-blur-sm shadow-sm"
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4 }}
       >
-        <div className="flex items-center justify-between px-6 py-4">
+        <div className="flex items-center justify-between px-6 py-3">
           <div className="flex items-center space-x-3">
             <div className="relative">
               <Activity
                 size={32}
                 className="text-blue-600"
-                style={{
-                  filter: 'url(#blue-gradient)',
-                }}
+                style={{ filter: 'url(#blue-gradient)' }}
               />
               <svg width="0" height="0" className="absolute">
                 <defs>
-                  <linearGradient
-                    id="blue-gradient"
-                    x1="0%"
-                    y1="0%"
-                    x2="100%"
-                    y2="0%"
-                  >
+                  <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%" style={{ stopColor: '#3B82F6' }} />
                     <stop offset="100%" style={{ stopColor: '#1D4ED8' }} />
                   </linearGradient>
                 </defs>
               </svg>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-blue-500 to-blue-700 text-transparent bg-clip-text">
+            <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-blue-500 to-blue-700 text-transparent bg-clip-text">
               MediCare
             </h1>
           </div>
-          <div className="flex items-center space-x-6">
-            <div className="flex items-center space-x-3">
-              <div className="text-right mr-2">
-                <p className="text-gray-700 text-sm font-medium">John Doe</p>
-                <p className="text-gray-500 text-xs">Patient ID: P-12345</p>
+
+          <div className="flex items-center">
+            <div className="flex items-center mr-8">
+              <div className="text-right mr-3">
+                <p className="text-sm font-medium text-gray-700">John Doe</p>
+                <p className="text-xs text-gray-500">Patient ID: P-12345</p>
               </div>
-              <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-gray-200">
-                <img
-                  src="https://ui-avatars.com/api/?name=John+Doe&background=random"
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
+              <div className="h-10 w-10 relative">
+                <div className="w-10 h-10 rounded-full ring-2 ring-gray-200/50 overflow-hidden bg-blue-50">
+                  <img
+                    src="https://ui-avatars.com/api/?name=John+Doe&background=random"
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-green-400 rounded-full ring-2 ring-white" />
               </div>
             </div>
-            <div className="relative">
-              <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
-                <Bell size={20} className="text-gray-600" />
-                <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full" />
-              </button>
-            </div>
+
+            <button className="p-2 hover:bg-gray-100 rounded-full transition-colors relative mr-6">
+              <Bell size={20} className="text-gray-600" />
+              <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full" />
+            </button>
+
             <button className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200 ease-in-out transform hover:scale-105">
-              <LogOut size={20} className="mr-2" />
-              <span>Logout</span>
+              <LogOut size={18} className="mr-2" />
+              <span className="text-sm font-medium">Logout</span>
             </button>
           </div>
         </div>
@@ -120,22 +116,13 @@ const PatientDashboard = () => {
 
       {/* Main content */}
       <div className="flex-grow flex">
-        {/* Side navigation - enhanced styling */}
+        {/* Side navigation */}
         <motion.nav
           className="w-72 bg-white/90 backdrop-blur-md shadow-xl border-r border-gray-200/50 py-8 sticky top-[73px] h-[calc(100vh-73px)]"
           initial={{ x: -20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
-          <div className="px-6 mb-8">
-            <div className="space-y-1">
-              <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                Main Menu
-              </h2>
-              <div className="h-1 w-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" />
-            </div>
-          </div>
-
           {sidebarItems.map((item, index) => (
             <motion.button
               key={item.id}
