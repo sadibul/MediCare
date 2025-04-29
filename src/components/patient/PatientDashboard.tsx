@@ -62,7 +62,9 @@ const PatientDashboard = () => {
         transition={{ duration: 0.4 }}
       >
         <div className="flex items-center justify-between px-6 py-3">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 pl-8">
+            {' '}
+            {/* Changed pl-4 to pl-8 */}
             <div className="relative">
               <Activity
                 size={32}
@@ -71,14 +73,20 @@ const PatientDashboard = () => {
               />
               <svg width="0" height="0" className="absolute">
                 <defs>
-                  <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <linearGradient
+                    id="blue-gradient"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="0%"
+                  >
                     <stop offset="0%" style={{ stopColor: '#3B82F6' }} />
                     <stop offset="100%" style={{ stopColor: '#1D4ED8' }} />
                   </linearGradient>
                 </defs>
               </svg>
             </div>
-            <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-blue-500 to-blue-700 text-transparent bg-clip-text">
+            <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-blue-500 to-blue-700 text-transparent bg-clip-text ml-1">
               MediCare
             </h1>
           </div>
@@ -89,8 +97,13 @@ const PatientDashboard = () => {
                 <p className="text-sm font-medium text-gray-700">John Doe</p>
                 <p className="text-xs text-gray-500">Patient ID: P-12345</p>
               </div>
-              <div className="h-10 w-10 relative">
-                <div className="w-10 h-10 rounded-full ring-2 ring-gray-200/50 overflow-hidden bg-blue-50">
+              <motion.button
+                onClick={() => setActiveTab('profile')}
+                className="h-10 w-10 relative cursor-pointer"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <div className="w-10 h-10 rounded-full ring-2 ring-gray-200/50 overflow-hidden bg-blue-50 hover:ring-blue-200 transition-all">
                   <img
                     src="https://ui-avatars.com/api/?name=John+Doe&background=random"
                     alt="Profile"
@@ -98,7 +111,7 @@ const PatientDashboard = () => {
                   />
                 </div>
                 <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-green-400 rounded-full ring-2 ring-white" />
-              </div>
+              </motion.button>
             </div>
 
             <button className="p-2 hover:bg-gray-100 rounded-full transition-colors relative mr-6">

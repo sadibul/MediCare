@@ -185,7 +185,7 @@ const PatientProfile = () => {
                     />
                   ) : (
                     <span>
-                      {profileData[item.value as keyof typeof profileData]}
+                      {String(profileData[item.value as keyof Omit<typeof profileData, 'emergencyContact' | 'profileImage'>])}
                     </span>
                   )}
                 </div>
@@ -231,7 +231,7 @@ const PatientProfile = () => {
                     />
                   ) : (
                     <p className="text-gray-800">
-                      {profileData[item.value as keyof typeof profileData]}
+                      {String(profileData[item.value as keyof Omit<typeof profileData, 'emergencyContact' | 'profileImage'>])}
                     </p>
                   )}
                 </div>
