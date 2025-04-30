@@ -117,19 +117,24 @@ const DoctorAppointments = () => {
 
   const renderAppointmentsList = () => (
     <>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Appointments</h2>
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Appointments</h2>
+          <p className="text-gray-500 mt-1">
+            Manage your patient consultations
+          </p>
+        </div>
       </div>
 
-      <div className="mb-6 overflow-x-auto">
-        <div className="flex space-x-3 py-2">
+      <div className="mb-8 overflow-x-auto">
+        <div className="flex space-x-4 py-2">
           {dates.map((date) => (
             <button
               key={date}
-              className={`px-4 py-2 rounded-md border ${
+              className={`px-6 py-3 rounded-xl border transition-all duration-200 ${
                 selectedDate === date
-                  ? 'bg-blue-500 text-white border-blue-500'
-                  : 'bg-white border-gray-300 hover:border-blue-500'
+                  ? 'bg-blue-500 text-white border-blue-500 shadow-lg shadow-blue-500/30'
+                  : 'bg-white border-gray-200 hover:border-blue-500 hover:bg-blue-50'
               }`}
               onClick={() => handleDateClick(date)}
             >
@@ -147,33 +152,35 @@ const DoctorAppointments = () => {
         <input
           type="text"
           placeholder="Search patients..."
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full pl-12 pr-4 py-3 bg-white rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <Search
-          size={18}
-          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+          size={20}
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
         />
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="divide-y divide-gray-200">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50">
+        <div className="divide-y divide-gray-200/50">
           {filteredAppointments.length > 0 ? (
             filteredAppointments.map((appointment) => (
               <div
                 key={appointment.id}
-                className="p-4 hover:bg-gray-50 transition duration-150"
+                className="p-6 hover:bg-blue-50/50 transition-all duration-200"
               >
                 <div className="flex justify-between items-start">
                   <div>
-                    <h3 className="font-medium">{appointment.patientName}</h3>
-                    <p className="text-sm text-gray-500">
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      {appointment.patientName}
+                    </h3>
+                    <p className="text-gray-500">
                       {appointment.patientAge} years old
                     </p>
                   </div>
                   <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusClass(
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusClass(
                       appointment.status
                     )}`}
                   >
@@ -181,16 +188,19 @@ const DoctorAppointments = () => {
                       appointment.status.slice(1)}
                   </span>
                 </div>
-                <div className="mt-2 flex items-center text-sm text-gray-500 mb-3">
-                  <Clock size={16} className="mr-1" />
+                <div className="mt-4 flex items-center text-sm text-gray-500 mb-4">
+                  <Clock size={18} className="mr-2" />
                   <span>{appointment.time}</span>
                 </div>
-                <p className="text-sm text-gray-700 mb-3">
-                  <strong>Reason:</strong> {appointment.reason}
-                </p>
-                <div className="mt-2 flex justify-end">
+                <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                  <p className="text-gray-700">
+                    <strong className="text-gray-900">Reason:</strong>{' '}
+                    {appointment.reason}
+                  </p>
+                </div>
+                <div className="mt-4 flex justify-end">
                   <button
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-300"
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transform hover:-translate-y-0.5"
                     onClick={() => handleStartConsultation(appointment)}
                   >
                     Start Consultation
@@ -199,12 +209,12 @@ const DoctorAppointments = () => {
               </div>
             ))
           ) : (
-            <div className="p-8 text-center">
-              <Calendar size={48} className="mx-auto mb-2 text-gray-400" />
-              <h3 className="text-lg font-medium text-gray-900">
+            <div className="p-12 text-center">
+              <Calendar size={48} className="mx-auto mb-4 text-gray-400" />
+              <h3 className="text-xl font-medium text-gray-900 mb-2">
                 No appointments for this date
               </h3>
-              <p className="mt-1 text-gray-500">
+              <p className="text-gray-500">
                 {search
                   ? 'Try adjusting your search'
                   : 'Select another date to view appointments'}
@@ -218,65 +228,87 @@ const DoctorAppointments = () => {
 
   const renderConsultation = () => (
     <>
-      <div className="flex items-center mb-6">
+      <div className="flex items-center mb-8">
         <button
-          className="mr-3 p-2 rounded-full hover:bg-gray-100"
+          className="mr-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
           onClick={() => setSelectedAppointment(null)}
         >
-          <ArrowRight size={20} className="transform rotate-180" />
+          <ArrowRight
+            size={20}
+            className="transform rotate-180 text-gray-600"
+          />
         </button>
-        <h2 className="text-2xl font-bold">Patient Consultation</h2>
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">
+            Patient Consultation
+          </h2>
+          <p className="text-gray-500 mt-1">
+            Review and manage patient details
+          </p>
+        </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-        <div className="flex justify-between items-start mb-4 pb-4 border-b border-gray-200">
+      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-8">
+        <div className="flex justify-between items-start mb-6 pb-6 border-b border-gray-200/50">
           <div>
-            <h3 className="text-xl font-medium">
+            <h3 className="text-2xl font-semibold text-gray-900">
               {selectedAppointment?.patientName}
             </h3>
-            <p className="text-gray-500">
+            <p className="text-gray-500 mt-1">
               {selectedAppointment?.patientAge} years old
             </p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-gray-500">Appointment Time</p>
-            <p className="font-medium">{selectedAppointment?.time}</p>
-          </div>
-        </div>
-
-        <div className="mb-6">
-          <h4 className="text-lg font-medium mb-2">Reason for Visit</h4>
-          <p className="text-gray-700">{selectedAppointment?.reason}</p>
-        </div>
-
-        <div className="mb-6">
-          <h4 className="text-lg font-medium mb-2">Medical History</h4>
-          <div className="bg-gray-50 rounded-md p-4">
-            <p className="text-gray-700">
-              Previous visits and conditions will appear here.
+            <p className="text-sm text-gray-500 mb-1">Appointment Time</p>
+            <p className="font-medium text-gray-900">
+              {selectedAppointment?.time}
             </p>
           </div>
         </div>
 
-        <div className="mb-6">
-          <h4 className="text-lg font-medium mb-2">Consultation Notes</h4>
-          <textarea
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="Add your consultation notes here..."
-            rows={4}
-          />
+        <div className="grid gap-6 mb-8">
+          <div>
+            <h4 className="text-lg font-semibold text-gray-900 mb-3">
+              Reason for Visit
+            </h4>
+            <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100">
+              <p className="text-gray-700">{selectedAppointment?.reason}</p>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-lg font-semibold text-gray-900 mb-3">
+              Medical History
+            </h4>
+            <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+              <p className="text-gray-700">
+                Previous visits and conditions will appear here.
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <h4 className="text-lg font-semibold text-gray-900 mb-3">
+              Consultation Notes
+            </h4>
+            <textarea
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+              placeholder="Add your consultation notes here..."
+              rows={4}
+            />
+          </div>
         </div>
 
-        <div className="flex justify-end space-x-3">
-          <button className="border border-red-500 text-red-500 hover:bg-red-50 px-4 py-2 rounded-md font-medium transition duration-300 flex items-center">
-            <XCircle size={16} className="mr-1" />
+        <div className="flex justify-end space-x-4">
+          <button className="px-6 py-2.5 border-2 border-red-500 text-red-500 hover:bg-red-50 rounded-xl font-medium transition duration-300 flex items-center">
+            <XCircle size={18} className="mr-2" />
             Cancel Appointment
           </button>
           <button
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md font-medium transition duration-300 flex items-center"
+            className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-2.5 rounded-xl font-medium transition duration-300 flex items-center shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transform hover:-translate-y-0.5"
             onClick={handleCompleteConsultation}
           >
-            <CheckCircle size={16} className="mr-1" />
+            <CheckCircle size={18} className="mr-2" />
             Complete & Add Prescription
           </button>
         </div>
