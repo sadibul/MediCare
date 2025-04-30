@@ -13,10 +13,12 @@ import PatientAppointments from './PatientAppointments';
 import PatientMedicalHistory from './PatientMedicalHistory';
 import MedicineShop from '../shop/MedicineShop';
 import PatientProfile from './PatientProfile';
+import { useUser } from '../../context/UserContext';
 
 type Tab = 'appointments' | 'history' | 'shop' | 'profile';
 
 const PatientDashboard = () => {
+  const { profileImage } = useUser();
   const [activeTab, setActiveTab] = useState<Tab>('appointments');
 
   const renderContent = () => {
@@ -105,7 +107,10 @@ const PatientDashboard = () => {
               >
                 <div className="w-10 h-10 rounded-full ring-2 ring-gray-200/50 overflow-hidden bg-blue-50 hover:ring-blue-200 transition-all">
                   <img
-                    src="https://ui-avatars.com/api/?name=John+Doe&background=random"
+                    src={
+                      profileImage ||
+                      'https://ui-avatars.com/api/?name=John+Doe&background=random'
+                    }
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />

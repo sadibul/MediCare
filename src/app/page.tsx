@@ -6,6 +6,7 @@ import Register from '../components/auth/Register';
 import PatientDashboard from '../components/patient/PatientDashboard';
 import DoctorDashboard from '../components/doctor/DoctorDashboard';
 import AdminDashboard from '../components/admin/AdminDashboard';
+import { UserProvider } from '../context/UserContext';
 
 type UserType = 'patient' | 'doctor' | 'admin' | null;
 type AuthView = 'login' | 'register' | 'dashboard';
@@ -43,20 +44,22 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">
-      {view === 'login' && (
-        <Login 
-          onLogin={handleLogin} 
-          onRegisterClick={() => setView('register')}
-        />
-      )}
-      {view === 'register' && (
-        <Register 
-          onRegister={handleRegister}
-          onLoginClick={() => setView('login')}
-        />
-      )}
-      {view === 'dashboard' && renderDashboard()}
-    </div>
+    <UserProvider>
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">
+        {view === 'login' && (
+          <Login
+            onLogin={handleLogin}
+            onRegisterClick={() => setView('register')}
+          />
+        )}
+        {view === 'register' && (
+          <Register
+            onRegister={handleRegister}
+            onLoginClick={() => setView('login')}
+          />
+        )}
+        {view === 'dashboard' && renderDashboard()}
+      </div>
+    </UserProvider>
   );
 }

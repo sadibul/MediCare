@@ -13,8 +13,10 @@ import {
   X,
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useUser } from '../../context/UserContext';
 
 const PatientProfile = () => {
+  const { profileImage, updateProfileImage } = useUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -41,9 +43,11 @@ const PatientProfile = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
+        const imageUrl = reader.result as string;
+        updateProfileImage(imageUrl);
         setProfileData((prev) => ({
           ...prev,
-          profileImage: reader.result as string,
+          profileImage: imageUrl,
         }));
       };
       reader.readAsDataURL(file);
@@ -107,21 +111,23 @@ const PatientProfile = () => {
               <div className="flex items-center space-x-4">
                 <div className="relative">
                   <div className="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center overflow-hidden">
-                    {profileData.profileImage ? (
+                    {profileImage ? (
                       <img
-                        src={profileData.profileImage}
+                        src={profileImage}
                         alt="Profile"
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <User size={32} className="text-blue-500" />
+                      <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                        <User size={32} className="text-gray-400" />
+                      </div>
                     )}
                   </div>
                   {isEditing && (
                     <>
                       <button
                         onClick={() => fileInputRef.current?.click()}
-                        className="absolute bottom-0 right-0 p-1.5 bg-blue-500 rounded-full text-white hover:bg-blue-600 transition-colors"
+                        className="absolute bottom-0 right-0 p-1.5 bg-blue-500 rounded-full text-white hover:bg-blue-600 transition-colors shadow-lg"
                       >
                         <Camera size={14} />
                       </button>
@@ -153,11 +159,10 @@ const PatientProfile = () => {
                       {profileData.name}
                     </h3>
                   )}
-                  <p className="text-gray-500 text-sm">Patient ID: #12345</p>
+                  
                 </div>
               </div>
             </div>
-
             <div className="p-6 space-y-4">
               {[
                 { icon: Mail, value: 'email' },
@@ -185,7 +190,14 @@ const PatientProfile = () => {
                     />
                   ) : (
                     <span>
-                      {String(profileData[item.value as keyof Omit<typeof profileData, 'emergencyContact' | 'profileImage'>])}
+                      {String(
+                        profileData[
+                          item.value as keyof Omit<
+                            typeof profileData,
+                            'emergencyContact' | 'profileImage'
+                          >
+                        ]
+                      )}
                     </span>
                   )}
                 </div>
@@ -231,7 +243,14 @@ const PatientProfile = () => {
                     />
                   ) : (
                     <p className="text-gray-800">
-                      {String(profileData[item.value as keyof Omit<typeof profileData, 'emergencyContact' | 'profileImage'>])}
+                      {String(
+                        profileData[
+                          item.value as keyof Omit<
+                            typeof profileData,
+                            'emergencyContact' | 'profileImage'
+                          >
+                        ]
+                      )}
                     </p>
                   )}
                 </div>
