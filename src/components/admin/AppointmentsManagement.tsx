@@ -6,7 +6,7 @@ import {
   User,
   CheckCircle,
   XCircle,
-  Filter,
+  ArrowLeft,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -85,9 +85,9 @@ const AppointmentsManagement = () => {
 
   const renderAppointmentList = () => (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-6"
     >
       <div className="flex justify-between items-center mb-8">
         <div>
@@ -96,10 +96,6 @@ const AppointmentsManagement = () => {
           </h2>
           <p className="text-gray-500 mt-1">View and manage all appointments</p>
         </div>
-        <button className="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-xl transition-all duration-200">
-          <Filter size={20} className="mr-2" />
-          Filter
-        </button>
       </div>
 
       <div className="mb-6 relative">
@@ -224,16 +220,17 @@ const AppointmentsManagement = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
+      className="space-y-6"
     >
       <div className="flex items-center mb-8">
-        <button
+        <motion.button
           onClick={() => setSelectedAppointment(null)}
-          className="mr-4 p-2 rounded-full hover:bg-gray-100 transition-colors"
+          className="mr-4 p-2 rounded-full hover:bg-gray-100 transition-colors duration-200"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
-          <motion.div whileHover={{ x: -3 }} whileTap={{ scale: 0.95 }}>
-            ←
-          </motion.div>
-        </button>
+          <ArrowLeft size={20} className="text-gray-600" />
+        </motion.button>
         <div>
           <h2 className="text-2xl font-bold text-gray-800">
             Appointment Details

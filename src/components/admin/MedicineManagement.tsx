@@ -1,5 +1,16 @@
 import React, { useState } from 'react';
-import { Search, Edit, Trash, Plus, XCircle, Check, Filter } from 'lucide-react';
+import {
+  Search,
+  Edit2,
+  Trash2,
+  Plus,
+  XCircle,
+  Check,
+  Pill,
+  Package,
+  AlertCircle,
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Medicine {
   id: string;
@@ -21,9 +32,9 @@ const MedicineManagement = () => {
     price: 0,
     stock: 0,
     description: '',
-    dosage: ''
+    dosage: '',
   });
-  
+
   // Mock data
   const medicines: Medicine[] = [
     {
@@ -33,7 +44,8 @@ const MedicineManagement = () => {
       price: 5.99,
       stock: 150,
       description: 'For relief of mild to moderate pain and fever.',
-      dosage: 'Take 1-2 tablets every 4-6 hours as needed. Do not exceed 8 tablets in 24 hours.'
+      dosage:
+        'Take 1-2 tablets every 4-6 hours as needed. Do not exceed 8 tablets in 24 hours.',
     },
     {
       id: '2',
@@ -42,7 +54,8 @@ const MedicineManagement = () => {
       price: 12.99,
       stock: 75,
       description: 'Antibiotic used to treat a number of bacterial infections.',
-      dosage: 'Take as prescribed by your doctor. Typically 1 capsule 3 times daily.'
+      dosage:
+        'Take as prescribed by your doctor. Typically 1 capsule 3 times daily.',
     },
     {
       id: '3',
@@ -51,7 +64,7 @@ const MedicineManagement = () => {
       price: 8.49,
       stock: 100,
       description: 'Antihistamine for relief of allergy symptoms.',
-      dosage: 'Take 1 tablet daily. Do not exceed recommended dose.'
+      dosage: 'Take 1 tablet daily. Do not exceed recommended dose.',
     },
     {
       id: '4',
@@ -59,16 +72,18 @@ const MedicineManagement = () => {
       category: 'Digestive Health',
       price: 14.99,
       stock: 50,
-      description: 'Reduces stomach acid production to treat heartburn and acid reflux.',
-      dosage: 'Take 1 capsule daily before breakfast.'
-    }
+      description:
+        'Reduces stomach acid production to treat heartburn and acid reflux.',
+      dosage: 'Take 1 capsule daily before breakfast.',
+    },
   ];
-  
-  const filteredMedicines = medicines.filter(medicine => 
-    medicine.name.toLowerCase().includes(search.toLowerCase()) ||
-    medicine.category.toLowerCase().includes(search.toLowerCase())
+
+  const filteredMedicines = medicines.filter(
+    (medicine) =>
+      medicine.name.toLowerCase().includes(search.toLowerCase()) ||
+      medicine.category.toLowerCase().includes(search.toLowerCase())
   );
-  
+
   const handleAddMedicine = () => {
     // Here you would add the new medicine to the database
     console.log('Adding new medicine:', newMedicine);
@@ -79,29 +94,29 @@ const MedicineManagement = () => {
       price: 0,
       stock: 0,
       description: '',
-      dosage: ''
+      dosage: '',
     });
   };
-  
+
   const handleEditMedicine = (id: string) => {
     setEditingId(id);
   };
-  
+
   const handleSaveEdit = (id: string) => {
     // Here you would save the edited medicine to the database
     console.log('Saving edited medicine:', id);
     setEditingId(null);
   };
-  
+
   const handleCancelEdit = () => {
     setEditingId(null);
   };
-  
+
   const handleDeleteMedicine = (id: string) => {
     // Here you would delete the medicine from the database
     console.log('Deleting medicine:', id);
   };
-  
+
   const getStockStatusClass = (stock: number) => {
     if (stock > 100) {
       return 'bg-green-100 text-green-800';
@@ -111,7 +126,7 @@ const MedicineManagement = () => {
       return 'bg-red-100 text-red-800';
     }
   };
-  
+
   const renderEditForm = (medicine: Medicine) => (
     <div className="bg-white rounded-lg shadow-sm p-6">
       <div className="flex justify-between items-center mb-4">
@@ -123,10 +138,13 @@ const MedicineManagement = () => {
           <XCircle size={20} />
         </button>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="name">
+          <label
+            className="block text-gray-700 text-sm font-medium mb-2"
+            htmlFor="name"
+          >
             Medicine Name
           </label>
           <input
@@ -137,7 +155,10 @@ const MedicineManagement = () => {
           />
         </div>
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="category">
+          <label
+            className="block text-gray-700 text-sm font-medium mb-2"
+            htmlFor="category"
+          >
             Category
           </label>
           <input
@@ -148,10 +169,13 @@ const MedicineManagement = () => {
           />
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="price">
+          <label
+            className="block text-gray-700 text-sm font-medium mb-2"
+            htmlFor="price"
+          >
             Price ($)
           </label>
           <input
@@ -163,7 +187,10 @@ const MedicineManagement = () => {
           />
         </div>
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="stock">
+          <label
+            className="block text-gray-700 text-sm font-medium mb-2"
+            htmlFor="stock"
+          >
             Stock
           </label>
           <input
@@ -174,9 +201,12 @@ const MedicineManagement = () => {
           />
         </div>
       </div>
-      
+
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="description">
+        <label
+          className="block text-gray-700 text-sm font-medium mb-2"
+          htmlFor="description"
+        >
           Description
         </label>
         <textarea
@@ -186,9 +216,12 @@ const MedicineManagement = () => {
           defaultValue={medicine.description}
         />
       </div>
-      
+
       <div className="mb-6">
-        <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="dosage">
+        <label
+          className="block text-gray-700 text-sm font-medium mb-2"
+          htmlFor="dosage"
+        >
           Dosage Instructions
         </label>
         <textarea
@@ -198,7 +231,7 @@ const MedicineManagement = () => {
           defaultValue={medicine.dosage}
         />
       </div>
-      
+
       <div className="flex justify-end space-x-3">
         <button
           className="text-gray-500 hover:text-gray-700 font-medium"
@@ -216,7 +249,7 @@ const MedicineManagement = () => {
       </div>
     </div>
   );
-  
+
   const renderAddMedicineForm = () => (
     <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
       <div className="flex justify-between items-center mb-4">
@@ -228,10 +261,13 @@ const MedicineManagement = () => {
           <XCircle size={20} />
         </button>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="newName">
+          <label
+            className="block text-gray-700 text-sm font-medium mb-2"
+            htmlFor="newName"
+          >
             Medicine Name
           </label>
           <input
@@ -239,11 +275,16 @@ const MedicineManagement = () => {
             type="text"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
             value={newMedicine.name}
-            onChange={(e) => setNewMedicine({ ...newMedicine, name: e.target.value })}
+            onChange={(e) =>
+              setNewMedicine({ ...newMedicine, name: e.target.value })
+            }
           />
         </div>
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="newCategory">
+          <label
+            className="block text-gray-700 text-sm font-medium mb-2"
+            htmlFor="newCategory"
+          >
             Category
           </label>
           <input
@@ -251,14 +292,19 @@ const MedicineManagement = () => {
             type="text"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
             value={newMedicine.category}
-            onChange={(e) => setNewMedicine({ ...newMedicine, category: e.target.value })}
+            onChange={(e) =>
+              setNewMedicine({ ...newMedicine, category: e.target.value })
+            }
           />
         </div>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="newPrice">
+          <label
+            className="block text-gray-700 text-sm font-medium mb-2"
+            htmlFor="newPrice"
+          >
             Price ($)
           </label>
           <input
@@ -267,11 +313,19 @@ const MedicineManagement = () => {
             step="0.01"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
             value={newMedicine.price}
-            onChange={(e) => setNewMedicine({ ...newMedicine, price: parseFloat(e.target.value) })}
+            onChange={(e) =>
+              setNewMedicine({
+                ...newMedicine,
+                price: parseFloat(e.target.value),
+              })
+            }
           />
         </div>
         <div>
-          <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="newStock">
+          <label
+            className="block text-gray-700 text-sm font-medium mb-2"
+            htmlFor="newStock"
+          >
             Stock
           </label>
           <input
@@ -279,13 +333,21 @@ const MedicineManagement = () => {
             type="number"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
             value={newMedicine.stock}
-            onChange={(e) => setNewMedicine({ ...newMedicine, stock: parseInt(e.target.value) })}
+            onChange={(e) =>
+              setNewMedicine({
+                ...newMedicine,
+                stock: parseInt(e.target.value),
+              })
+            }
           />
         </div>
       </div>
-      
+
       <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="newDescription">
+        <label
+          className="block text-gray-700 text-sm font-medium mb-2"
+          htmlFor="newDescription"
+        >
           Description
         </label>
         <textarea
@@ -293,12 +355,17 @@ const MedicineManagement = () => {
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
           rows={2}
           value={newMedicine.description}
-          onChange={(e) => setNewMedicine({ ...newMedicine, description: e.target.value })}
+          onChange={(e) =>
+            setNewMedicine({ ...newMedicine, description: e.target.value })
+          }
         />
       </div>
-      
+
       <div className="mb-6">
-        <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="newDosage">
+        <label
+          className="block text-gray-700 text-sm font-medium mb-2"
+          htmlFor="newDosage"
+        >
           Dosage Instructions
         </label>
         <textarea
@@ -306,10 +373,12 @@ const MedicineManagement = () => {
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
           rows={2}
           value={newMedicine.dosage}
-          onChange={(e) => setNewMedicine({ ...newMedicine, dosage: e.target.value })}
+          onChange={(e) =>
+            setNewMedicine({ ...newMedicine, dosage: e.target.value })
+          }
         />
       </div>
-      
+
       <div className="flex justify-end space-x-3">
         <button
           className="text-gray-500 hover:text-gray-700 font-medium"
@@ -327,120 +396,196 @@ const MedicineManagement = () => {
       </div>
     </div>
   );
-  
+
   const renderMedicineList = () => (
-    <>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Medicines Management</h2>
-        <button
-          className="flex items-center bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-md transition duration-300"
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-6"
+    >
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">
+            Medicine Inventory
+          </h2>
+          <p className="text-gray-500 mt-1">
+            Manage and monitor medicine stock
+          </p>
+        </div>
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={() => setShowAddMedicine(true)}
+          className="flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg shadow-blue-500/30"
         >
-          <Plus size={16} className="mr-2" />
+          <Plus size={20} className="mr-2" />
           Add Medicine
-        </button>
+        </motion.button>
       </div>
-      
-      <div className="flex flex-col md:flex-row mb-6 gap-4">
-        <div className="flex-1 relative">
+
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="relative flex-1">
           <input
             type="text"
-            placeholder="Search medicines..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
+            placeholder="Search medicines by name or category..."
+            className="w-full pl-12 pr-4 py-3 bg-white rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          <Search
+            size={20}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"
+          />
         </div>
-        
-        <button className="flex items-center bg-white border border-gray-300 px-4 py-2 rounded-md hover:bg-gray-50">
-          <Filter size={16} className="mr-2 text-gray-500" />
-          Filter
-        </button>
       </div>
-      
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+
+      <div className="bg-white rounded-xl shadow-lg border border-gray-200/50 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y divide-gray-200/50">
+            <thead className="bg-gray-50/50">
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Medicine
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Category
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Price
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Stock
                 </th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200/50">
               {filteredMedicines.map((medicine) => (
-                <tr key={medicine.id} className="hover:bg-gray-50">
+                <motion.tr
+                  key={medicine.id}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="hover:bg-blue-50/50 transition-all duration-200"
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{medicine.name}</div>
+                    <div className="flex items-center">
+                      <div className="h-10 w-10 bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl flex items-center justify-center">
+                        <Pill className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-sm font-semibold text-gray-900">
+                          {medicine.name}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-0.5">
+                          {medicine.description.substring(0, 60)}...
+                        </div>
+                      </div>
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{medicine.category}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">${medicine.price.toFixed(2)}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStockStatusClass(medicine.stock)}`}>
-                      {medicine.stock} units
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700">
+                      <Package size={14} className="mr-1.5" />
+                      {medicine.category}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <button 
-                      className="text-purple-600 hover:text-purple-900 mr-3"
-                      onClick={() => handleEditMedicine(medicine.id)}
-                    >
-                      <Edit size={18} />
-                    </button>
-                    <button 
-                      className="text-red-600 hover:text-red-900"
-                      onClick={() => handleDeleteMedicine(medicine.id)}
-                    >
-                      <Trash size={18} />
-                    </button>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-bold text-gray-900">
+                      ${medicine.price.toFixed(2)}
+                    </div>
                   </td>
-                </tr>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      {medicine.stock < 30 && (
+                        <AlertCircle
+                          size={14}
+                          className="text-red-500 mr-1.5"
+                        />
+                      )}
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${getStockStatusClass(
+                          medicine.stock
+                        )}`}
+                      >
+                        {medicine.stock} units
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right">
+                    <div className="flex items-center justify-end space-x-2">
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        onClick={() => handleEditMedicine(medicine.id)}
+                      >
+                        <Edit2 size={16} />
+                      </motion.button>
+                      <motion.button
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        onClick={() => handleDeleteMedicine(medicine.id)}
+                      >
+                        <Trash2 size={16} />
+                      </motion.button>
+                    </div>
+                  </td>
+                </motion.tr>
               ))}
             </tbody>
           </table>
         </div>
-        
+
         {filteredMedicines.length === 0 && (
-          <div className="p-8 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
-              <ShoppingBag size={24} className="text-gray-500" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-12 text-center"
+          >
+            <div className="w-16 h-16 mx-auto mb-4 bg-blue-50 rounded-full flex items-center justify-center">
+              <Package size={24} className="text-blue-500" />
             </div>
-            <h3 className="text-lg font-medium text-gray-900">No medicines found</h3>
-            <p className="mt-1 text-gray-500">
-              {search ? 'Try adjusting your search' : 'Add your first medicine to get started'}
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No medicines found
+            </h3>
+            <p className="text-gray-500">
+              {search
+                ? 'Try adjusting your search'
+                : 'Add your first medicine to get started'}
             </p>
-          </div>
+          </motion.div>
         )}
       </div>
-    </>
+    </motion.div>
   );
-  
+
   // If editing a medicine, show the edit form
   if (editingId) {
-    const medicineToEdit = medicines.find(medicine => medicine.id === editingId);
+    const medicineToEdit = medicines.find(
+      (medicine) => medicine.id === editingId
+    );
     if (medicineToEdit) {
       return renderEditForm(medicineToEdit);
     }
   }
-  
+
   return (
     <div className="h-full">
       {showAddMedicine && renderAddMedicineForm()}
