@@ -183,7 +183,7 @@ const UserManagement = () => {
             </div>
             <div className="ml-4">
               <h2 className="text-2xl font-bold text-gray-900">{selectedUser?.name}</h2>
-              <p className="text-gray-500">{selectedUser?.type.charAt(0).toUpperCase() + selectedUser?.type.slice(1)}</p>
+              <p className="text-gray-500">{selectedUser?.type ? selectedUser.type.charAt(0).toUpperCase() + selectedUser.type.slice(1) : ''}</p>
             </div>
           </div>
 

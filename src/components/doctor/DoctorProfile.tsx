@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
-import { User, Mail, Phone, MapPin, Clock, Calendar, Edit2, Save, X } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Mail, Phone, MapPin, Clock, Calendar, Edit2, Save, X, Camera } from 'lucide-react';
+import { useUser } from '../../context/UserContext';
+import { motion } from 'framer-motion';
 
 const DoctorProfile = () => {
+  const { profileImage, updateProfileImage } = useUser();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [tempImage, setTempImage] = useState<string | null>(profileImage);
   const [profile, setProfile] = useState({
     name: 'Dr. Sarah Johnson',
     email: 'sarah.johnson@medicare.com',
@@ -15,8 +20,24 @@ const DoctorProfile = () => {
     certifications: ['American Board of Internal Medicine', 'Cardiovascular Disease Certification']
   });
 
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setTempImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSave = () => {
-    // Here you would typically save the profile changes to a backend
+    updateProfileImage(tempImage);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setTempImage(profileImage);
     setIsEditing(false);
   };
 
@@ -42,7 +63,7 @@ const DoctorProfile = () => {
               Save Changes
             </button>
             <button
-              onClick={() => setIsEditing(false)}
+              onClick={handleCancel}
               className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md"
             >
               <X size={18} />
@@ -55,10 +76,44 @@ const DoctorProfile = () => {
       <div className="bg-white rounded-lg shadow-sm">
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center">
-            <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mr-6">
-              <User size={40} className="text-blue-600" />
+            <div className="relative">
+              <motion.div
+                className="w-24 h-24 rounded-full overflow-hidden bg-gray-100 ring-4 ring-gray-50"
+                whileHover={isEditing ? { scale: 1.05 } : {}}
+              >
+                {(tempImage || profileImage) ? (
+                  <img
+                    src={tempImage ?? profileImage ?? undefined}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <img
+                    src="https://ui-avatars.com/api/?name=Sarah+Johnson&background=random"
+                    alt="Default Profile"
+                    className="w-full h-full object-cover"
+                  />
+                )}
+              </motion.div>
+              {isEditing && (
+                <>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageChange}
+                    accept="image/*"
+                    className="hidden"
+                  />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute bottom-0 right-0 p-2 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+                  >
+                    <Camera size={16} />
+                  </button>
+                </>
+              )}
             </div>
-            <div>
+            <div className="ml-6">
               <h3 className="text-2xl font-semibold text-gray-800">{profile.name}</h3>
               <p className="text-gray-600">{profile.specialization}</p>
               <p className="text-gray-500 mt-1">{profile.experience} of experience</p>

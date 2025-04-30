@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, Plus, Edit2, Trash2, Save } from 'lucide-react';
+import { Calendar, Clock, Plus, Edit2, Trash2, Save, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface TimeSlot {
   id: string;
@@ -11,25 +12,7 @@ interface TimeSlot {
 
 const DoctorSchedule = () => {
   const [selectedDay, setSelectedDay] = useState<string>('Monday');
-  const [editingSlot, setEditingSlot] = useState<string | null>(null);
-  const [showAddSlot, setShowAddSlot] = useState(false);
-  const [newSlot, setNewSlot] = useState({
-    startTime: '09:00',
-    endTime: '10:00',
-  });
-
-  const days = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday',
-  ];
-
-  // Mock data
-  const timeSlots: TimeSlot[] = [
+  const [slots, setSlots] = useState<TimeSlot[]>([
     {
       id: '1',
       day: 'Monday',
@@ -72,9 +55,65 @@ const DoctorSchedule = () => {
       endTime: '10:30',
       status: 'available',
     },
+  ]);
+  const [editingSlot, setEditingSlot] = useState<string | null>(null);
+  const [showAddSlot, setShowAddSlot] = useState(false);
+  const [newSlot, setNewSlot] = useState({
+    startTime: '09:00',
+    endTime: '10:00',
+  });
+
+  const days = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
   ];
 
-  const filteredSlots = timeSlots.filter((slot) => slot.day === selectedDay);
+  const handleAddSlot = () => {
+    const newTimeSlot: TimeSlot = {
+      id: `${Date.now()}`,
+      day: selectedDay,
+      startTime: newSlot.startTime,
+      endTime: newSlot.endTime,
+      status: 'available',
+    };
+
+    setSlots([...slots, newTimeSlot]);
+    setShowAddSlot(false);
+    setNewSlot({
+      startTime: '09:00',
+      endTime: '10:00',
+    });
+  };
+
+  const handleSaveEdit = (id: string) => {
+    setSlots(
+      slots.map((slot) => {
+        if (slot.id === id) {
+          return {
+            ...slot,
+            startTime: (
+              document.getElementById(`start-${id}`) as HTMLInputElement
+            ).value,
+            endTime: (document.getElementById(`end-${id}`) as HTMLInputElement)
+              .value,
+          };
+        }
+        return slot;
+      })
+    );
+    setEditingSlot(null);
+  };
+
+  const handleDeleteSlot = (id: string) => {
+    setSlots(slots.filter((slot) => slot.id !== id));
+  };
+
+  const filteredSlots = slots.filter((slot) => slot.day === selectedDay);
 
   const formatTime = (time: string) => {
     const [hours, minutes] = time.split(':');
@@ -97,42 +136,31 @@ const DoctorSchedule = () => {
     }
   };
 
-  const handleAddSlot = () => {
-    // Here you would add the new slot to the database
-    console.log('Adding new slot:', { day: selectedDay, ...newSlot });
-    setShowAddSlot(false);
-    setNewSlot({
-      startTime: '09:00',
-      endTime: '10:00',
-    });
-  };
-
-  const handleSaveEdit = (id: string) => {
-    // Here you would save the edited slot to the database
-    console.log('Saving edited slot:', id);
-    setEditingSlot(null);
-  };
-
-  const handleDeleteSlot = (id: string) => {
-    // Here you would delete the slot from the database
-    console.log('Deleting slot:', id);
-  };
-
   return (
-    <div className="h-full">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Manage Schedule</h2>
+    <div className="h-full space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-800">Manage Schedule</h2>
+          <p className="text-gray-500 mt-1">Set your weekly availability</p>
+        </div>
+        <button
+          onClick={() => setShowAddSlot(true)}
+          className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transform hover:-translate-y-0.5 flex items-center"
+        >
+          <Plus size={18} className="mr-2" />
+          Add Time Slot
+        </button>
       </div>
 
-      <div className="mb-6 overflow-x-auto">
-        <div className="flex space-x-3 py-2">
+      <div className="bg-white rounded-xl shadow-lg border border-gray-200/50 p-4">
+        <div className="flex space-x-3 overflow-x-auto py-2">
           {days.map((day) => (
             <button
               key={day}
-              className={`px-4 py-2 rounded-md border ${
+              className={`px-6 py-3 rounded-xl border transition-all duration-200 whitespace-nowrap ${
                 selectedDay === day
-                  ? 'bg-blue-500 text-white border-blue-500'
-                  : 'bg-white border-gray-300 hover:border-blue-500'
+                  ? 'bg-blue-500 text-white border-blue-500 shadow-lg shadow-blue-500/30'
+                  : 'bg-white border-gray-200 hover:border-blue-500 hover:bg-blue-50'
               }`}
               onClick={() => setSelectedDay(day)}
             >
@@ -142,164 +170,188 @@ const DoctorSchedule = () => {
         </div>
       </div>
 
-      {showAddSlot && (
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h3 className="font-medium text-lg mb-4">Add New Time Slot</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label
-                className="block text-gray-700 text-sm font-medium mb-2"
-                htmlFor="startTime"
+      <AnimatePresence mode="wait">
+        {showAddSlot && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="bg-white rounded-xl shadow-lg border border-gray-200/50 p-6"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Add New Time Slot
+              </h3>
+              <button
+                onClick={() => setShowAddSlot(false)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
-                Start Time
-              </label>
-              <input
-                id="startTime"
-                type="time"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                value={newSlot.startTime}
-                onChange={(e) =>
-                  setNewSlot({ ...newSlot, startTime: e.target.value })
-                }
-              />
+                <X size={20} className="text-gray-500" />
+              </button>
             </div>
-            <div>
-              <label
-                className="block text-gray-700 text-sm font-medium mb-2"
-                htmlFor="endTime"
-              >
-                End Time
-              </label>
-              <input
-                id="endTime"
-                type="time"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                value={newSlot.endTime}
-                onChange={(e) =>
-                  setNewSlot({ ...newSlot, endTime: e.target.value })
-                }
-              />
-            </div>
-          </div>
-          <div className="flex justify-end space-x-3">
-            <button
-              className="text-gray-500 hover:text-gray-700 font-medium"
-              onClick={() => setShowAddSlot(false)}
-            >
-              Cancel
-            </button>
-            <button
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition duration-300"
-              onClick={handleAddSlot}
-            >
-              Add Slot
-            </button>
-          </div>
-        </div>
-      )}
 
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div className="divide-y divide-gray-200">
-          {filteredSlots.length > 0 ? (
-            filteredSlots.map((slot) => (
-              <div
-                key={slot.id}
-                className="p-4 hover:bg-gray-50 transition duration-150"
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Start Time
+                </label>
+                <input
+                  type="time"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                  value={newSlot.startTime}
+                  onChange={(e) =>
+                    setNewSlot({ ...newSlot, startTime: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  End Time
+                </label>
+                <input
+                  type="time"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                  value={newSlot.endTime}
+                  onChange={(e) =>
+                    setNewSlot({ ...newSlot, endTime: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowAddSlot(false)}
+                className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
               >
-                {editingSlot === slot.id ? (
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3 sm:mb-0">
+                Cancel
+              </button>
+              <button
+                onClick={handleAddSlot}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-2 rounded-xl font-medium transition duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transform hover:-translate-y-0.5"
+              >
+                Add Slot
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="space-y-4">
+        {filteredSlots.length > 0 ? (
+          filteredSlots.map((slot) => (
+            <motion.div
+              key={slot.id}
+              layout
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="bg-white rounded-xl shadow-md hover:shadow-lg border border-gray-200/50 p-6 transition-all duration-200"
+            >
+              {editingSlot === slot.id ? (
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Start Time
+                      </label>
                       <input
+                        id={`start-${slot.id}`}
                         type="time"
-                        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
                         defaultValue={slot.startTime}
                       />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        End Time
+                      </label>
                       <input
+                        id={`end-${slot.id}`}
                         type="time"
-                        className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
                         defaultValue={slot.endTime}
                       />
                     </div>
-                    <div className="flex space-x-2">
-                      <button
-                        className="text-green-500 hover:text-green-600 p-1"
-                        onClick={() => handleSaveEdit(slot.id)}
-                      >
-                        <Save size={18} />
-                      </button>
-                      <button
-                        className="text-gray-500 hover:text-gray-600 p-1"
-                        onClick={() => setEditingSlot(null)}
-                      >
-                        Cancel
-                      </button>
-                    </div>
                   </div>
-                ) : (
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <div className="flex items-center mb-2">
-                        <Clock size={18} className="mr-2 text-blue-500" />
-                        <span className="font-medium">
-                          {formatTime(slot.startTime)} -{' '}
-                          {formatTime(slot.endTime)}
-                        </span>
-                      </div>
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusClass(
-                          slot.status
-                        )}`}
-                      >
-                        {slot.status.charAt(0).toUpperCase() +
-                          slot.status.slice(1)}
+                  <div className="flex justify-end space-x-3">
+                    <button
+                      onClick={() => setEditingSlot(null)}
+                      className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => handleSaveEdit(slot.id)}
+                      className="bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 py-2 rounded-xl font-medium transition duration-300 shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transform hover:-translate-y-0.5 flex items-center"
+                    >
+                      <Save size={18} className="mr-2" />
+                      Save Changes
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex justify-between items-center">
+                  <div className="space-y-2">
+                    <div className="flex items-center">
+                      <Clock size={18} className="mr-2 text-blue-500" />
+                      <span className="font-medium text-gray-900">
+                        {formatTime(slot.startTime)} -{' '}
+                        {formatTime(slot.endTime)}
                       </span>
                     </div>
-                    <div className="flex mt-3 sm:mt-0">
-                      {slot.status !== 'booked' && (
-                        <>
-                          <button
-                            className="text-blue-500 hover:text-blue-600 p-1 mr-2"
-                            onClick={() => setEditingSlot(slot.id)}
-                          >
-                            <Edit2 size={18} />
-                          </button>
-                          <button
-                            className="text-red-500 hover:text-red-600 p-1"
-                            onClick={() => handleDeleteSlot(slot.id)}
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </>
-                      )}
-                      {slot.status === 'booked' && (
-                        <span className="text-sm text-gray-500">
-                          Patient booked
-                        </span>
-                      )}
-                    </div>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusClass(
+                        slot.status
+                      )}`}
+                    >
+                      {slot.status.charAt(0).toUpperCase() +
+                        slot.status.slice(1)}
+                    </span>
                   </div>
-                )}
-              </div>
-            ))
-          ) : (
-            <div className="p-8 text-center">
-              <Calendar size={48} className="mx-auto mb-2 text-gray-400" />
-              <h3 className="text-lg font-medium text-gray-900">
-                No time slots for {selectedDay}
-              </h3>
-              <p className="mt-1 text-gray-500">
-                Click the "Add Time Slot" button to create availability
-              </p>
-              <button
-                className="mt-4 inline-flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition duration-300"
-                onClick={() => setShowAddSlot(true)}
-              >
-                <Plus size={16} className="mr-2" />
-                Add Time Slot
-              </button>
-            </div>
-          )}
-        </div>
+                  <div className="flex items-center space-x-2">
+                    {slot.status !== 'booked' && (
+                      <>
+                        <button
+                          onClick={() => setEditingSlot(slot.id)}
+                          className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                        >
+                          <Edit2 size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteSlot(slot.id)}
+                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          ))
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-xl shadow-md p-12 text-center border border-gray-200/50"
+          >
+            <Calendar size={48} className="mx-auto mb-4 text-gray-400" />
+            <h3 className="text-xl font-medium text-gray-900 mb-2">
+              No time slots for {selectedDay}
+            </h3>
+            <p className="text-gray-500 mb-6">
+              Click the "Add Time Slot" button to create availability
+            </p>
+            <button
+              onClick={() => setShowAddSlot(true)}
+              className="inline-flex items-center bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-medium transition duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transform hover:-translate-y-0.5"
+            >
+              <Plus size={20} className="mr-2" />
+              Add Time Slot
+            </button>
+          </motion.div>
+        )}
       </div>
     </div>
   );

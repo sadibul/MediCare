@@ -1,16 +1,26 @@
 import { useState } from 'react';
-import { Calendar, Clock, FileText, User, Bell, LogOut, Activity } from 'lucide-react';
+import {
+  Calendar,
+  Clock,
+  FileText,
+  User,
+  Bell,
+  LogOut,
+  Activity,
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import DoctorAppointments from './DoctorAppointments';
 import DoctorSchedule from './DoctorSchedule';
 import PatientRecords from './PatientRecords';
 import DoctorProfile from './DoctorProfile';
+import { useUser } from '../../context/UserContext';
 
 type Tab = 'appointments' | 'schedule' | 'records' | 'profile';
 
 const DoctorDashboard = () => {
+  const { profileImage } = useUser();
   const [activeTab, setActiveTab] = useState<Tab>('appointments');
-  
+
   const renderContent = () => {
     switch (activeTab) {
       case 'appointments':
@@ -30,9 +40,9 @@ const DoctorDashboard = () => {
     { id: 'appointments', icon: Calendar, label: 'Appointments' },
     { id: 'schedule', icon: Clock, label: 'Schedule' },
     { id: 'records', icon: FileText, label: 'Records' },
-    { id: 'profile', icon: User, label: 'Profile' }
+    { id: 'profile', icon: User, label: 'Profile' },
   ];
-  
+
   return (
     <div className="min-h-screen bg-gray-50 relative">
       {/* Background Pattern */}
@@ -92,7 +102,10 @@ const DoctorDashboard = () => {
               >
                 <div className="w-10 h-10 rounded-full ring-2 ring-gray-200/50 overflow-hidden bg-blue-50 hover:ring-blue-200 transition-all">
                   <img
-                    src="https://ui-avatars.com/api/?name=John+Smith&background=random"
+                    src={
+                      profileImage ||
+                      'https://ui-avatars.com/api/?name=John+Smith&background=random'
+                    }
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />
