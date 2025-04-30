@@ -15,11 +15,19 @@ const DoctorSchedule = () => {
   const [showAddSlot, setShowAddSlot] = useState(false);
   const [newSlot, setNewSlot] = useState({
     startTime: '09:00',
-    endTime: '10:00'
+    endTime: '10:00',
   });
-  
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  
+
+  const days = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
+
   // Mock data
   const timeSlots: TimeSlot[] = [
     {
@@ -27,47 +35,47 @@ const DoctorSchedule = () => {
       day: 'Monday',
       startTime: '09:00',
       endTime: '10:30',
-      status: 'available'
+      status: 'available',
     },
     {
       id: '2',
       day: 'Monday',
       startTime: '11:00',
       endTime: '12:30',
-      status: 'booked'
+      status: 'booked',
     },
     {
       id: '3',
       day: 'Monday',
       startTime: '14:00',
       endTime: '15:30',
-      status: 'available'
+      status: 'available',
     },
     {
       id: '4',
       day: 'Tuesday',
       startTime: '09:00',
       endTime: '10:30',
-      status: 'available'
+      status: 'available',
     },
     {
       id: '5',
       day: 'Tuesday',
       startTime: '11:00',
       endTime: '12:30',
-      status: 'blocked'
+      status: 'blocked',
     },
     {
       id: '6',
       day: 'Wednesday',
       startTime: '09:00',
       endTime: '10:30',
-      status: 'available'
-    }
+      status: 'available',
+    },
   ];
-  
-  const filteredSlots = timeSlots.filter(slot => slot.day === selectedDay);
-  
+
+  const filteredSlots = timeSlots.filter((slot) => slot.day === selectedDay);
+
   const formatTime = (time: string) => {
     const [hours, minutes] = time.split(':');
     const hour = parseInt(hours, 10);
@@ -75,7 +83,7 @@ const DoctorSchedule = () => {
     const formattedHour = hour % 12 || 12;
     return `${formattedHour}:${minutes} ${suffix}`;
   };
-  
+
   const getStatusClass = (status: string) => {
     switch (status) {
       case 'available':
@@ -88,49 +96,42 @@ const DoctorSchedule = () => {
         return 'bg-gray-100 text-gray-800';
     }
   };
-  
+
   const handleAddSlot = () => {
     // Here you would add the new slot to the database
     console.log('Adding new slot:', { day: selectedDay, ...newSlot });
     setShowAddSlot(false);
     setNewSlot({
       startTime: '09:00',
-      endTime: '10:00'
+      endTime: '10:00',
     });
   };
-  
+
   const handleSaveEdit = (id: string) => {
     // Here you would save the edited slot to the database
     console.log('Saving edited slot:', id);
     setEditingSlot(null);
   };
-  
+
   const handleDeleteSlot = (id: string) => {
     // Here you would delete the slot from the database
     console.log('Deleting slot:', id);
   };
-  
+
   return (
     <div className="h-full">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Manage Schedule</h2>
-        <button
-          className="flex items-center bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition duration-300"
-          onClick={() => setShowAddSlot(true)}
-        >
-          <Plus size={16} className="mr-2" />
-          Add Time Slot
-        </button>
       </div>
-      
+
       <div className="mb-6 overflow-x-auto">
         <div className="flex space-x-3 py-2">
-          {days.map(day => (
+          {days.map((day) => (
             <button
               key={day}
               className={`px-4 py-2 rounded-md border ${
-                selectedDay === day 
-                  ? 'bg-blue-500 text-white border-blue-500' 
+                selectedDay === day
+                  ? 'bg-blue-500 text-white border-blue-500'
                   : 'bg-white border-gray-300 hover:border-blue-500'
               }`}
               onClick={() => setSelectedDay(day)}
@@ -140,13 +141,16 @@ const DoctorSchedule = () => {
           ))}
         </div>
       </div>
-      
+
       {showAddSlot && (
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <h3 className="font-medium text-lg mb-4">Add New Time Slot</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="startTime">
+              <label
+                className="block text-gray-700 text-sm font-medium mb-2"
+                htmlFor="startTime"
+              >
                 Start Time
               </label>
               <input
@@ -154,11 +158,16 @@ const DoctorSchedule = () => {
                 type="time"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                 value={newSlot.startTime}
-                onChange={(e) => setNewSlot({ ...newSlot, startTime: e.target.value })}
+                onChange={(e) =>
+                  setNewSlot({ ...newSlot, startTime: e.target.value })
+                }
               />
             </div>
             <div>
-              <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="endTime">
+              <label
+                className="block text-gray-700 text-sm font-medium mb-2"
+                htmlFor="endTime"
+              >
                 End Time
               </label>
               <input
@@ -166,7 +175,9 @@ const DoctorSchedule = () => {
                 type="time"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                 value={newSlot.endTime}
-                onChange={(e) => setNewSlot({ ...newSlot, endTime: e.target.value })}
+                onChange={(e) =>
+                  setNewSlot({ ...newSlot, endTime: e.target.value })
+                }
               />
             </div>
           </div>
@@ -186,12 +197,15 @@ const DoctorSchedule = () => {
           </div>
         </div>
       )}
-      
+
       <div className="bg-white rounded-lg shadow-sm overflow-hidden">
         <div className="divide-y divide-gray-200">
           {filteredSlots.length > 0 ? (
-            filteredSlots.map(slot => (
-              <div key={slot.id} className="p-4 hover:bg-gray-50 transition duration-150">
+            filteredSlots.map((slot) => (
+              <div
+                key={slot.id}
+                className="p-4 hover:bg-gray-50 transition duration-150"
+              >
                 {editingSlot === slot.id ? (
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3 sm:mb-0">
@@ -207,13 +221,13 @@ const DoctorSchedule = () => {
                       />
                     </div>
                     <div className="flex space-x-2">
-                      <button 
+                      <button
                         className="text-green-500 hover:text-green-600 p-1"
                         onClick={() => handleSaveEdit(slot.id)}
                       >
                         <Save size={18} />
                       </button>
-                      <button 
+                      <button
                         className="text-gray-500 hover:text-gray-600 p-1"
                         onClick={() => setEditingSlot(null)}
                       >
@@ -227,23 +241,29 @@ const DoctorSchedule = () => {
                       <div className="flex items-center mb-2">
                         <Clock size={18} className="mr-2 text-blue-500" />
                         <span className="font-medium">
-                          {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
+                          {formatTime(slot.startTime)} -{' '}
+                          {formatTime(slot.endTime)}
                         </span>
                       </div>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusClass(slot.status)}`}>
-                        {slot.status.charAt(0).toUpperCase() + slot.status.slice(1)}
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusClass(
+                          slot.status
+                        )}`}
+                      >
+                        {slot.status.charAt(0).toUpperCase() +
+                          slot.status.slice(1)}
                       </span>
                     </div>
                     <div className="flex mt-3 sm:mt-0">
                       {slot.status !== 'booked' && (
                         <>
-                          <button 
+                          <button
                             className="text-blue-500 hover:text-blue-600 p-1 mr-2"
                             onClick={() => setEditingSlot(slot.id)}
                           >
                             <Edit2 size={18} />
                           </button>
-                          <button 
+                          <button
                             className="text-red-500 hover:text-red-600 p-1"
                             onClick={() => handleDeleteSlot(slot.id)}
                           >
@@ -252,7 +272,9 @@ const DoctorSchedule = () => {
                         </>
                       )}
                       {slot.status === 'booked' && (
-                        <span className="text-sm text-gray-500">Patient booked</span>
+                        <span className="text-sm text-gray-500">
+                          Patient booked
+                        </span>
                       )}
                     </div>
                   </div>
@@ -262,7 +284,9 @@ const DoctorSchedule = () => {
           ) : (
             <div className="p-8 text-center">
               <Calendar size={48} className="mx-auto mb-2 text-gray-400" />
-              <h3 className="text-lg font-medium text-gray-900">No time slots for {selectedDay}</h3>
+              <h3 className="text-lg font-medium text-gray-900">
+                No time slots for {selectedDay}
+              </h3>
               <p className="mt-1 text-gray-500">
                 Click the "Add Time Slot" button to create availability
               </p>

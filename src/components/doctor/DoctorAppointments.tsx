@@ -162,66 +162,65 @@ const DoctorAppointments = () => {
         />
       </div>
 
-      <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50">
-        <div className="divide-y divide-gray-200/50">
-          {filteredAppointments.length > 0 ? (
-            filteredAppointments.map((appointment) => (
-              <div
-                key={appointment.id}
-                className="p-6 hover:bg-blue-50/50 transition-all duration-200"
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      {appointment.patientName}
-                    </h3>
-                    <p className="text-gray-500">
-                      {appointment.patientAge} years old
-                    </p>
-                  </div>
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusClass(
-                      appointment.status
-                    )}`}
-                  >
-                    {appointment.status.charAt(0).toUpperCase() +
-                      appointment.status.slice(1)}
-                  </span>
-                </div>
-                <div className="mt-4 flex items-center text-sm text-gray-500 mb-4">
-                  <Clock size={18} className="mr-2" />
-                  <span>{appointment.time}</span>
-                </div>
-                <div className="bg-gray-50 rounded-xl p-4 mb-4">
-                  <p className="text-gray-700">
-                    <strong className="text-gray-900">Reason:</strong>{' '}
-                    {appointment.reason}
+      {/* Remove the outer card container and modify the list container */}
+      <div className="space-y-4">
+        {filteredAppointments.length > 0 ? (
+          filteredAppointments.map((appointment) => (
+            <div
+              key={appointment.id}
+              className="bg-white rounded-xl shadow-md hover:shadow-xl border border-gray-200/50 p-6 hover:bg-blue-50/50 transition-all duration-200"
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {appointment.patientName}
+                  </h3>
+                  <p className="text-gray-500">
+                    {appointment.patientAge} years old
                   </p>
                 </div>
-                <div className="mt-4 flex justify-end">
-                  <button
-                    className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transform hover:-translate-y-0.5"
-                    onClick={() => handleStartConsultation(appointment)}
-                  >
-                    Start Consultation
-                  </button>
-                </div>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusClass(
+                    appointment.status
+                  )}`}
+                >
+                  {appointment.status.charAt(0).toUpperCase() +
+                    appointment.status.slice(1)}
+                </span>
               </div>
-            ))
-          ) : (
-            <div className="p-12 text-center">
-              <Calendar size={48} className="mx-auto mb-4 text-gray-400" />
-              <h3 className="text-xl font-medium text-gray-900 mb-2">
-                No appointments for this date
-              </h3>
-              <p className="text-gray-500">
-                {search
-                  ? 'Try adjusting your search'
-                  : 'Select another date to view appointments'}
-              </p>
+              <div className="mt-4 flex items-center text-sm text-gray-500 mb-4">
+                <Clock size={18} className="mr-2" />
+                <span>{appointment.time}</span>
+              </div>
+              <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                <p className="text-gray-700">
+                  <strong className="text-gray-900">Reason:</strong>{' '}
+                  {appointment.reason}
+                </p>
+              </div>
+              <div className="mt-4 flex justify-end">
+                <button
+                  className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-medium transition duration-300 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 transform hover:-translate-y-0.5"
+                  onClick={() => handleStartConsultation(appointment)}
+                >
+                  Start Consultation
+                </button>
+              </div>
             </div>
-          )}
-        </div>
+          ))
+        ) : (
+          <div className="bg-white rounded-xl shadow-md p-12 text-center">
+            <Calendar size={48} className="mx-auto mb-4 text-gray-400" />
+            <h3 className="text-xl font-medium text-gray-900 mb-2">
+              No appointments for this date
+            </h3>
+            <p className="text-gray-500">
+              {search
+                ? 'Try adjusting your search'
+                : 'Select another date to view appointments'}
+            </p>
+          </div>
+        )}
       </div>
     </>
   );
