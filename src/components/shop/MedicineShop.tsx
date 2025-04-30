@@ -16,9 +16,13 @@ interface Medicine {
 const MedicineShop = () => {
   const [search, setSearch] = useState('');
   const [showCart, setShowCart] = useState(false);
-  const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
-  const [cartItems, setCartItems] = useState<{medicine: Medicine; quantity: number}[]>([]);
-  
+  const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(
+    null
+  );
+  const [cartItems, setCartItems] = useState<
+    { medicine: Medicine; quantity: number }[]
+  >([]);
+
   // Mock data
   const medicines: Medicine[] = [
     {
@@ -27,8 +31,9 @@ const MedicineShop = () => {
       category: 'Pain Relief',
       price: 5.99,
       description: 'For relief of mild to moderate pain and fever.',
-      dosage: 'Take 1-2 tablets every 4-6 hours as needed. Do not exceed 8 tablets in 24 hours.',
-      inStock: true
+      dosage:
+        'Take 1-2 tablets every 4-6 hours as needed. Do not exceed 8 tablets in 24 hours.',
+      inStock: true,
     },
     {
       id: '2',
@@ -36,8 +41,9 @@ const MedicineShop = () => {
       category: 'Antibiotics',
       price: 12.99,
       description: 'Antibiotic used to treat a number of bacterial infections.',
-      dosage: 'Take as prescribed by your doctor. Typically 1 capsule 3 times daily.',
-      inStock: true
+      dosage:
+        'Take as prescribed by your doctor. Typically 1 capsule 3 times daily.',
+      inStock: true,
     },
     {
       id: '3',
@@ -46,27 +52,31 @@ const MedicineShop = () => {
       price: 8.49,
       description: 'Antihistamine for relief of allergy symptoms.',
       dosage: 'Take 1 tablet daily. Do not exceed recommended dose.',
-      inStock: true
+      inStock: true,
     },
     {
       id: '4',
       name: 'Omeprazole 20mg',
       category: 'Digestive Health',
       price: 14.99,
-      description: 'Reduces stomach acid production to treat heartburn and acid reflux.',
+      description:
+        'Reduces stomach acid production to treat heartburn and acid reflux.',
       dosage: 'Take 1 capsule daily before breakfast.',
-      inStock: false
-    }
+      inStock: false,
+    },
   ];
-  
-  const filteredMedicines = medicines.filter(medicine => 
-    medicine.name.toLowerCase().includes(search.toLowerCase()) ||
-    medicine.category.toLowerCase().includes(search.toLowerCase())
+
+  const filteredMedicines = medicines.filter(
+    (medicine) =>
+      medicine.name.toLowerCase().includes(search.toLowerCase()) ||
+      medicine.category.toLowerCase().includes(search.toLowerCase())
   );
-  
+
   const handleAddToCart = (medicine: Medicine, quantity: number) => {
-    const existingItemIndex = cartItems.findIndex(item => item.medicine.id === medicine.id);
-    
+    const existingItemIndex = cartItems.findIndex(
+      (item) => item.medicine.id === medicine.id
+    );
+
     if (existingItemIndex >= 0) {
       const updatedCartItems = [...cartItems];
       updatedCartItems[existingItemIndex].quantity += quantity;
@@ -74,38 +84,41 @@ const MedicineShop = () => {
     } else {
       setCartItems([...cartItems, { medicine, quantity }]);
     }
-    
+
     setSelectedMedicine(null);
   };
-  
+
   const handleRemoveFromCart = (medicineId: string) => {
-    setCartItems(cartItems.filter(item => item.medicine.id !== medicineId));
+    setCartItems(cartItems.filter((item) => item.medicine.id !== medicineId));
   };
-  
+
   const handleUpdateQuantity = (medicineId: string, newQuantity: number) => {
     if (newQuantity <= 0) {
       handleRemoveFromCart(medicineId);
       return;
     }
-    
-    const updatedCartItems = cartItems.map(item => {
+
+    const updatedCartItems = cartItems.map((item) => {
       if (item.medicine.id === medicineId) {
         return { ...item, quantity: newQuantity };
       }
       return item;
     });
-    
+
     setCartItems(updatedCartItems);
   };
-  
+
   const getTotalItems = () => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
   };
-  
+
   const getTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + (item.medicine.price * item.quantity), 0);
+    return cartItems.reduce(
+      (total, item) => total + item.medicine.price * item.quantity,
+      0
+    );
   };
-  
+
   const renderMedicineList = () => (
     <>
       <div className="flex justify-between items-center mb-6">
@@ -122,7 +135,7 @@ const MedicineShop = () => {
           )}
         </button>
       </div>
-      
+
       <div className="mb-6 relative">
         <input
           type="text"
@@ -131,9 +144,12 @@ const MedicineShop = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <Search size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <Search
+          size={18}
+          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+        />
       </div>
-      
+
       <div className="mb-4 flex overflow-x-auto py-2 -mx-2 px-2">
         <button className="px-4 py-2 bg-teal-500 text-white rounded-full text-sm font-medium whitespace-nowrap mr-2">
           All Categories
@@ -151,33 +167,48 @@ const MedicineShop = () => {
           Digestive Health
         </button>
       </div>
-      
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {filteredMedicines.length > 0 ? (
-          filteredMedicines.map(medicine => (
-            <div 
-              key={medicine.id} 
-              className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition duration-300"
+          filteredMedicines.map((medicine) => (
+            <div
+              key={medicine.id}
+              className="bg-white rounded-xl shadow-md hover:shadow-xl border border-gray-200/50 overflow-hidden transition-all duration-200 hover:translate-y-[-2px]"
             >
-              <div className="p-4">
-                <div className="flex justify-between items-start mb-2">
+              <div className="p-6">
+                <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 className="font-medium">{medicine.name}</h3>
+                    <h3 className="font-semibold text-gray-900">
+                      {medicine.name}
+                    </h3>
                     <p className="text-sm text-gray-500">{medicine.category}</p>
                   </div>
-                  <span className="text-teal-600 font-medium">${medicine.price.toFixed(2)}</span>
+                  <span className="text-teal-600 font-semibold text-lg">
+                    ${medicine.price.toFixed(2)}
+                  </span>
                 </div>
-                <p className="text-sm text-gray-700 mb-3 line-clamp-2">{medicine.description}</p>
+                <p className="text-sm text-gray-700 mb-4 line-clamp-2">
+                  {medicine.description}
+                </p>
                 <div className="flex justify-between items-center">
-                  <span className={`text-xs font-medium px-2 py-1 rounded-full ${medicine.inStock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                  <span
+                    className={`px-3 py-1 text-xs font-medium rounded-full ${
+                      medicine.inStock
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}
+                  >
                     {medicine.inStock ? 'In Stock' : 'Out of Stock'}
                   </span>
-                  <button 
-                    className="text-teal-500 text-sm font-medium flex items-center hover:text-teal-600"
+                  <button
+                    className="flex items-center text-teal-500 hover:text-teal-600 font-medium text-sm group transition-all duration-200"
                     onClick={() => setSelectedMedicine(medicine)}
                   >
                     View Details
-                    <ChevronRight size={14} className="ml-1" />
+                    <ChevronRight
+                      size={16}
+                      className="ml-1 transform group-hover:translate-x-1 transition-transform"
+                    />
                   </button>
                 </div>
               </div>
@@ -186,43 +217,43 @@ const MedicineShop = () => {
         ) : (
           <div className="col-span-full p-8 text-center bg-white rounded-lg shadow-sm">
             <ShoppingCart size={48} className="mx-auto mb-2 text-gray-400" />
-            <h3 className="text-lg font-medium text-gray-900">No medicines found</h3>
+            <h3 className="text-lg font-medium text-gray-900">
+              No medicines found
+            </h3>
             <p className="mt-1 text-gray-500">
-              {search ? 'Try adjusting your search' : 'Browse our categories to find what you need'}
+              {search
+                ? 'Try adjusting your search'
+                : 'Browse our categories to find what you need'}
             </p>
           </div>
         )}
       </div>
     </>
   );
-  
+
   if (selectedMedicine) {
     return (
-      <MedicineDetail 
-        medicine={selectedMedicine} 
-        onClose={() => setSelectedMedicine(null)} 
+      <MedicineDetail
+        medicine={selectedMedicine}
+        onClose={() => setSelectedMedicine(null)}
         onAddToCart={handleAddToCart}
       />
     );
   }
-  
+
   if (showCart) {
     return (
-      <Cart 
-        items={cartItems} 
-        onClose={() => setShowCart(false)} 
+      <Cart
+        items={cartItems}
+        onClose={() => setShowCart(false)}
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveFromCart}
         totalPrice={getTotalPrice()}
       />
     );
   }
-  
-  return (
-    <div className="h-full">
-      {renderMedicineList()}
-    </div>
-  );
+
+  return <div className="h-full">{renderMedicineList()}</div>;
 };
 
 export default MedicineShop;

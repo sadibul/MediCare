@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import BookAppointment from './BookAppointment';
+import Image from 'next/image';
 
 interface Doctor {
   id: string;
@@ -26,6 +27,7 @@ interface Doctor {
   email: string;
   education: string;
   about: string;
+  image: string;
 }
 
 interface Appointment {
@@ -65,6 +67,7 @@ const PatientAppointments = () => {
         education: 'MD - Harvard Medical School',
         about:
           'Dr. Sarah Johnson is a board-certified cardiologist with extensive experience in treating various heart conditions. She specializes in preventive cardiology and heart disease management.',
+        image: '/images/doctors/doctor-1.jpg',
       },
     },
     {
@@ -86,6 +89,7 @@ const PatientAppointments = () => {
         education: 'MD - Johns Hopkins University',
         about:
           'Dr. Robert Chen is a skilled orthopedic surgeon specializing in sports medicine and joint replacement surgery. He is committed to helping patients regain mobility and improve their quality of life.',
+        image: '/images/doctors/doctor-2.jpg',
       },
     },
     {
@@ -107,6 +111,7 @@ const PatientAppointments = () => {
         education: 'MD - Stanford University',
         about:
           'Dr. Emily Martinez is a board-certified dermatologist specializing in medical and cosmetic dermatology. She is known for her expertise in treating various skin conditions and her patient-centered approach.',
+        image: '/images/doctors/doctor-3.jpg',
       },
     },
   ];
@@ -282,16 +287,24 @@ const PatientAppointments = () => {
               selectedAppointment?.status || ''
             )}`}
           >
-            {selectedAppointment?.status.charAt(0).toUpperCase() +
-              selectedAppointment?.status.slice(1)}
+            {selectedAppointment?.status
+              ? selectedAppointment.status.charAt(0).toUpperCase() +
+                selectedAppointment.status.slice(1)
+              : ''}
           </span>
         </div>
 
         {/* Doctor Information */}
         <div className="border-t border-gray-200 pt-6">
           <div className="flex items-start">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-              <User size={32} className="text-gray-500" />
+            <div className="w-16 h-16 rounded-full overflow-hidden">
+              <Image
+                src={selectedAppointment?.doctor.image || ''}
+                alt={selectedAppointment?.doctor.name || ''}
+                width={64}
+                height={64}
+                className="object-cover w-full h-full"
+              />
             </div>
             <div className="ml-4">
               <h3 className="text-xl font-semibold">
@@ -425,14 +438,24 @@ const PatientAppointments = () => {
           {filteredAppointments.map((appointment) => (
             <motion.div
               key={appointment.id}
-              className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-gray-200/50"
-              whileHover={{ y: -2 }}
+              className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-200 overflow-hidden border border-gray-200/50"
+              whileHover={{
+                y: -4,
+                boxShadow:
+                  '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+              }}
             >
               <div className="p-6">
                 <div className="flex justify-between items-start">
                   <div className="flex items-start space-x-4">
-                    <div className="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center">
-                      <User size={24} className="text-blue-500" />
+                    <div className="w-12 h-12 rounded-full overflow-hidden">
+                      <Image
+                        src={appointment.doctor.image}
+                        alt={appointment.doctorName}
+                        width={48}
+                        height={48}
+                        className="object-cover w-full h-full"
+                      />
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900">
@@ -485,7 +508,6 @@ const PatientAppointments = () => {
                     whileHover={{ x: 4 }}
                   >
                     View Details
-                    <ArrowRight size={16} className="ml-1" />
                   </motion.button>
                 </div>
               </div>
