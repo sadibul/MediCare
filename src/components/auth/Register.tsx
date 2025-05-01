@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { User, Mail, Lock, Phone, ChevronRight, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { authService } from '../../services/authService';
 
 interface RegisterProps {
   onRegister: (userType: 'patient') => void;
@@ -13,10 +14,30 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onLoginClick }) => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
-    onRegister('patient');
+    setError('');
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    const success = authService.register({
+      name,
+      email,
+      phone,
+      password,
+      type: 'patient'
+    });
+
+    if (success) {
+      onRegister('patient');
+    } else {
+      setError('Email already exists. Please try logging in.');
+    }
   };
 
   const containerVariants = {
@@ -48,6 +69,11 @@ const Register: React.FC<RegisterProps> = ({ onRegister, onLoginClick }) => {
         <p className="text-center text-gray-600 mb-8">Join us to manage your health journey</p>
         
         <form onSubmit={handleRegister} className="space-y-6">
+          {error && (
+            <div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg">
+              {error}
+            </div>
+          )}
           <div className="input-group">
             <label className="input-label" htmlFor="name">Full Name</label>
             <div className="relative">

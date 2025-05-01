@@ -52,6 +52,31 @@ const DoctorProfile = () => {
   });
 
   useEffect(() => {
+    setProfile({
+      name: doctorName,
+      email: doctorEmail,
+      phone: doctorPhone,
+      specialization: doctorSpecialty,
+      experience: doctorExperience,
+      address: doctorAddress,
+      workingHours: doctorWorkingHours,
+      education: 'MD - Harvard Medical School',
+      certifications: [
+        'American Board of Internal Medicine',
+        'Cardiovascular Disease Certification',
+      ],
+    });
+  }, [
+    doctorName,
+    doctorEmail,
+    doctorPhone,
+    doctorSpecialty,
+    doctorExperience,
+    doctorAddress,
+    doctorWorkingHours,
+  ]);
+
+  useEffect(() => {
     if (!isEditing) {
       setTempImage(null);
     }
@@ -86,7 +111,6 @@ const DoctorProfile = () => {
   const handleCancel = () => {
     setTempImage(null);
     setProfile({
-      ...profile,
       name: doctorName,
       email: doctorEmail,
       phone: doctorPhone,
@@ -94,6 +118,11 @@ const DoctorProfile = () => {
       experience: doctorExperience,
       address: doctorAddress,
       workingHours: doctorWorkingHours,
+      education: 'MD - Harvard Medical School',
+      certifications: [
+        'American Board of Internal Medicine',
+        'Cardiovascular Disease Certification',
+      ],
     });
     setIsEditing(false);
   };

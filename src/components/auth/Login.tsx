@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { User, Lock, ChevronRight, Mail } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { authService } from '../../services/authService';
 
 interface LoginProps {
   onLogin: (userType: 'patient' | 'doctor' | 'admin') => void;
@@ -11,10 +12,19 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
   const [userType, setUserType] = useState<'patient' | 'doctor' | 'admin'>('patient');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin(userType);
+    setError('');
+
+    const user = authService.login(email, password);
+
+    if (user) {
+      onLogin(user.type);
+    } else {
+      setError('Invalid email or password. Please try again or create an account.');
+    }
   };
 
   const containerVariants = {
@@ -70,6 +80,11 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
         </div>
         
         <form onSubmit={handleLogin} className="space-y-6">
+          {error && (
+            <div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg">
+              {error}
+            </div>
+          )}
           <div className="input-group">
             <label className="input-label" htmlFor="email">Email</label>
             <div className="relative">

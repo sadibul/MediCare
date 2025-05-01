@@ -18,7 +18,7 @@ import { useUser } from '../../context/UserContext';
 type Tab = 'appointments' | 'history' | 'shop' | 'profile';
 
 const PatientDashboard = () => {
-  const { profileImage, userName } = useUser();
+  const { profileImage } = useUser();
   const [activeTab, setActiveTab] = useState<Tab>('appointments');
 
   const renderContent = () => {
@@ -96,7 +96,7 @@ const PatientDashboard = () => {
           <div className="flex items-center">
             <div className="flex items-center mr-8">
               <div className="text-right mr-3">
-                <p className="text-sm font-medium text-gray-700">{userName}</p>
+                <p className="text-sm font-medium text-gray-700">John Doe</p>
                 <p className="text-xs text-gray-500">Patient ID: P-12345</p>
               </div>
               <motion.button
