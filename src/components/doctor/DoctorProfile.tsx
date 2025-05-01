@@ -1,24 +1,61 @@
-import React, { useState, useRef } from 'react';
-import { Mail, Phone, MapPin, Clock, Calendar, Edit2, Save, X, Camera } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Clock,
+  Calendar,
+  Edit2,
+  Save,
+  X,
+  Camera,
+} from 'lucide-react';
 import { useUser } from '../../context/UserContext';
 import { motion } from 'framer-motion';
 
 const DoctorProfile = () => {
-  const { profileImage, updateProfileImage } = useUser();
+  const {
+    profileImage,
+    doctorName,
+    doctorSpecialty,
+    doctorEmail,
+    doctorPhone,
+    doctorAddress,
+    doctorExperience,
+    doctorWorkingHours,
+    updateProfileImage,
+    updateDoctorName,
+    updateDoctorSpecialty,
+    updateDoctorEmail,
+    updateDoctorPhone,
+    updateDoctorAddress,
+    updateDoctorExperience,
+    updateDoctorWorkingHours,
+  } = useUser();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [tempImage, setTempImage] = useState<string | null>(profileImage);
+  const [tempImage, setTempImage] = useState<string | null>(null);
   const [profile, setProfile] = useState({
-    name: 'Dr. Sarah Johnson',
-    email: 'sarah.johnson@medicare.com',
-    phone: '+1 (555) 123-4567',
-    specialization: 'Cardiology',
-    experience: '15 years',
-    address: '123 Medical Center Drive, Suite 200',
-    workingHours: '9:00 AM - 5:00 PM',
+    name: doctorName,
+    email: doctorEmail,
+    phone: doctorPhone,
+    specialization: doctorSpecialty,
+    experience: doctorExperience,
+    address: doctorAddress,
+    workingHours: doctorWorkingHours,
     education: 'MD - Harvard Medical School',
-    certifications: ['American Board of Internal Medicine', 'Cardiovascular Disease Certification']
+    certifications: [
+      'American Board of Internal Medicine',
+      'Cardiovascular Disease Certification',
+    ],
   });
+
+  useEffect(() => {
+    if (!isEditing) {
+      setTempImage(null);
+    }
+  }, [isEditing]);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -32,12 +69,32 @@ const DoctorProfile = () => {
   };
 
   const handleSave = () => {
-    updateProfileImage(tempImage);
+    if (tempImage) {
+      updateProfileImage(tempImage);
+    }
+    updateDoctorName(profile.name);
+    updateDoctorSpecialty(profile.specialization);
+    updateDoctorEmail(profile.email);
+    updateDoctorPhone(profile.phone);
+    updateDoctorAddress(profile.address);
+    updateDoctorExperience(profile.experience);
+    updateDoctorWorkingHours(profile.workingHours);
     setIsEditing(false);
+    setTempImage(null);
   };
 
   const handleCancel = () => {
-    setTempImage(profileImage);
+    setTempImage(null);
+    setProfile({
+      ...profile,
+      name: doctorName,
+      email: doctorEmail,
+      phone: doctorPhone,
+      specialization: doctorSpecialty,
+      experience: doctorExperience,
+      address: doctorAddress,
+      workingHours: doctorWorkingHours,
+    });
     setIsEditing(false);
   };
 
@@ -81,7 +138,7 @@ const DoctorProfile = () => {
                 className="w-24 h-24 rounded-full overflow-hidden bg-gray-100 ring-4 ring-gray-50"
                 whileHover={isEditing ? { scale: 1.05 } : {}}
               >
-                {(tempImage || profileImage) ? (
+                {tempImage || profileImage ? (
                   <img
                     src={tempImage ?? profileImage ?? undefined}
                     alt="Profile"
@@ -114,9 +171,13 @@ const DoctorProfile = () => {
               )}
             </div>
             <div className="ml-6">
-              <h3 className="text-2xl font-semibold text-gray-800">{profile.name}</h3>
+              <h3 className="text-2xl font-semibold text-gray-800">
+                {profile.name}
+              </h3>
               <p className="text-gray-600">{profile.specialization}</p>
-              <p className="text-gray-500 mt-1">{profile.experience} of experience</p>
+              <p className="text-gray-500 mt-1">
+                {profile.experience} of experience
+              </p>
             </div>
           </div>
         </div>
@@ -132,7 +193,9 @@ const DoctorProfile = () => {
                     <input
                       type="email"
                       value={profile.email}
-                      onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                      onChange={(e) =>
+                        setProfile({ ...profile, email: e.target.value })
+                      }
                       className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                     />
                   ) : (
@@ -145,7 +208,9 @@ const DoctorProfile = () => {
                     <input
                       type="tel"
                       value={profile.phone}
-                      onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                      onChange={(e) =>
+                        setProfile({ ...profile, phone: e.target.value })
+                      }
                       className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                     />
                   ) : (
@@ -158,7 +223,9 @@ const DoctorProfile = () => {
                     <input
                       type="text"
                       value={profile.address}
-                      onChange={(e) => setProfile({ ...profile, address: e.target.value })}
+                      onChange={(e) =>
+                        setProfile({ ...profile, address: e.target.value })
+                      }
                       className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                     />
                   ) : (
@@ -169,7 +236,9 @@ const DoctorProfile = () => {
             </div>
 
             <div>
-              <h4 className="text-lg font-medium mb-4">Professional Information</h4>
+              <h4 className="text-lg font-medium mb-4">
+                Professional Information
+              </h4>
               <div className="space-y-4">
                 <div className="flex items-center">
                   <Clock className="w-5 h-5 text-gray-400 mr-3" />
@@ -177,11 +246,15 @@ const DoctorProfile = () => {
                     <input
                       type="text"
                       value={profile.workingHours}
-                      onChange={(e) => setProfile({ ...profile, workingHours: e.target.value })}
+                      onChange={(e) =>
+                        setProfile({ ...profile, workingHours: e.target.value })
+                      }
                       className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                     />
                   ) : (
-                    <span className="text-gray-600">{profile.workingHours}</span>
+                    <span className="text-gray-600">
+                      {profile.workingHours}
+                    </span>
                   )}
                 </div>
                 <div className="flex items-center">
@@ -190,7 +263,9 @@ const DoctorProfile = () => {
                     <input
                       type="text"
                       value={profile.experience}
-                      onChange={(e) => setProfile({ ...profile, experience: e.target.value })}
+                      onChange={(e) =>
+                        setProfile({ ...profile, experience: e.target.value })
+                      }
                       className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                     />
                   ) : (
@@ -202,12 +277,18 @@ const DoctorProfile = () => {
           </div>
 
           <div className="mt-6">
-            <h4 className="text-lg font-medium mb-4">Education & Certifications</h4>
+            <h4 className="text-lg font-medium mb-4">
+              Education & Certifications
+            </h4>
             <div className="bg-gray-50 rounded-lg p-4">
-              <p className="font-medium text-gray-800 mb-2">{profile.education}</p>
+              <p className="font-medium text-gray-800 mb-2">
+                {profile.education}
+              </p>
               <ul className="list-disc list-inside space-y-1">
                 {profile.certifications.map((cert, index) => (
-                  <li key={index} className="text-gray-600">{cert}</li>
+                  <li key={index} className="text-gray-600">
+                    {cert}
+                  </li>
                 ))}
               </ul>
             </div>

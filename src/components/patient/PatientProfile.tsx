@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   User,
   Mail,
@@ -16,11 +16,13 @@ import { motion } from 'framer-motion';
 import { useUser } from '../../context/UserContext';
 
 const PatientProfile = () => {
-  const { profileImage, updateProfileImage } = useUser();
+  const { profileImage, userName, updateProfileImage, updateUserName } =
+    useUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [tempImage, setTempImage] = useState<string | null>(null);
   const [profileData, setProfileData] = useState({
-    name: 'John Smith',
+    name: userName,
     email: 'john.smith@example.com',
     phone: '+1 (555) 987-6543',
     address: '456 Residential Ave, Apt 301',
@@ -38,13 +40,20 @@ const PatientProfile = () => {
     profileImage: null as string | null,
   });
 
+  useEffect(() => {
+    // Reset temp image when editing is cancelled
+    if (!isEditing) {
+      setTempImage(null);
+    }
+  }, [isEditing]);
+
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         const imageUrl = reader.result as string;
-        updateProfileImage(imageUrl);
+        setTempImage(imageUrl);
         setProfileData((prev) => ({
           ...prev,
           profileImage: imageUrl,
@@ -55,8 +64,23 @@ const PatientProfile = () => {
   };
 
   const handleSave = () => {
-    // Here you would typically save to backend
+    // Only update global context when saving
+    if (tempImage) {
+      updateProfileImage(tempImage);
+    }
+    updateUserName(profileData.name);
     setIsEditing(false);
+    setTempImage(null);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setTempImage(null);
+    setProfileData((prev) => ({
+      ...prev,
+      name: userName,
+      profileImage: profileImage,
+    }));
   };
 
   return (
@@ -81,7 +105,7 @@ const PatientProfile = () => {
               <span>Save Changes</span>
             </motion.button>
             <motion.button
-              onClick={() => setIsEditing(false)}
+              onClick={handleCancel}
               className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 flex items-center space-x-2 hover:bg-gray-50"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -111,9 +135,9 @@ const PatientProfile = () => {
               <div className="flex items-center space-x-4">
                 <div className="relative">
                   <div className="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center overflow-hidden">
-                    {profileImage ? (
+                    {tempImage || profileImage ? (
                       <img
-                        src={profileImage}
+                        src={tempImage || profileImage || ''}
                         alt="Profile"
                         className="w-full h-full object-cover"
                       />
@@ -159,7 +183,6 @@ const PatientProfile = () => {
                       {profileData.name}
                     </h3>
                   )}
-                  
                 </div>
               </div>
             </div>
