@@ -8,7 +8,6 @@ import {
   User,
   Clock,
   MapPin,
-  Star,
   Phone,
   Mail,
 } from 'lucide-react';
@@ -21,7 +20,6 @@ interface Doctor {
   name: string;
   specialty: string;
   experience: string;
-  rating: number;
   location: string;
   phone: string;
   email: string;
@@ -60,7 +58,6 @@ const PatientAppointments = () => {
         name: 'Dr. Sarah Johnson',
         specialty: 'Cardiology',
         experience: '15 years',
-        rating: 4.8,
         location: '123 Medical Center Drive, Suite 200',
         phone: '+1 (555) 123-4567',
         email: 'sarah.johnson@medicare.com',
@@ -82,7 +79,6 @@ const PatientAppointments = () => {
         name: 'Dr. Robert Chen',
         specialty: 'Orthopedics',
         experience: '12 years',
-        rating: 4.7,
         location: '456 Health Plaza, Unit 301',
         phone: '+1 (555) 234-5678',
         email: 'robert.chen@medicare.com',
@@ -104,7 +100,6 @@ const PatientAppointments = () => {
         name: 'Dr. Emily Martinez',
         specialty: 'Dermatology',
         experience: '10 years',
-        rating: 4.9,
         location: '789 Wellness Center, Floor 4',
         phone: '+1 (555) 345-6789',
         email: 'emily.martinez@medicare.com',
@@ -133,20 +128,6 @@ const PatientAppointments = () => {
       default:
         return 'bg-gray-100 text-gray-800';
     }
-  };
-
-  const renderStars = (rating: number) => {
-    return [...Array(5)].map((_, index) => (
-      <Star
-        key={index}
-        size={16}
-        className={
-          index < Math.floor(rating)
-            ? 'text-yellow-400 fill-yellow-400'
-            : 'text-gray-300'
-        }
-      />
-    ));
   };
 
   const renderAppointmentsList = () => (
@@ -313,12 +294,6 @@ const PatientAppointments = () => {
               <p className="text-gray-600">
                 {selectedAppointment?.doctor.specialty}
               </p>
-              <div className="flex items-center mt-1">
-                {renderStars(selectedAppointment?.doctor.rating || 0)}
-                <span className="ml-2 text-sm text-gray-500">
-                  {selectedAppointment?.doctor.rating}
-                </span>
-              </div>
             </div>
           </div>
 
@@ -461,12 +436,6 @@ const PatientAppointments = () => {
                       <p className="text-gray-500 text-sm">
                         {appointment.specialty}
                       </p>
-                      <div className="flex items-center mt-1">
-                        {renderStars(appointment.doctor.rating)}
-                        <span className="ml-2 text-sm text-gray-500">
-                          {appointment.doctor.rating}
-                        </span>
-                      </div>
                     </div>
                   </div>
                   <span

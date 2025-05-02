@@ -6,7 +6,6 @@ import {
   Search,
   User,
   CheckCircle,
-  Star,
   ArrowRight,
   X,
   MapPin,
@@ -19,7 +18,6 @@ interface Doctor {
   id: string;
   name: string;
   specialty: string;
-  rating: number;
   availableDates: string[];
   experience?: string;
   location?: string;
@@ -49,7 +47,6 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({ onClose }) => {
       id: '1',
       name: 'Dr. Sarah Johnson',
       specialty: 'Cardiology',
-      rating: 4.8,
       availableDates: ['2025-06-15', '2025-06-16', '2025-06-17'],
       experience: '15 years',
       location: '123 Medical Center Drive, Suite 200',
@@ -63,7 +60,6 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({ onClose }) => {
       id: '2',
       name: 'Dr. Robert Chen',
       specialty: 'Orthopedics',
-      rating: 4.7,
       availableDates: ['2025-06-15', '2025-06-18', '2025-06-19'],
       experience: '10 years',
       location: '456 Health Plaza, Suite 300',
@@ -77,7 +73,6 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({ onClose }) => {
       id: '3',
       name: 'Dr. Emily Martinez',
       specialty: 'Dermatology',
-      rating: 4.9,
       availableDates: ['2025-06-16', '2025-06-17', '2025-06-20'],
       experience: '8 years',
       location: '789 Skin Care Blvd, Suite 100',
@@ -152,20 +147,6 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({ onClose }) => {
             <div>
               <h3 className="text-xl font-semibold">{doctor.name}</h3>
               <p className="text-gray-600">{doctor.specialty}</p>
-              <div className="flex items-center mt-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    size={16}
-                    className={
-                      i < Math.floor(doctor.rating)
-                        ? 'text-yellow-400 fill-yellow-400'
-                        : 'text-gray-300'
-                    }
-                  />
-                ))}
-                <span className="ml-2 text-gray-600">{doctor.rating}</span>
-              </div>
             </div>
           </div>
           <button
@@ -281,22 +262,6 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({ onClose }) => {
                       <p className="text-gray-500 text-sm">
                         {doctor.specialty}
                       </p>
-                      <div className="flex items-center mt-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            size={16}
-                            className={
-                              i < Math.floor(doctor.rating)
-                                ? 'text-yellow-400 fill-yellow-400'
-                                : 'text-gray-300'
-                            }
-                          />
-                        ))}
-                        <span className="ml-2 text-sm text-gray-500">
-                          {doctor.rating}
-                        </span>
-                      </div>
                     </div>
                   </div>
                 </div>
