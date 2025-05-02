@@ -7,14 +7,16 @@ import {
   Bell,
   LogOut,
   Activity,
+  Stethoscope,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AppointmentsManagement from './AppointmentsManagement';
 import UserManagement from './UserManagement';
 import MedicineManagement from './MedicineManagement';
 import SystemSettings from './SystemSettings';
+import DoctorManagement from './DoctorManagement';
 
-type Tab = 'appointments' | 'users' | 'medicines' | 'settings';
+type Tab = 'appointments' | 'users' | 'medicines' | 'settings' | 'doctors';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState<Tab>('appointments');
@@ -27,6 +29,8 @@ const AdminDashboard = () => {
         return <UserManagement />;
       case 'medicines':
         return <MedicineManagement />;
+      case 'doctors':
+        return <DoctorManagement />;
       case 'settings':
         return <SystemSettings />;
       default:
@@ -36,6 +40,7 @@ const AdminDashboard = () => {
 
   const sidebarItems = [
     { id: 'appointments', icon: Calendar, label: 'Appointments' },
+    { id: 'doctors', icon: Stethoscope, label: 'Manage Doctors' },
     { id: 'users', icon: Users, label: 'Users' },
     { id: 'medicines', icon: ShoppingBag, label: 'Medicines' },
     { id: 'settings', icon: Settings, label: 'Settings' },
