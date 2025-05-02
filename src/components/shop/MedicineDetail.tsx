@@ -68,23 +68,7 @@ const MedicineDetail: React.FC<MedicineDetailProps> = ({
           </span>
         </div>
 
-        <div className="flex items-center mb-4">
-          <span
-            className={`text-xs font-medium px-2 py-1 rounded-full ${
-              medicine.inStock
-                ? 'bg-green-100 text-green-800'
-                : 'bg-red-100 text-red-800'
-            }`}
-          >
-            {medicine.inStock ? 'In Stock' : 'Out of Stock'}
-          </span>
-          {!medicine.inStock && (
-            <span className="ml-3 text-sm text-gray-500 flex items-center">
-              <AlertCircle size={14} className="mr-1" />
-              Notify me when available
-            </span>
-          )}
-        </div>
+        
 
         <div className="mb-6">
           <h4 className="text-lg font-medium mb-2">Description</h4>

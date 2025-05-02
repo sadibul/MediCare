@@ -1,5 +1,15 @@
-import React, { useState } from 'react';
-import { Search, ShoppingCart, Filter, ChevronRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import {
+  Search,
+  ShoppingCart,
+  Filter,
+  ChevronRight,
+  Package,
+  Pill,
+  Plus,
+  Minus,
+} from 'lucide-react';
+import { motion } from 'framer-motion';
 import MedicineDetail from './MedicineDetail';
 import Cart from './Cart';
 
@@ -22,55 +32,33 @@ const MedicineShop = () => {
   const [cartItems, setCartItems] = useState<
     { medicine: Medicine; quantity: number }[]
   >([]);
+  const [medicines, setMedicines] = useState<Medicine[]>([]);
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>('All Categories');
 
-  // Mock data
-  const medicines: Medicine[] = [
-    {
-      id: '1',
-      name: 'Paracetamol 500mg',
-      category: 'Pain Relief',
-      price: 5.99,
-      description: 'For relief of mild to moderate pain and fever.',
-      dosage:
-        'Take 1-2 tablets every 4-6 hours as needed. Do not exceed 8 tablets in 24 hours.',
-      inStock: true,
-    },
-    {
-      id: '2',
-      name: 'Amoxicillin 250mg',
-      category: 'Antibiotics',
-      price: 12.99,
-      description: 'Antibiotic used to treat a number of bacterial infections.',
-      dosage:
-        'Take as prescribed by your doctor. Typically 1 capsule 3 times daily.',
-      inStock: true,
-    },
-    {
-      id: '3',
-      name: 'Loratadine 10mg',
-      category: 'Allergy',
-      price: 8.49,
-      description: 'Antihistamine for relief of allergy symptoms.',
-      dosage: 'Take 1 tablet daily. Do not exceed recommended dose.',
-      inStock: true,
-    },
-    {
-      id: '4',
-      name: 'Omeprazole 20mg',
-      category: 'Digestive Health',
-      price: 14.99,
-      description:
-        'Reduces stomach acid production to treat heartburn and acid reflux.',
-      dosage: 'Take 1 capsule daily before breakfast.',
-      inStock: false,
-    },
-  ];
+  useEffect(() => {
+    fetchMedicines();
+  }, []);
 
-  const filteredMedicines = medicines.filter(
-    (medicine) =>
+  const fetchMedicines = async () => {
+    try {
+      const response = await fetch('/api/medicines');
+      const data = await response.json();
+      setMedicines(data);
+    } catch (error) {
+      console.error('Error fetching medicines:', error);
+    }
+  };
+
+  const filteredMedicines = medicines.filter((medicine) => {
+    const matchesSearch =
       medicine.name.toLowerCase().includes(search.toLowerCase()) ||
-      medicine.category.toLowerCase().includes(search.toLowerCase())
-  );
+      medicine.category.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory =
+      selectedCategory === 'All Categories' ||
+      medicine.category === selectedCategory.replace(' ', '_').toUpperCase();
+    return matchesSearch && matchesCategory;
+  });
 
   const handleAddToCart = (medicine: Medicine, quantity: number) => {
     const existingItemIndex = cartItems.findIndex(
@@ -106,6 +94,17 @@ const MedicineShop = () => {
     });
 
     setCartItems(updatedCartItems);
+  };
+
+  const handleQuickAddToCart = (medicine: Medicine) => {
+    const existingItem = cartItems.find(
+      (item) => item.medicine.id === medicine.id
+    );
+    if (existingItem) {
+      handleUpdateQuantity(medicine.id, existingItem.quantity + 1);
+    } else {
+      setCartItems([...cartItems, { medicine, quantity: 1 }]);
+    }
   };
 
   const getTotalItems = () => {
@@ -151,65 +150,121 @@ const MedicineShop = () => {
       </div>
 
       <div className="mb-4 flex overflow-x-auto py-2 -mx-2 px-2">
-        <button className="px-4 py-2 bg-teal-500 text-white rounded-full text-sm font-medium whitespace-nowrap mr-2">
-          All Categories
-        </button>
-        <button className="px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium whitespace-nowrap mr-2 hover:border-teal-500">
-          Pain Relief
-        </button>
-        <button className="px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium whitespace-nowrap mr-2 hover:border-teal-500">
-          Antibiotics
-        </button>
-        <button className="px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium whitespace-nowrap mr-2 hover:border-teal-500">
-          Allergy
-        </button>
-        <button className="px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium whitespace-nowrap hover:border-teal-500">
-          Digestive Health
-        </button>
+        {[
+          'All Categories',
+          'Pain Relief',
+          'Antibiotics',
+          'Allergy',
+          'Digestive Health',
+        ].map((category) => (
+          <button
+            key={category}
+            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap mr-2 transition-all ${
+              selectedCategory === category
+                ? 'bg-teal-500 text-white'
+                : 'bg-white border border-gray-300 hover:border-teal-500'
+            }`}
+            onClick={() => setSelectedCategory(category)}
+          >
+            {category}
+          </button>
+        ))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {filteredMedicines.length > 0 ? (
           filteredMedicines.map((medicine) => (
             <div
               key={medicine.id}
-              className="bg-white rounded-xl shadow-md hover:shadow-xl border border-gray-200/50 overflow-hidden transition-all duration-200 hover:translate-y-[-2px]"
+              className="bg-white rounded-xl shadow-lg hover:shadow-xl border border-gray-200/50 overflow-hidden transition-all duration-200"
             >
               <div className="p-6">
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h3 className="font-semibold text-gray-900">
+                {/* Medicine Header */}
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-gray-900 text-lg mb-1">
                       {medicine.name}
                     </h3>
-                    <p className="text-sm text-gray-500">{medicine.category}</p>
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700">
+                      <Package size={14} className="mr-1.5" />
+                      {medicine.category.replace('_', ' ')}
+                    </span>
                   </div>
-                  <span className="text-teal-600 font-semibold text-lg">
-                    ${medicine.price.toFixed(2)}
-                  </span>
+                  <div className="text-right">
+                    <span className="text-2xl font-bold text-teal-600">
+                      ${medicine.price.toFixed(2)}
+                    </span>
+                  </div>
                 </div>
-                <p className="text-sm text-gray-700 mb-4 line-clamp-2">
+
+                {/* Medicine Description */}
+                <p className="text-gray-600 mb-4 line-clamp-2 min-h-[40px]">
                   {medicine.description}
                 </p>
-                <div className="flex justify-between items-center">
-                  <span
-                    className={`px-3 py-1 text-xs font-medium rounded-full ${
-                      medicine.inStock
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}
-                  >
-                    {medicine.inStock ? 'In Stock' : 'Out of Stock'}
-                  </span>
-                  <button
-                    className="flex items-center text-teal-500 hover:text-teal-600 font-medium text-sm group transition-all duration-200"
-                    onClick={() => setSelectedMedicine(medicine)}
-                  >
-                    View Details
-                    <ChevronRight
-                      size={16}
-                      className="ml-1 transform group-hover:translate-x-1 transition-transform"
-                    />
-                  </button>
+
+                {/* Dosage Preview */}
+                <div className="bg-gray-50 rounded-lg p-3 mb-4 flex items-start">
+                  <Pill className="w-5 h-5 text-teal-500 mt-0.5 flex-shrink-0" />
+                  <p className="text-sm text-gray-600 ml-2 line-clamp-2">
+                    {medicine.dosage}
+                  </p>
+                </div>
+
+                {/* Add to Cart Section */}
+                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                  {cartItems.find(
+                    (item) => item.medicine.id === medicine.id
+                  ) ? (
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={() => {
+                          const currentItem = cartItems.find(
+                            (item) => item.medicine.id === medicine.id
+                          );
+                          if (currentItem) {
+                            handleUpdateQuantity(
+                              medicine.id,
+                              currentItem.quantity - 1
+                            );
+                          }
+                        }}
+                        className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors"
+                      >
+                        <Minus size={16} className="text-gray-600" />
+                      </button>
+                      <span className="font-medium text-gray-900">
+                        {cartItems.find(
+                          (item) => item.medicine.id === medicine.id
+                        )?.quantity || 0}
+                      </span>
+                      <button
+                        onClick={() => {
+                          const currentItem = cartItems.find(
+                            (item) => item.medicine.id === medicine.id
+                          );
+                          if (currentItem) {
+                            handleUpdateQuantity(
+                              medicine.id,
+                              currentItem.quantity + 1
+                            );
+                          }
+                        }}
+                        className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors"
+                      >
+                        <Plus size={16} className="text-gray-600" />
+                      </button>
+                    </div>
+                  ) : (
+                    <motion.button
+                      onClick={() => handleQuickAddToCart(medicine)}
+                      className="w-full bg-teal-500 hover:bg-teal-600 text-white py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <ShoppingCart size={18} />
+                      Add to Cart
+                    </motion.button>
+                  )}
                 </div>
               </div>
             </div>

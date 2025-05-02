@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Search,
   Edit2,
@@ -11,6 +11,13 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const CATEGORIES = [
+  'PAIN_RELIEF',
+  'ANTIBIOTICS',
+  'ALLERGY',
+  'DIGESTIVE_HEALTH',
+];
 
 interface Medicine {
   id: string;
@@ -34,87 +41,67 @@ const MedicineManagement = () => {
     description: '',
     dosage: '',
   });
+  const [medicines, setMedicines] = useState<Medicine[]>([]);
 
-  // Mock data
-  const medicines: Medicine[] = [
-    {
-      id: '1',
-      name: 'Paracetamol 500mg',
-      category: 'Pain Relief',
-      price: 5.99,
-      stock: 150,
-      description: 'For relief of mild to moderate pain and fever.',
-      dosage:
-        'Take 1-2 tablets every 4-6 hours as needed. Do not exceed 8 tablets in 24 hours.',
-    },
-    {
-      id: '2',
-      name: 'Amoxicillin 250mg',
-      category: 'Antibiotics',
-      price: 12.99,
-      stock: 75,
-      description: 'Antibiotic used to treat a number of bacterial infections.',
-      dosage:
-        'Take as prescribed by your doctor. Typically 1 capsule 3 times daily.',
-    },
-    {
-      id: '3',
-      name: 'Loratadine 10mg',
-      category: 'Allergy',
-      price: 8.49,
-      stock: 100,
-      description: 'Antihistamine for relief of allergy symptoms.',
-      dosage: 'Take 1 tablet daily. Do not exceed recommended dose.',
-    },
-    {
-      id: '4',
-      name: 'Omeprazole 20mg',
-      category: 'Digestive Health',
-      price: 14.99,
-      stock: 50,
-      description:
-        'Reduces stomach acid production to treat heartburn and acid reflux.',
-      dosage: 'Take 1 capsule daily before breakfast.',
-    },
-  ];
+  useEffect(() => {
+    fetchMedicines();
+  }, []);
 
-  const filteredMedicines = medicines.filter(
-    (medicine) =>
-      medicine.name.toLowerCase().includes(search.toLowerCase()) ||
-      medicine.category.toLowerCase().includes(search.toLowerCase())
-  );
+  const fetchMedicines = async () => {
+    try {
+      const response = await fetch('/api/medicines');
+      const data = await response.json();
+      setMedicines(data);
+    } catch (error) {
+      console.error('Error fetching medicines:', error);
+    }
+  };
 
-  const handleAddMedicine = () => {
-    // Here you would add the new medicine to the database
-    console.log('Adding new medicine:', newMedicine);
-    setShowAddMedicine(false);
-    setNewMedicine({
-      name: '',
-      category: '',
-      price: 0,
-      stock: 0,
-      description: '',
-      dosage: '',
-    });
+  const handleAddMedicine = async () => {
+    try {
+      await fetch('/api/medicines', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newMedicine),
+      });
+      setShowAddMedicine(false);
+      fetchMedicines();
+    } catch (error) {
+      console.error('Error adding medicine:', error);
+    }
   };
 
   const handleEditMedicine = (id: string) => {
     setEditingId(id);
   };
 
-  const handleSaveEdit = (id: string) => {
-    // Here you would save the edited medicine to the database
-    console.log('Saving edited medicine:', id);
-    setEditingId(null);
+  const handleSaveEdit = async (id: string) => {
+    try {
+      await fetch(`/api/medicines/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newMedicine),
+      });
+      setEditingId(null);
+      fetchMedicines();
+    } catch (error) {
+      console.error('Error updating medicine:', error);
+    }
   };
 
   const handleCancelEdit = () => {
     setEditingId(null);
   };
 
-  const handleDeleteMedicine = (id: string) => {
-    // Here you would delete the medicine from the database
-    console.log('Deleting medicine:', id);
+  const handleDeleteMedicine = async (id: string) => {
+    try {
+      await fetch(`/api/medicines/${id}`, {
+        method: 'DELETE',
+      });
+      fetchMedicines();
+    } catch (error) {
+      console.error('Error deleting medicine:', error);
+    }
   };
 
   const getStockStatusClass = (stock: number) => {
@@ -161,12 +148,18 @@ const MedicineManagement = () => {
           >
             Category
           </label>
-          <input
+          <select
             id="category"
-            type="text"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
             defaultValue={medicine.category}
-          />
+          >
+            <option value="">Select Category</option>
+            {CATEGORIES.map((category) => (
+              <option key={category} value={category}>
+                {category.replace('_', ' ')}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -287,15 +280,21 @@ const MedicineManagement = () => {
           >
             Category
           </label>
-          <input
+          <select
             id="newCategory"
-            type="text"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
             value={newMedicine.category}
             onChange={(e) =>
               setNewMedicine({ ...newMedicine, category: e.target.value })
             }
-          />
+          >
+            <option value="">Select Category</option>
+            {CATEGORIES.map((category) => (
+              <option key={category} value={category}>
+                {category.replace('_', ' ')}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -477,83 +476,97 @@ const MedicineManagement = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200/50">
-              {filteredMedicines.map((medicine) => (
-                <motion.tr
-                  key={medicine.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="hover:bg-blue-50/50 transition-all duration-200"
-                >
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="h-10 w-10 bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl flex items-center justify-center">
-                        <Pill className="h-5 w-5 text-blue-600" />
-                      </div>
-                      <div className="ml-4">
-                        <div className="text-sm font-semibold text-gray-900">
-                          {medicine.name}
+              {medicines
+                .filter(
+                  (medicine) =>
+                    medicine.name
+                      .toLowerCase()
+                      .includes(search.toLowerCase()) ||
+                    medicine.category
+                      .toLowerCase()
+                      .includes(search.toLowerCase())
+                )
+                .map((medicine) => (
+                  <motion.tr
+                    key={medicine.id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="hover:bg-blue-50/50 transition-all duration-200"
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="h-10 w-10 bg-gradient-to-br from-blue-100 to-blue-50 rounded-xl flex items-center justify-center">
+                          <Pill className="h-5 w-5 text-blue-600" />
                         </div>
-                        <div className="text-xs text-gray-500 mt-0.5">
-                          {medicine.description.substring(0, 60)}...
+                        <div className="ml-4">
+                          <div className="text-sm font-semibold text-gray-900">
+                            {medicine.name}
+                          </div>
+                          <div className="text-xs text-gray-500 mt-0.5">
+                            {medicine.description.substring(0, 60)}...
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700">
-                      <Package size={14} className="mr-1.5" />
-                      {medicine.category}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-bold text-gray-900">
-                      ${medicine.price.toFixed(2)}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      {medicine.stock < 30 && (
-                        <AlertCircle
-                          size={14}
-                          className="text-red-500 mr-1.5"
-                        />
-                      )}
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${getStockStatusClass(
-                          medicine.stock
-                        )}`}
-                      >
-                        {medicine.stock} units
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700">
+                        <Package size={14} className="mr-1.5" />
+                        {medicine.category.replace('_', ' ')}
                       </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-right">
-                    <div className="flex items-center justify-end space-x-2">
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                        onClick={() => handleEditMedicine(medicine.id)}
-                      >
-                        <Edit2 size={16} />
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        onClick={() => handleDeleteMedicine(medicine.id)}
-                      >
-                        <Trash2 size={16} />
-                      </motion.button>
-                    </div>
-                  </td>
-                </motion.tr>
-              ))}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-bold text-gray-900">
+                        ${medicine.price.toFixed(2)}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        {medicine.stock < 30 && (
+                          <AlertCircle
+                            size={14}
+                            className="text-red-500 mr-1.5"
+                          />
+                        )}
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium ${getStockStatusClass(
+                            medicine.stock
+                          )}`}
+                        >
+                          {medicine.stock} units
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <div className="flex items-center justify-end space-x-2">
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          onClick={() => handleEditMedicine(medicine.id)}
+                        >
+                          <Edit2 size={16} />
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          onClick={() => handleDeleteMedicine(medicine.id)}
+                        >
+                          <Trash2 size={16} />
+                        </motion.button>
+                      </div>
+                    </td>
+                  </motion.tr>
+                ))}
             </tbody>
           </table>
         </div>
 
-        {filteredMedicines.length === 0 && (
+        {medicines.filter(
+          (medicine) =>
+            medicine.name.toLowerCase().includes(search.toLowerCase()) ||
+            medicine.category.toLowerCase().includes(search.toLowerCase())
+        ).length === 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
