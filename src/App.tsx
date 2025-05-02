@@ -4,11 +4,12 @@ import Register from './components/auth/Register';
 import PatientDashboard from './components/patient/PatientDashboard';
 import DoctorDashboard from './components/doctor/DoctorDashboard';
 import AdminDashboard from './components/admin/AdminDashboard';
+import { UserProvider } from './context/UserContext';
 
 type UserType = 'patient' | 'doctor' | 'admin' | null;
 type AuthView = 'login' | 'register' | 'dashboard';
 
-function App() {
+export default function Home() {
   const [userType, setUserType] = useState<UserType>(null);
   const [view, setView] = useState<AuthView>('login');
 
@@ -17,46 +18,36 @@ function App() {
     setView('dashboard');
   };
 
-  const handleRegister = (type: UserType) => {
-    setUserType(type);
-    setView('dashboard');
-  };
-
-  const handleLogout = () => {
-    setUserType(null);
-    setView('login');
-  };
-
   const renderDashboard = () => {
     switch (userType) {
       case 'patient':
-        return <PatientDashboard onLogout={handleLogout} />;
+        return <PatientDashboard />;
       case 'doctor':
-        return <DoctorDashboard onLogout={handleLogout} />;
+        return <DoctorDashboard />;
       case 'admin':
-        return <AdminDashboard onLogout={handleLogout} />;
+        return <AdminDashboard />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {view === 'login' && (
-        <Login 
-          onLogin={handleLogin} 
-          onRegisterClick={() => setView('register')}
-        />
-      )}
-      {view === 'register' && (
-        <Register 
-          onRegister={handleRegister}
-          onLoginClick={() => setView('login')}
-        />
-      )}
-      {view === 'dashboard' && renderDashboard()}
-    </div>
+    <UserProvider>
+      <div>
+        {view === 'login' && (
+          <Login
+            onLogin={handleLogin}
+            onRegisterClick={() => setView('register')}
+          />
+        )}
+        {view === 'register' && (
+          <Register
+            onRegister={handleLogin}
+            onLoginClick={() => setView('login')}
+          />
+        )}
+        {view === 'dashboard' && renderDashboard()}
+      </div>
+    </UserProvider>
   );
 }
-
-export default App;
