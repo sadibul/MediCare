@@ -6,7 +6,6 @@ import {
   MapPin,
   Calendar,
   Heart,
-  Shield,
   Edit2,
   Camera,
   Save,
@@ -31,12 +30,6 @@ const PatientProfile = () => {
     height: '5\'10" (178 cm)',
     weight: '165 lbs (75 kg)',
     bmi: '23.7',
-    emergencyContact: {
-      name: 'Mary Smith',
-      relationship: 'Spouse',
-      phone: '+1 (555) 123-4567',
-      email: 'mary.smith@example.com',
-    },
     profileImage: null as string | null,
   });
 
@@ -214,12 +207,7 @@ const PatientProfile = () => {
                   ) : (
                     <span>
                       {String(
-                        profileData[
-                          item.value as keyof Omit<
-                            typeof profileData,
-                            'emergencyContact' | 'profileImage'
-                          >
-                        ]
+                        profileData[item.value as keyof typeof profileData]
                       )}
                     </span>
                   )}
@@ -267,63 +255,8 @@ const PatientProfile = () => {
                   ) : (
                     <p className="text-gray-800">
                       {String(
-                        profileData[
-                          item.value as keyof Omit<
-                            typeof profileData,
-                            'emergencyContact' | 'profileImage'
-                          >
-                        ]
+                        profileData[item.value as keyof typeof profileData]
                       )}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Emergency Contact */}
-          <motion.div className="bg-white rounded-xl shadow-sm border border-gray-200/50 p-6">
-            <h3 className="text-lg font-semibold mb-4 flex items-center">
-              <Shield size={20} className="text-orange-500 mr-2" />
-              Emergency Contact
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                { label: 'Name', value: 'name' },
-                { label: 'Relationship', value: 'relationship' },
-                { label: 'Phone', value: 'phone' },
-                { label: 'Email', value: 'email' },
-              ].map((item, index) => (
-                <div key={index}>
-                  <label className="block text-sm font-medium text-gray-500 mb-1">
-                    {item.label}
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={
-                        profileData.emergencyContact[
-                          item.value as keyof typeof profileData.emergencyContact
-                        ]
-                      }
-                      onChange={(e) =>
-                        setProfileData((prev) => ({
-                          ...prev,
-                          emergencyContact: {
-                            ...prev.emergencyContact,
-                            [item.value]: e.target.value,
-                          },
-                        }))
-                      }
-                      className="w-full border border-gray-300 rounded px-2 py-1"
-                    />
-                  ) : (
-                    <p className="text-gray-800">
-                      {
-                        profileData.emergencyContact[
-                          item.value as keyof typeof profileData.emergencyContact
-                        ]
-                      }
                     </p>
                   )}
                 </div>
