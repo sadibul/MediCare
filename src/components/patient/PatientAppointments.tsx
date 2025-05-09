@@ -23,7 +23,6 @@ interface Doctor {
   location: string;
   phone: string;
   email: string;
-  education: string;
   about: string;
   image: string;
 }
@@ -61,7 +60,6 @@ const PatientAppointments = () => {
         location: '123 Medical Center Drive, Suite 200',
         phone: '+1 (555) 123-4567',
         email: 'sarah.johnson@medicare.com',
-        education: 'MD - Harvard Medical School',
         about:
           'Dr. Sarah Johnson is a board-certified cardiologist with extensive experience in treating various heart conditions. She specializes in preventive cardiology and heart disease management.',
         image: '/images/doctors/doctor-1.jpg',
@@ -82,7 +80,6 @@ const PatientAppointments = () => {
         location: '456 Health Plaza, Unit 301',
         phone: '+1 (555) 234-5678',
         email: 'robert.chen@medicare.com',
-        education: 'MD - Johns Hopkins University',
         about:
           'Dr. Robert Chen is a skilled orthopedic surgeon specializing in sports medicine and joint replacement surgery. He is committed to helping patients regain mobility and improve their quality of life.',
         image: '/images/doctors/doctor-2.jpg',
@@ -103,7 +100,6 @@ const PatientAppointments = () => {
         location: '789 Wellness Center, Floor 4',
         phone: '+1 (555) 345-6789',
         email: 'emily.martinez@medicare.com',
-        education: 'MD - Stanford University',
         about:
           'Dr. Emily Martinez is a board-certified dermatologist specializing in medical and cosmetic dermatology. She is known for her expertise in treating various skin conditions and her patient-centered approach.',
         image: '/images/doctors/doctor-3.jpg',
@@ -339,13 +335,6 @@ const PatientAppointments = () => {
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="mt-6">
-            <h4 className="font-medium mb-2">Education</h4>
-            <p className="text-gray-600">
-              {selectedAppointment?.doctor.education}
-            </p>
           </div>
 
           <div className="mt-6">

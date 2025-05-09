@@ -23,7 +23,6 @@ interface Doctor {
   location?: string;
   phone?: string;
   email?: string;
-  education?: string;
   about?: string;
 }
 
@@ -52,7 +51,6 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({ onClose }) => {
       location: '123 Medical Center Drive, Suite 200',
       phone: '+1 (555) 123-4567',
       email: 'sarah.johnson@medicare.com',
-      education: 'MD - Harvard Medical School',
       about:
         'Dr. Sarah Johnson is a board-certified cardiologist with extensive experience in treating various heart conditions. She specializes in preventive cardiology and heart disease management.',
     },
@@ -65,7 +63,6 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({ onClose }) => {
       location: '456 Health Plaza, Suite 300',
       phone: '+1 (555) 987-6543',
       email: 'robert.chen@medicare.com',
-      education: 'MD - Stanford University School of Medicine',
       about:
         'Dr. Robert Chen is a highly skilled orthopedic surgeon with a focus on joint replacement and sports injuries. He is dedicated to providing personalized care and helping patients regain their mobility.',
     },
@@ -78,7 +75,6 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({ onClose }) => {
       location: '789 Skin Care Blvd, Suite 100',
       phone: '+1 (555) 555-1234',
       email: 'emily.martinez@medicare.com',
-      education: 'MD - Johns Hopkins University School of Medicine',
       about:
         'Dr. Emily Martinez is a renowned dermatologist specializing in skin cancer treatment and cosmetic dermatology. She is committed to providing the highest quality care and helping patients achieve healthy, beautiful skin.',
     },
@@ -193,10 +189,7 @@ const BookAppointment: React.FC<BookAppointmentProps> = ({ onClose }) => {
           </div>
         </div>
 
-        <div className="mt-6">
-          <h4 className="font-medium mb-2">Education</h4>
-          <p className="text-gray-600">{doctor.education}</p>
-        </div>
+        
 
         <div className="mt-6">
           <h4 className="font-medium mb-2">About</h4>

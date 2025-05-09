@@ -44,11 +44,8 @@ const DoctorProfile = () => {
     experience: doctorExperience,
     address: doctorAddress,
     workingHours: doctorWorkingHours,
-    education: 'MD - Harvard Medical School',
-    certifications: [
-      'American Board of Internal Medicine',
-      'Cardiovascular Disease Certification',
-    ],
+    about:
+      'Dr. Sarah Johnson is a board-certified cardiologist with extensive experience in treating various heart conditions. She specializes in preventive cardiology and heart disease management.',
   });
 
   useEffect(() => {
@@ -60,11 +57,8 @@ const DoctorProfile = () => {
       experience: doctorExperience,
       address: doctorAddress,
       workingHours: doctorWorkingHours,
-      education: 'MD - Harvard Medical School',
-      certifications: [
-        'American Board of Internal Medicine',
-        'Cardiovascular Disease Certification',
-      ],
+      about:
+        'Dr. Sarah Johnson is a board-certified cardiologist with extensive experience in treating various heart conditions. She specializes in preventive cardiology and heart disease management.',
     });
   }, [
     doctorName,
@@ -118,11 +112,8 @@ const DoctorProfile = () => {
       experience: doctorExperience,
       address: doctorAddress,
       workingHours: doctorWorkingHours,
-      education: 'MD - Harvard Medical School',
-      certifications: [
-        'American Board of Internal Medicine',
-        'Cardiovascular Disease Certification',
-      ],
+      about:
+        'Dr. Sarah Johnson is a board-certified cardiologist with extensive experience in treating various heart conditions. She specializes in preventive cardiology and heart disease management.',
     });
     setIsEditing(false);
   };
@@ -265,9 +256,7 @@ const DoctorProfile = () => {
             </div>
 
             <div>
-              <h4 className="text-lg font-medium mb-4">
-                Professional Information
-              </h4>
+              <h4 className="text-lg font-medium mb-4">Experience</h4>
               <div className="space-y-4">
                 <div className="flex items-center">
                   <Calendar className="w-5 h-5 text-gray-400 mr-3" />
@@ -289,20 +278,9 @@ const DoctorProfile = () => {
           </div>
 
           <div className="mt-6">
-            <h4 className="text-lg font-medium mb-4">
-              Education & Certifications
-            </h4>
+            <h4 className="text-lg font-medium mb-4">About</h4>
             <div className="bg-gray-50 rounded-lg p-4">
-              <p className="font-medium text-gray-800 mb-2">
-                {profile.education}
-              </p>
-              <ul className="list-disc list-inside space-y-1">
-                {profile.certifications.map((cert, index) => (
-                  <li key={index} className="text-gray-600">
-                    {cert}
-                  </li>
-                ))}
-              </ul>
+              <p className="text-gray-600 leading-relaxed">{profile.about}</p>
             </div>
           </div>
         </div>
