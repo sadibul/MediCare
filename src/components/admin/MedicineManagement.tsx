@@ -42,6 +42,15 @@ const MedicineManagement = () => {
     dosage: '',
   });
   const [medicines, setMedicines] = useState<Medicine[]>([]);
+   const [editedMedicine, setEditedMedicine] = useState<Medicine>({
+    id: '',
+    name: '',
+    category: '',
+    price: 0,
+    stock: 0,
+    description: '',
+    dosage: '',
+  });
 
   useEffect(() => {
     fetchMedicines();
@@ -72,7 +81,11 @@ const MedicineManagement = () => {
   };
 
   const handleEditMedicine = (id: string) => {
-    setEditingId(id);
+    const medicineToEdit = medicines.find((m) => m.id === id);
+    if (medicineToEdit) {
+      setEditedMedicine(medicineToEdit);
+      setEditingId(id);
+    }
   };
 
   const handleSaveEdit = async (id: string) => {
@@ -80,7 +93,7 @@ const MedicineManagement = () => {
       await fetch(`/api/medicines/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newMedicine),
+        body: JSON.stringify(editedMedicine),
       });
       setEditingId(null);
       fetchMedicines();
@@ -138,7 +151,10 @@ const MedicineManagement = () => {
             id="name"
             type="text"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
-            defaultValue={medicine.name}
+            value={editedMedicine.name}
+            onChange={(e) =>
+              setEditedMedicine({ ...editedMedicine, name: e.target.value })
+            }
           />
         </div>
         <div>
@@ -151,7 +167,10 @@ const MedicineManagement = () => {
           <select
             id="category"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
-            defaultValue={medicine.category}
+            value={editedMedicine.category}
+            onChange={(e) =>
+              setEditedMedicine({ ...editedMedicine, category: e.target.value })
+            }
           >
             <option value="">Select Category</option>
             {CATEGORIES.map((category) => (
@@ -176,7 +195,13 @@ const MedicineManagement = () => {
             type="number"
             step="0.01"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
-            defaultValue={medicine.price}
+            value={editedMedicine.price}
+            onChange={(e) =>
+              setEditedMedicine({
+                ...editedMedicine,
+                price: parseFloat(e.target.value),
+              })
+            }
           />
         </div>
         <div>
@@ -190,7 +215,13 @@ const MedicineManagement = () => {
             id="stock"
             type="number"
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
-            defaultValue={medicine.stock}
+            value={editedMedicine.stock}
+            onChange={(e) =>
+              setEditedMedicine({
+                ...editedMedicine,
+                stock: parseInt(e.target.value),
+              })
+            }
           />
         </div>
       </div>
@@ -206,7 +237,13 @@ const MedicineManagement = () => {
           id="description"
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
           rows={2}
-          defaultValue={medicine.description}
+          value={editedMedicine.description}
+          onChange={(e) =>
+            setEditedMedicine({
+              ...editedMedicine,
+              description: e.target.value,
+            })
+          }
         />
       </div>
 
@@ -221,7 +258,10 @@ const MedicineManagement = () => {
           id="dosage"
           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
           rows={2}
-          defaultValue={medicine.dosage}
+          value={editedMedicine.dosage}
+          onChange={(e) =>
+            setEditedMedicine({ ...editedMedicine, dosage: e.target.value })
+          }
         />
       </div>
 
@@ -390,7 +430,7 @@ const MedicineManagement = () => {
           onClick={handleAddMedicine}
         >
           <Plus size={16} className="mr-2" />
-          Add Medicine
+          Confirm
         </button>
       </div>
     </div>

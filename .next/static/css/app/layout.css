@@ -879,9 +879,6 @@ video {
 .ml-2 {
   margin-left: 0.5rem;
 }
-.ml-3 {
-  margin-left: 0.75rem;
-}
 .ml-4 {
   margin-left: 1rem;
 }
@@ -1005,11 +1002,11 @@ video {
 .h-full {
   height: 100%;
 }
-.min-h-screen {
-  min-height: 100vh;
-}
 .min-h-\[40px\] {
   min-height: 40px;
+}
+.min-h-screen {
+  min-height: 100vh;
 }
 .w-1 {
   width: 0.25rem;
@@ -1839,11 +1836,6 @@ video {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-.transition-transform {
-  transition-property: transform;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
 .duration-150 {
   transition-duration: 150ms;
 }
@@ -1977,10 +1969,6 @@ html {
   --tw-translate-y: -2px;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
-.hover\:-translate-y-1:hover {
-  --tw-translate-y: -0.25rem;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
 .hover\:scale-105:hover {
   --tw-scale-x: 1.05;
   --tw-scale-y: 1.05;
@@ -2017,6 +2005,10 @@ html {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
+.hover\:bg-gray-200:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
+}
 .hover\:bg-gray-50:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity));
@@ -2039,10 +2031,6 @@ html {
 }
 .hover\:bg-white\/80:hover {
   background-color: rgb(255 255 255 / 0.8);
-}
-.hover\:bg-gray-200:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(229 231 235 / var(--tw-bg-opacity));
 }
 .hover\:from-blue-600:hover {
   --tw-gradient-from: #2563eb var(--tw-gradient-from-position);
@@ -2142,13 +2130,6 @@ html {
 .focus\:ring-teal-500:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(20 184 166 / var(--tw-ring-opacity));
-}
-.group:hover .group-hover\:translate-x-1 {
-  --tw-translate-x: 0.25rem;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-.group:hover .group-hover\:gap-2 {
-  gap: 0.5rem;
 }
 .group:hover .group-hover\:border-blue-100 {
   --tw-border-opacity: 1;
