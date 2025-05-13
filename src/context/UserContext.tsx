@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { DoctorData } from '@/types/doctor';
 
 interface UserContextType {
   profileImage: string | null;
@@ -18,6 +19,8 @@ interface UserContextType {
   updateDoctorAddress: (address: string) => void;
   updateDoctorExperience: (experience: string) => void;
   updateDoctorWorkingHours: (hours: string) => void;
+  setDoctorData: (data: DoctorData) => void;
+  doctorData: DoctorData | null;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -37,6 +40,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const [doctorExperience, setDoctorExperience] = useState('15 years');
   const [doctorWorkingHours, setDoctorWorkingHours] =
     useState('9:00 AM - 5:00 PM');
+  const [doctorData, setDoctorData] = useState<DoctorData | null>(null);
 
   const updateProfileImage = (image: string | null) => {
     setProfileImage(image);
@@ -62,6 +66,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         updateDoctorAddress: setDoctorAddress,
         updateDoctorExperience: setDoctorExperience,
         updateDoctorWorkingHours: setDoctorWorkingHours,
+        doctorData,
+        setDoctorData,
       }}
     >
       {children}

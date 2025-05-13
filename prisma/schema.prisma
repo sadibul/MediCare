@@ -20,18 +20,21 @@ model Medicine {
 }
 
 model Doctor {
-  id                String    @id @default(uuid())
+  id                String   @id @default(cuid())
   doctorName        String
   doctorSpecialty   String
-  doctorEmail       String    @unique
-  doctorPassword    String    // Added password field
+  doctorEmail       String   @unique
+  password          String
   doctorPhone       String
   doctorAddress     String
   doctorExperience  String
+  about             String
   profileImage      String?
   doctorWorkingHours String?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([doctorEmail])
 }
 
 enum Category {

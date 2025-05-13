@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { User, Lock, ChevronRight, Mail } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { authService } from '../../services/authService';
+import { useUser } from '../../context/UserContext';
 import DoctorRegistration from './DoctorRegistration';
 
 interface LoginProps {
@@ -17,6 +18,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showDoctorRegistration, setShowDoctorRegistration] = useState(false);
+  const { setDoctorData } = useUser();
 
   // Set default credentials based on selected type
   const updateDefaultCredentials = (type: 'patient' | 'doctor' | 'admin') => {
@@ -25,27 +27,20 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
     setPassword('1');
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    const user = authService.login(email, password);
-
-    if (user) {
-      // Only allow login if the email matches the selected user type
-      if (
-        (userType === 'doctor' && email.includes('doctor')) ||
-        (userType === 'admin' && email.includes('admin')) ||
-        (userType === 'patient' &&
-          !email.includes('doctor') &&
-          !email.includes('admin'))
-      ) {
-        onLogin(user.type);
+    if (userType === 'doctor') {
+      const result = await authService.loginDoctor(email, password);
+      if (result.success && result.data) {  // Check if data exists
+        setDoctorData(result.data);
+        onLogin('doctor');
       } else {
-        setError('Invalid credentials for selected user type');
+        setError(result.message || 'Login failed'); // Provide default error message
       }
     } else {
-      setError('Invalid email or password');
+      // Handle other user types...
     }
   };
 

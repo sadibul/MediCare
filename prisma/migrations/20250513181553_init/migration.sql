@@ -17,9 +17,11 @@ CREATE TABLE "Doctor" (
     "doctorName" TEXT NOT NULL,
     "doctorSpecialty" TEXT NOT NULL,
     "doctorEmail" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
     "doctorPhone" TEXT NOT NULL,
     "doctorAddress" TEXT NOT NULL,
     "doctorExperience" TEXT NOT NULL,
+    "about" TEXT NOT NULL,
     "profileImage" TEXT,
     "doctorWorkingHours" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -28,3 +30,6 @@ CREATE TABLE "Doctor" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Doctor_doctorEmail_key" ON "Doctor"("doctorEmail");
+
+-- CreateIndex
+CREATE INDEX "Doctor_doctorEmail_idx" ON "Doctor"("doctorEmail");
