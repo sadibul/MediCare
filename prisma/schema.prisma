@@ -19,6 +19,21 @@ model Medicine {
   updatedAt   DateTime @updatedAt
 }
 
+model Doctor {
+  id                String    @id @default(uuid())
+  doctorName        String
+  doctorSpecialty   String
+  doctorEmail       String    @unique
+  doctorPassword    String    // Added password field
+  doctorPhone       String
+  doctorAddress     String
+  doctorExperience  String
+  profileImage      String?
+  doctorWorkingHours String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
 enum Category {
   PAIN_RELIEF
   ANTIBIOTICS
