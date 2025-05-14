@@ -15,7 +15,6 @@ interface Appointment {
   patientAge: number;
   date: string;
   time: string;
-  status: 'upcoming' | 'completed' | 'cancelled';
   reason: string;
 }
 
@@ -36,7 +35,6 @@ const DoctorAppointments = () => {
       patientAge: 45,
       date: '2025-06-15',
       time: '10:00 AM',
-      status: 'upcoming',
       reason: 'Annual check-up and blood pressure monitoring',
     },
     {
@@ -45,7 +43,6 @@ const DoctorAppointments = () => {
       patientAge: 32,
       date: '2025-06-15',
       time: '11:30 AM',
-      status: 'upcoming',
       reason: 'Recurring headaches and dizziness',
     },
     {
@@ -54,7 +51,6 @@ const DoctorAppointments = () => {
       patientAge: 28,
       date: '2025-06-15',
       time: '2:15 PM',
-      status: 'upcoming',
       reason: 'Follow-up after recent surgery',
     },
     {
@@ -63,7 +59,6 @@ const DoctorAppointments = () => {
       patientAge: 52,
       date: '2025-06-14',
       time: '9:00 AM',
-      status: 'completed',
       reason: 'Diabetes management and medication review',
     },
   ];
@@ -83,19 +78,6 @@ const DoctorAppointments = () => {
       appointment.date === selectedDate &&
       appointment.patientName.toLowerCase().includes(search.toLowerCase())
   );
-
-  const getStatusClass = (status: string) => {
-    switch (status) {
-      case 'upcoming':
-        return 'bg-blue-100 text-blue-800';
-      case 'completed':
-        return 'bg-green-100 text-green-800';
-      case 'cancelled':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
 
   const handleDateClick = (date: string) => {
     setSelectedDate(date);
@@ -162,7 +144,6 @@ const DoctorAppointments = () => {
         />
       </div>
 
-      {/* Remove the outer card container and modify the list container */}
       <div className="space-y-4">
         {filteredAppointments.length > 0 ? (
           filteredAppointments.map((appointment) => (
@@ -179,14 +160,6 @@ const DoctorAppointments = () => {
                     {appointment.patientAge} years old
                   </p>
                 </div>
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusClass(
-                    appointment.status
-                  )}`}
-                >
-                  {appointment.status.charAt(0).toUpperCase() +
-                    appointment.status.slice(1)}
-                </span>
               </div>
               <div className="mt-4 flex items-center text-sm text-gray-500 mb-4">
                 <Clock size={18} className="mr-2" />

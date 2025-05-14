@@ -7,7 +7,6 @@ interface Appointment {
   patientAge: number;
   date: string;
   time: string;
-  status: string;
   reason: string;
 }
 
@@ -25,7 +24,10 @@ interface AddPrescriptionProps {
   onComplete: () => void;
 }
 
-const AddPrescription: React.FC<AddPrescriptionProps> = ({ appointment, onComplete }) => {
+const AddPrescription: React.FC<AddPrescriptionProps> = ({
+  appointment,
+  onComplete,
+}) => {
   const [diagnosis, setDiagnosis] = useState('');
   const [medications, setMedications] = useState<Medication[]>([
     {
@@ -34,10 +36,10 @@ const AddPrescription: React.FC<AddPrescriptionProps> = ({ appointment, onComple
       dosage: '',
       frequency: '',
       duration: '',
-      instructions: ''
-    }
+      instructions: '',
+    },
   ]);
-  
+
   const handleAddMedication = () => {
     setMedications([
       ...medications,
@@ -47,29 +49,35 @@ const AddPrescription: React.FC<AddPrescriptionProps> = ({ appointment, onComple
         dosage: '',
         frequency: '',
         duration: '',
-        instructions: ''
-      }
+        instructions: '',
+      },
     ]);
   };
-  
+
   const handleRemoveMedication = (id: string) => {
     if (medications.length > 1) {
-      setMedications(medications.filter(med => med.id !== id));
+      setMedications(medications.filter((med) => med.id !== id));
     }
   };
-  
-  const handleMedicationChange = (id: string, field: keyof Medication, value: string) => {
-    setMedications(medications.map(med => 
-      med.id === id ? { ...med, [field]: value } : med
-    ));
+
+  const handleMedicationChange = (
+    id: string,
+    field: keyof Medication,
+    value: string
+  ) => {
+    setMedications(
+      medications.map((med) =>
+        med.id === id ? { ...med, [field]: value } : med
+      )
+    );
   };
-  
+
   const handleSubmit = () => {
     // Here you would submit the prescription to the backend
     console.log('Prescription:', { diagnosis, medications });
     onComplete();
   };
-  
+
   return (
     <div className="h-full">
       <div className="flex items-center mb-6">
@@ -81,29 +89,34 @@ const AddPrescription: React.FC<AddPrescriptionProps> = ({ appointment, onComple
         </button>
         <h2 className="text-2xl font-bold">Add Prescription</h2>
       </div>
-      
+
       <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
         <div className="mb-4 pb-4 border-b border-gray-200">
           <div className="flex justify-between">
             <div>
               <h3 className="text-xl font-medium">{appointment.patientName}</h3>
-              <p className="text-gray-500">{appointment.patientAge} years old</p>
+              <p className="text-gray-500">
+                {appointment.patientAge} years old
+              </p>
             </div>
             <div className="text-right">
               <p className="text-sm text-gray-500">Date</p>
               <p className="font-medium">
-                {new Date(appointment.date).toLocaleDateString('en-US', { 
-                  month: 'short', 
-                  day: 'numeric', 
-                  year: 'numeric'
+                {new Date(appointment.date).toLocaleDateString('en-US', {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
                 })}
               </p>
             </div>
           </div>
         </div>
-        
+
         <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="diagnosis">
+          <label
+            className="block text-gray-700 text-sm font-medium mb-2"
+            htmlFor="diagnosis"
+          >
             Diagnosis
           </label>
           <textarea
@@ -115,11 +128,11 @@ const AddPrescription: React.FC<AddPrescriptionProps> = ({ appointment, onComple
             onChange={(e) => setDiagnosis(e.target.value)}
           />
         </div>
-        
+
         <div className="mb-6">
           <div className="flex justify-between items-center mb-4">
             <h4 className="text-lg font-medium">Medications</h4>
-            <button 
+            <button
               className="text-blue-500 hover:text-blue-600 flex items-center text-sm font-medium"
               onClick={handleAddMedication}
             >
@@ -127,20 +140,26 @@ const AddPrescription: React.FC<AddPrescriptionProps> = ({ appointment, onComple
               Add Medication
             </button>
           </div>
-          
+
           {medications.map((medication, index) => (
-            <div key={medication.id} className="mb-6 bg-gray-50 p-4 rounded-md relative">
+            <div
+              key={medication.id}
+              className="mb-6 bg-gray-50 p-4 rounded-md relative"
+            >
               {medications.length > 1 && (
-                <button 
+                <button
                   className="absolute top-2 right-2 text-red-500 hover:text-red-600"
                   onClick={() => handleRemoveMedication(medication.id)}
                 >
                   <Trash size={16} />
                 </button>
               )}
-              
+
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor={`med-name-${index}`}>
+                <label
+                  className="block text-gray-700 text-sm font-medium mb-2"
+                  htmlFor={`med-name-${index}`}
+                >
                   Medication Name
                 </label>
                 <input
@@ -149,13 +168,22 @@ const AddPrescription: React.FC<AddPrescriptionProps> = ({ appointment, onComple
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                   placeholder="Enter medication name"
                   value={medication.name}
-                  onChange={(e) => handleMedicationChange(medication.id, 'name', e.target.value)}
+                  onChange={(e) =>
+                    handleMedicationChange(
+                      medication.id,
+                      'name',
+                      e.target.value
+                    )
+                  }
                 />
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor={`med-dosage-${index}`}>
+                  <label
+                    className="block text-gray-700 text-sm font-medium mb-2"
+                    htmlFor={`med-dosage-${index}`}
+                  >
                     Dosage
                   </label>
                   <input
@@ -164,11 +192,20 @@ const AddPrescription: React.FC<AddPrescriptionProps> = ({ appointment, onComple
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                     placeholder="e.g., 10mg"
                     value={medication.dosage}
-                    onChange={(e) => handleMedicationChange(medication.id, 'dosage', e.target.value)}
+                    onChange={(e) =>
+                      handleMedicationChange(
+                        medication.id,
+                        'dosage',
+                        e.target.value
+                      )
+                    }
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor={`med-frequency-${index}`}>
+                  <label
+                    className="block text-gray-700 text-sm font-medium mb-2"
+                    htmlFor={`med-frequency-${index}`}
+                  >
                     Frequency
                   </label>
                   <input
@@ -177,14 +214,23 @@ const AddPrescription: React.FC<AddPrescriptionProps> = ({ appointment, onComple
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                     placeholder="e.g., Twice daily"
                     value={medication.frequency}
-                    onChange={(e) => handleMedicationChange(medication.id, 'frequency', e.target.value)}
+                    onChange={(e) =>
+                      handleMedicationChange(
+                        medication.id,
+                        'frequency',
+                        e.target.value
+                      )
+                    }
                   />
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor={`med-duration-${index}`}>
+                  <label
+                    className="block text-gray-700 text-sm font-medium mb-2"
+                    htmlFor={`med-duration-${index}`}
+                  >
                     Duration
                   </label>
                   <input
@@ -193,11 +239,20 @@ const AddPrescription: React.FC<AddPrescriptionProps> = ({ appointment, onComple
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                     placeholder="e.g., 7 days"
                     value={medication.duration}
-                    onChange={(e) => handleMedicationChange(medication.id, 'duration', e.target.value)}
+                    onChange={(e) =>
+                      handleMedicationChange(
+                        medication.id,
+                        'duration',
+                        e.target.value
+                      )
+                    }
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor={`med-instructions-${index}`}>
+                  <label
+                    className="block text-gray-700 text-sm font-medium mb-2"
+                    htmlFor={`med-instructions-${index}`}
+                  >
                     Special Instructions
                   </label>
                   <input
@@ -206,16 +261,25 @@ const AddPrescription: React.FC<AddPrescriptionProps> = ({ appointment, onComple
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
                     placeholder="e.g., Take with food"
                     value={medication.instructions}
-                    onChange={(e) => handleMedicationChange(medication.id, 'instructions', e.target.value)}
+                    onChange={(e) =>
+                      handleMedicationChange(
+                        medication.id,
+                        'instructions',
+                        e.target.value
+                      )
+                    }
                   />
                 </div>
               </div>
             </div>
           ))}
         </div>
-        
+
         <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-medium mb-2" htmlFor="notes">
+          <label
+            className="block text-gray-700 text-sm font-medium mb-2"
+            htmlFor="notes"
+          >
             Additional Notes
           </label>
           <textarea
@@ -225,7 +289,7 @@ const AddPrescription: React.FC<AddPrescriptionProps> = ({ appointment, onComple
             rows={3}
           />
         </div>
-        
+
         <div className="flex justify-end">
           <button
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md font-medium transition duration-300 flex items-center"

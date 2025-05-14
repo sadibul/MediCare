@@ -7,7 +7,6 @@ interface TimeSlot {
   day: string;
   startTime: string;
   endTime: string;
-  status: 'available' | 'booked' | 'blocked';
 }
 
 const DoctorSchedule = () => {
@@ -18,42 +17,36 @@ const DoctorSchedule = () => {
       day: 'Monday',
       startTime: '09:00',
       endTime: '10:30',
-      status: 'available',
     },
     {
       id: '2',
       day: 'Monday',
       startTime: '11:00',
       endTime: '12:30',
-      status: 'booked',
     },
     {
       id: '3',
       day: 'Monday',
       startTime: '14:00',
       endTime: '15:30',
-      status: 'available',
     },
     {
       id: '4',
       day: 'Tuesday',
       startTime: '09:00',
       endTime: '10:30',
-      status: 'available',
     },
     {
       id: '5',
       day: 'Tuesday',
       startTime: '11:00',
       endTime: '12:30',
-      status: 'blocked',
     },
     {
       id: '6',
       day: 'Wednesday',
       startTime: '09:00',
       endTime: '10:30',
-      status: 'available',
     },
   ]);
   const [editingSlot, setEditingSlot] = useState<string | null>(null);
@@ -79,7 +72,6 @@ const DoctorSchedule = () => {
       day: selectedDay,
       startTime: newSlot.startTime,
       endTime: newSlot.endTime,
-      status: 'available',
     };
 
     setSlots([...slots, newTimeSlot]);
@@ -121,19 +113,6 @@ const DoctorSchedule = () => {
     const suffix = hour >= 12 ? 'PM' : 'AM';
     const formattedHour = hour % 12 || 12;
     return `${formattedHour}:${minutes} ${suffix}`;
-  };
-
-  const getStatusClass = (status: string) => {
-    switch (status) {
-      case 'available':
-        return 'bg-green-100 text-green-800';
-      case 'booked':
-        return 'bg-blue-100 text-blue-800';
-      case 'blocked':
-        return 'bg-gray-100 text-gray-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
   };
 
   return (
@@ -299,32 +278,20 @@ const DoctorSchedule = () => {
                         {formatTime(slot.endTime)}
                       </span>
                     </div>
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusClass(
-                        slot.status
-                      )}`}
-                    >
-                      {slot.status.charAt(0).toUpperCase() +
-                        slot.status.slice(1)}
-                    </span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    {slot.status !== 'booked' && (
-                      <>
-                        <button
-                          onClick={() => setEditingSlot(slot.id)}
-                          className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
-                        >
-                          <Edit2 size={18} />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteSlot(slot.id)}
-                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </>
-                    )}
+                    <button
+                      onClick={() => setEditingSlot(slot.id)}
+                      className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                    >
+                      <Edit2 size={18} />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteSlot(slot.id)}
+                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    >
+                      <Trash2 size={18} />
+                    </button>
                   </div>
                 </div>
               )}
