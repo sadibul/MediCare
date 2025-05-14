@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -20,10 +21,10 @@ model Medicine {
 }
 
 model Doctor {
-  id                String   @id @default(cuid())
+  id                String     @id @default(cuid())
   doctorName        String
   doctorSpecialty   String
-  doctorEmail       String   @unique
+  doctorEmail       String     @unique
   password          String
   doctorPhone       String
   doctorAddress     String
@@ -31,10 +32,24 @@ model Doctor {
   about             String
   profileImage      String?
   doctorWorkingHours String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  timeSlots         TimeSlot[]
 
   @@index([doctorEmail])
+}
+
+model TimeSlot {
+  id        String   @id @default(cuid())
+  doctorId  String
+  day       String
+  startTime String
+  endTime   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+
+  @@index([doctorId])
 }
 
 enum Category {

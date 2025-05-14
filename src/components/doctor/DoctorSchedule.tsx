@@ -1,60 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, Plus, Edit2, Trash2, Save, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useUser } from '@/context/UserContext';
 
 interface TimeSlot {
   id: string;
   day: string;
   startTime: string;
   endTime: string;
+  doctorId: string;
 }
 
 const DoctorSchedule = () => {
   const [selectedDay, setSelectedDay] = useState<string>('Monday');
-  const [slots, setSlots] = useState<TimeSlot[]>([
-    {
-      id: '1',
-      day: 'Monday',
-      startTime: '09:00',
-      endTime: '10:30',
-    },
-    {
-      id: '2',
-      day: 'Monday',
-      startTime: '11:00',
-      endTime: '12:30',
-    },
-    {
-      id: '3',
-      day: 'Monday',
-      startTime: '14:00',
-      endTime: '15:30',
-    },
-    {
-      id: '4',
-      day: 'Tuesday',
-      startTime: '09:00',
-      endTime: '10:30',
-    },
-    {
-      id: '5',
-      day: 'Tuesday',
-      startTime: '11:00',
-      endTime: '12:30',
-    },
-    {
-      id: '6',
-      day: 'Wednesday',
-      startTime: '09:00',
-      endTime: '10:30',
-    },
-  ]);
+  const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [editingSlot, setEditingSlot] = useState<string | null>(null);
   const [showAddSlot, setShowAddSlot] = useState(false);
   const [newSlot, setNewSlot] = useState({
     startTime: '09:00',
     endTime: '10:00',
   });
+  const { doctorData } = useUser();
 
   const days = [
     'Monday',
@@ -66,20 +32,51 @@ const DoctorSchedule = () => {
     'Sunday',
   ];
 
-  const handleAddSlot = () => {
-    const newTimeSlot: TimeSlot = {
-      id: `${Date.now()}`,
-      day: selectedDay,
-      startTime: newSlot.startTime,
-      endTime: newSlot.endTime,
-    };
+  const fetchTimeSlots = async () => {
+    try {
+      const response = await fetch(`/api/doctor/schedule?doctorId=${doctorData?.id}`);
+      const result = await response.json();
+      if (result.success) {
+        setSlots(result.data);
+      }
+    } catch (error) {
+      console.error('Error fetching time slots:', error);
+    }
+  };
 
-    setSlots([...slots, newTimeSlot]);
-    setShowAddSlot(false);
-    setNewSlot({
-      startTime: '09:00',
-      endTime: '10:00',
-    });
+  useEffect(() => {
+    if (doctorData?.id) {
+      fetchTimeSlots();
+    }
+  }, [doctorData?.id]);
+
+  const handleAddSlot = async () => {
+    try {
+      const response = await fetch('/api/doctor/schedule', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          doctorId: doctorData?.id,
+          day: selectedDay,
+          startTime: newSlot.startTime,
+          endTime: newSlot.endTime,
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setSlots([...slots, result.data]);
+        setShowAddSlot(false);
+        setNewSlot({
+          startTime: '09:00',
+          endTime: '10:00',
+        });
+      }
+    } catch (error) {
+      console.error('Error adding time slot:', error);
+    }
   };
 
   const handleSaveEdit = (id: string) => {
@@ -101,8 +98,18 @@ const DoctorSchedule = () => {
     setEditingSlot(null);
   };
 
-  const handleDeleteSlot = (id: string) => {
-    setSlots(slots.filter((slot) => slot.id !== id));
+  const handleDeleteSlot = async (id: string) => {
+    try {
+      const response = await fetch(`/api/doctor/schedule?id=${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setSlots(slots.filter((slot) => slot.id !== id));
+      }
+    } catch (error) {
+      console.error('Error deleting time slot:', error);
+    }
   };
 
   const filteredSlots = slots.filter((slot) => slot.day === selectedDay);
