@@ -140,6 +140,40 @@ async function main() {
       data: doctor,
     });
   }
+
+  // Add some test time slots for Doctor 1
+  const doctor1 = await prisma.doctor.findFirst({
+    where: { doctorEmail: 'doctor1@gmail.com' },
+  });
+
+  if (doctor1) {
+    const timeSlots = [
+      {
+        doctorId: doctor1.id,
+        day: 'Monday',
+        startTime: '09:00',
+        endTime: '17:00',
+      },
+      {
+        doctorId: doctor1.id,
+        day: 'Tuesday',
+        startTime: '09:00',
+        endTime: '17:00',
+      },
+      {
+        doctorId: doctor1.id,
+        day: 'Wednesday',
+        startTime: '09:00',
+        endTime: '17:00',
+      },
+    ];
+
+    for (const slot of timeSlots) {
+      await prisma.timeSlot.create({
+        data: slot,
+      });
+    }
+  }
 }
 
 main()

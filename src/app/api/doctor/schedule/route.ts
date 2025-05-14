@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: Request) {
   try {
@@ -64,11 +64,36 @@ export async function POST(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    const doctorId = searchParams.get('doctorId');
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: 'Time slot ID is required' },
+        { status: 400 }
+      );
+    }
+
+    // Delete the time slot
+    await prisma.timeSlot.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting time slot:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to delete time slot' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(request: Request) {
+  try {
+    const { id, doctorId, startTime, endTime } = await request.json();
 
     if (!id || !doctorId) {
       return NextResponse.json(
@@ -77,18 +102,25 @@ export async function DELETE(request: Request) {
       );
     }
 
-    await prisma.timeSlot.delete({
+    const updatedTimeSlot = await prisma.timeSlot.update({
       where: {
         id: id,
         doctorId: doctorId,
       },
+      data: {
+        startTime,
+        endTime,
+      },
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      success: true,
+      data: updatedTimeSlot,
+    });
   } catch (error) {
-    console.error('Error deleting time slot:', error);
+    console.error('Error updating time slot:', error);
     return NextResponse.json(
-      { success: false, message: 'Error deleting time slot' },
+      { success: false, message: 'Error updating time slot' },
       { status: 500 }
     );
   }

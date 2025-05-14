@@ -34,7 +34,9 @@ const DoctorSchedule = () => {
 
   const fetchTimeSlots = async () => {
     try {
-      const response = await fetch(`/api/doctor/schedule?doctorId=${doctorData?.id}`);
+      const response = await fetch(
+        `/api/doctor/schedule?doctorId=${doctorData?.id}`
+      );
       const result = await response.json();
       if (result.success) {
         setSlots(result.data);
@@ -79,33 +81,57 @@ const DoctorSchedule = () => {
     }
   };
 
-  const handleSaveEdit = (id: string) => {
-    setSlots(
-      slots.map((slot) => {
-        if (slot.id === id) {
-          return {
-            ...slot,
-            startTime: (
-              document.getElementById(`start-${id}`) as HTMLInputElement
-            ).value,
-            endTime: (document.getElementById(`end-${id}`) as HTMLInputElement)
-              .value,
-          };
-        }
-        return slot;
-      })
-    );
-    setEditingSlot(null);
+  const handleSaveEdit = async (id: string) => {
+    try {
+      const startTime = (
+        document.getElementById(`start-${id}`) as HTMLInputElement
+      ).value;
+      const endTime = (document.getElementById(`end-${id}`) as HTMLInputElement)
+        .value;
+
+      const response = await fetch('/api/doctor/schedule', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id,
+          doctorId: doctorData?.id,
+          startTime,
+          endTime,
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setSlots(
+          slots.map((slot) =>
+            slot.id === id ? { ...slot, startTime, endTime } : slot
+          )
+        );
+        setEditingSlot(null);
+      } else {
+        console.error('Failed to update time slot:', result.error);
+      }
+    } catch (error) {
+      console.error('Error updating time slot:', error);
+    }
   };
 
   const handleDeleteSlot = async (id: string) => {
     try {
       const response = await fetch(`/api/doctor/schedule?id=${id}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
       if (response.ok) {
         setSlots(slots.filter((slot) => slot.id !== id));
+      } else {
+        const error = await response.json();
+        console.error('Failed to delete time slot:', error);
       }
     } catch (error) {
       console.error('Error deleting time slot:', error);
