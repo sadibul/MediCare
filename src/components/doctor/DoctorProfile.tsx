@@ -11,64 +11,39 @@ import {
   Camera,
 } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
+import { DoctorData } from '@/types/doctor'; // Add this import
 import { motion } from 'framer-motion';
 
 const DoctorProfile = () => {
-  const {
-    profileImage,
-    doctorName,
-    doctorSpecialty,
-    doctorEmail,
-    doctorPhone,
-    doctorAddress,
-    doctorExperience,
-    doctorWorkingHours,
-    updateProfileImage,
-    updateDoctorName,
-    updateDoctorSpecialty,
-    updateDoctorEmail,
-    updateDoctorPhone,
-    updateDoctorAddress,
-    updateDoctorExperience,
-    updateDoctorWorkingHours,
-  } = useUser();
-
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { doctorData, setDoctorData } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const [tempImage, setTempImage] = useState<string | null>(null);
   const [profile, setProfile] = useState({
-    name: doctorName,
-    email: doctorEmail,
-    phone: doctorPhone,
-    specialization: doctorSpecialty,
-    experience: doctorExperience,
-    address: doctorAddress,
-    workingHours: doctorWorkingHours,
-    about:
-      'Dr. Sarah Johnson is a board-certified cardiologist with extensive experience in treating various heart conditions. She specializes in preventive cardiology and heart disease management.',
+    name: doctorData?.doctorName ?? '',
+    email: doctorData?.doctorEmail ?? '',
+    phone: doctorData?.doctorPhone ?? '',
+    specialization: doctorData?.doctorSpecialty ?? '',
+    experience: doctorData?.doctorExperience ?? '',
+    address: doctorData?.doctorAddress ?? '',
+    workingHours: doctorData?.doctorWorkingHours ?? '',
+    about: doctorData?.about ?? '',
   });
 
   useEffect(() => {
-    setProfile({
-      name: doctorName,
-      email: doctorEmail,
-      phone: doctorPhone,
-      specialization: doctorSpecialty,
-      experience: doctorExperience,
-      address: doctorAddress,
-      workingHours: doctorWorkingHours,
-      about:
-        'Dr. Sarah Johnson is a board-certified cardiologist with extensive experience in treating various heart conditions. She specializes in preventive cardiology and heart disease management.',
-    });
-  }, [
-    doctorName,
-    doctorEmail,
-    doctorPhone,
-    doctorSpecialty,
-    doctorExperience,
-    doctorAddress,
-    doctorWorkingHours,
-  ]);
+    if (doctorData) {
+      setProfile({
+        name: doctorData.doctorName,
+        email: doctorData.doctorEmail,
+        phone: doctorData.doctorPhone,
+        specialization: doctorData.doctorSpecialty,
+        experience: doctorData.doctorExperience,
+        address: doctorData.doctorAddress,
+        workingHours: doctorData.doctorWorkingHours ?? '',
+        about: doctorData.about,
+      });
+    }
+  }, [doctorData]);
 
   useEffect(() => {
     if (!isEditing) {
@@ -88,16 +63,22 @@ const DoctorProfile = () => {
   };
 
   const handleSave = () => {
-    if (tempImage) {
-      updateProfileImage(tempImage);
-    }
-    updateDoctorName(profile.name);
-    updateDoctorSpecialty(profile.specialization);
-    updateDoctorEmail(profile.email);
-    updateDoctorPhone(profile.phone);
-    updateDoctorAddress(profile.address);
-    updateDoctorExperience(profile.experience);
-    updateDoctorWorkingHours(profile.workingHours);
+    if (!doctorData) return;
+
+    const updatedData: DoctorData = {
+      ...doctorData,
+      doctorName: profile.name,
+      doctorSpecialty: profile.specialization,
+      doctorEmail: profile.email,
+      doctorPhone: profile.phone,
+      doctorAddress: profile.address,
+      doctorExperience: profile.experience,
+      doctorWorkingHours: profile.workingHours || null,
+      profileImage: tempImage || doctorData.profileImage,
+      about: profile.about,
+    };
+
+    setDoctorData(updatedData);
     setIsEditing(false);
     setTempImage(null);
   };
@@ -105,15 +86,14 @@ const DoctorProfile = () => {
   const handleCancel = () => {
     setTempImage(null);
     setProfile({
-      name: doctorName,
-      email: doctorEmail,
-      phone: doctorPhone,
-      specialization: doctorSpecialty,
-      experience: doctorExperience,
-      address: doctorAddress,
-      workingHours: doctorWorkingHours,
-      about:
-        'Dr. Sarah Johnson is a board-certified cardiologist with extensive experience in treating various heart conditions. She specializes in preventive cardiology and heart disease management.',
+      name: doctorData?.doctorName ?? '',
+      email: doctorData?.doctorEmail ?? '',
+      phone: doctorData?.doctorPhone ?? '',
+      specialization: doctorData?.doctorSpecialty ?? '',
+      experience: doctorData?.doctorExperience ?? '',
+      address: doctorData?.doctorAddress ?? '',
+      workingHours: doctorData?.doctorWorkingHours ?? '',
+      about: doctorData?.about ?? '',
     });
     setIsEditing(false);
   };
@@ -158,9 +138,9 @@ const DoctorProfile = () => {
                 className="w-24 h-24 rounded-full overflow-hidden bg-gray-100 ring-4 ring-gray-50"
                 whileHover={isEditing ? { scale: 1.05 } : {}}
               >
-                {tempImage || profileImage ? (
+                {tempImage || doctorData?.profileImage ? (
                   <img
-                    src={tempImage ?? profileImage ?? undefined}
+                    src={tempImage ?? doctorData?.profileImage ?? undefined}
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />

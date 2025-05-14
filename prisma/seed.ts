@@ -10,7 +10,7 @@ async function main() {
       password: 'x',
       doctorPhone: '+1 (555) 123-4567',
       doctorAddress: '123 Medical Center Dr, Suite 101, Boston, MA 02115',
-      doctorExperience: 'c',
+      doctorExperience: '8 years',
       about:
         'Board-certified cardiologist with extensive experience in treating heart conditions. Specializes in preventive cardiology and heart failure management.',
       profileImage: '',
