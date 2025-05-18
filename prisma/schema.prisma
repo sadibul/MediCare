@@ -52,6 +52,25 @@ model TimeSlot {
   @@index([doctorId])
 }
 
+model Patient {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  password     String
+  phone        String
+  address      String
+  dob          String
+  bloodType    String
+  height       String
+  weight       String
+  bmi          String
+  profileImage String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([email])
+}
+
 enum Category {
   PAIN_RELIEF
   ANTIBIOTICS

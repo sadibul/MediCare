@@ -1,4 +1,4 @@
-// File: J:\Alternative\MediCare\src\app\api\doctor\schedule\route.ts
+// File: J:\MediCare\src\app\api\doctor\schedule\route.ts
 import * as entry from '../../../../../../src/app/api/doctor/schedule/route.js'
 import type { NextRequest } from 'next/server.js'
 

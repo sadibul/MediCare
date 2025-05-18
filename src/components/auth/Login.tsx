@@ -18,7 +18,7 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showDoctorRegistration, setShowDoctorRegistration] = useState(false);
-  const { setDoctorData } = useUser();
+  const { setDoctorData, loginUser } = useUser();
 
   // Set default credentials based on selected type
   const updateDefaultCredentials = (type: 'patient' | 'doctor' | 'admin') => {
@@ -33,14 +33,23 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
 
     if (userType === 'doctor') {
       const result = await authService.loginDoctor(email, password);
-      if (result.success && result.data) {  // Check if data exists
+      if (result.success && result.data) {
         setDoctorData(result.data);
         onLogin('doctor');
       } else {
-        setError(result.message || 'Login failed'); // Provide default error message
+        setError(result.message || 'Login failed');
       }
-    } else {
-      // Handle other user types...
+    } else if (userType === 'patient') {
+      // Use the loginUser function from UserContext to authenticate patients
+      const isAuthenticated = loginUser(email, password, 'patient');
+      if (isAuthenticated) {
+        onLogin('patient');
+      } else {
+        setError('Invalid email or password');
+      }
+    } else if (userType === 'admin') {
+      // Admin can sign in without authentication
+      onLogin('admin');
     }
   };
 

@@ -15,23 +15,63 @@ import { motion } from 'framer-motion';
 import { useUser } from '../../context/UserContext';
 
 const PatientProfile = () => {
-  const { profileImage, userName, updateProfileImage, updateUserName } =
-    useUser();
+  const {
+    profileImage,
+    updateProfileImage,
+    userName,
+    userEmail,
+    userPhone,
+    userAddress,
+    userDob,
+    userBloodType,
+    userHeight,
+    userWeight,
+    userBmi,
+    updateUserName,
+  } = useUser();
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [tempImage, setTempImage] = useState<string | null>(null);
   const [profileData, setProfileData] = useState({
     name: userName,
-    email: 'john.smith@example.com',
-    phone: '+1 (555) 987-6543',
-    address: '456 Residential Ave, Apt 301',
-    dob: '6/15/1985',
-    bloodType: 'O+',
-    height: '5\'10" (178 cm)',
-    weight: '165 lbs (75 kg)',
-    bmi: '23.7',
-    profileImage: null as string | null,
+    email: userEmail,
+    phone: userPhone,
+    address: userAddress,
+    dob: userDob,
+    bloodType: userBloodType,
+    height: userHeight,
+    weight: userWeight,
+    bmi: userBmi,
+    profileImage: profileImage as string | null,
   });
+
+  // Update local state when context data changes
+  useEffect(() => {
+    setProfileData({
+      name: userName,
+      email: userEmail,
+      phone: userPhone,
+      address: userAddress,
+      dob: userDob,
+      bloodType: userBloodType,
+      height: userHeight,
+      weight: userWeight,
+      bmi: userBmi,
+      profileImage: profileImage,
+    });
+  }, [
+    userName,
+    userEmail,
+    userPhone,
+    userAddress,
+    userDob,
+    userBloodType,
+    userHeight,
+    userWeight,
+    userBmi,
+    profileImage,
+  ]);
 
   useEffect(() => {
     // Reset temp image when editing is cancelled

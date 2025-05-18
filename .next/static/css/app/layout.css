@@ -727,6 +727,10 @@ video {
 .inset-0 {
   inset: 0px;
 }
+.inset-y-0 {
+  top: 0px;
+  bottom: 0px;
+}
 .-bottom-1 {
   bottom: -0.25rem;
 }
@@ -1505,6 +1509,12 @@ video {
 }
 .pt-6 {
   padding-top: 1.5rem;
+}
+.pl-3 {
+  padding-left: 0.75rem;
+}
+.pr-3 {
+  padding-right: 0.75rem;
 }
 .text-left {
   text-align: left;
