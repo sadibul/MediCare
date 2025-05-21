@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, Plus, Edit2, Trash2, Save, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useUser } from '@/context/UserContext';
+import { useUser } from '../../context/UserContext'; // Changed from '@/context/UserContext'
 
 interface TimeSlot {
   id: string;

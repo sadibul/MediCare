@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Login from '../components/auth/Login';
 import Register from '../components/auth/Register';
 import PatientDashboard from '../components/patient/PatientDashboard';
@@ -15,17 +15,37 @@ export default function Home() {
   const [userType, setUserType] = useState<UserType>(null);
   const [view, setView] = useState<AuthView>('login');
 
+  // Check for existing session when component mounts
+  useEffect(() => {
+    const savedUserType = localStorage.getItem('userType') as UserType;
+    const savedView = localStorage.getItem('authView') as AuthView;
+
+    if (savedUserType && savedView) {
+      setUserType(savedUserType);
+      setView(savedView);
+    }
+  }, []);
+
   const handleLogin = (type: UserType) => {
     setUserType(type);
     setView('dashboard');
+    // Save to localStorage
+    localStorage.setItem('userType', type as string);
+    localStorage.setItem('authView', 'dashboard');
   };
 
   const handleRegister = (type: UserType) => {
     setUserType(type);
     setView('dashboard');
+    // Save to localStorage
+    localStorage.setItem('userType', type as string);
+    localStorage.setItem('authView', 'dashboard');
   };
 
   const handleLogout = () => {
+    // Clear localStorage on logout
+    localStorage.removeItem('userType');
+    localStorage.removeItem('authView');
     setUserType(null);
     setView('login');
   };

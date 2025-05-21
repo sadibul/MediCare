@@ -14,25 +14,72 @@ import DoctorSchedule from './DoctorSchedule';
 import PatientRecords from './PatientRecords';
 import DoctorProfile from './DoctorProfile';
 import { useUser } from '../../context/UserContext';
+import { useNotifications } from '../../context/NotificationContext';
+import NotificationPanel from '../common/NotificationPanel';
 
 type Tab = 'appointments' | 'schedule' | 'records' | 'profile';
 
-const DoctorDashboard = () => {
+type DoctorDashboardProps = {
+  onLogout?: () => void;
+};
+
+const DoctorDashboard = ({ onLogout }: DoctorDashboardProps) => {
   const { profileImage, doctorName, doctorSpecialty } = useUser();
   const [activeTab, setActiveTab] = useState<Tab>('appointments');
+
+  // Add state variables to track when each tab should be refreshed
+  const [appointmentsRefresh, setAppointmentsRefresh] = useState<number>(
+    Date.now()
+  );
+  const [scheduleRefresh, setScheduleRefresh] = useState<number>(Date.now());
+  const [recordsRefresh, setRecordsRefresh] = useState<number>(Date.now());
+  const [profileRefresh, setProfileRefresh] = useState<number>(Date.now());
+
+  // Add notification panel state
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  // Get notification context
+  const { unreadCount } = useNotifications();
+
+  // Handle tab click with refresh
+  const handleTabClick = (tabId: Tab) => {
+    // Update the active tab
+    setActiveTab(tabId);
+
+    // Refresh the content of the clicked tab by updating its timestamp
+    switch (tabId) {
+      case 'appointments':
+        setAppointmentsRefresh(Date.now());
+        break;
+      case 'schedule':
+        setScheduleRefresh(Date.now());
+        break;
+      case 'records':
+        setRecordsRefresh(Date.now());
+        break;
+      case 'profile':
+        setProfileRefresh(Date.now());
+        break;
+    }
+  };
 
   const renderContent = () => {
     switch (activeTab) {
       case 'appointments':
-        return <DoctorAppointments />;
+        // Use the refresh timestamp as part of the key to force remount
+        return (
+          <DoctorAppointments key={`appointments-${appointmentsRefresh}`} />
+        );
       case 'schedule':
-        return <DoctorSchedule />;
+        return <DoctorSchedule key={`schedule-${scheduleRefresh}`} />;
       case 'records':
-        return <PatientRecords />;
+        return <PatientRecords key={`records-${recordsRefresh}`} />;
       case 'profile':
-        return <DoctorProfile />;
+        return <DoctorProfile key={`profile-${profileRefresh}`} />;
       default:
-        return <DoctorAppointments />;
+        return (
+          <DoctorAppointments key={`appointments-${appointmentsRefresh}`} />
+        );
     }
   };
 
@@ -114,18 +161,39 @@ const DoctorDashboard = () => {
               </motion.button>
             </div>
 
-            <button className="p-2 hover:bg-gray-100 rounded-full transition-colors relative mr-6">
+            <button
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors relative mr-6"
+              onClick={() => setShowNotifications((prev) => !prev)}
+            >
               <Bell size={20} className="text-gray-600" />
-              <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  {unreadCount}
+                </span>
+              )}
             </button>
 
-            <button className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200 ease-in-out transform hover:scale-105">
+            {/* Logout button */}
+            <button
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200 ease-in-out transform hover:scale-105"
+              onClick={onLogout}
+            >
               <LogOut size={18} className="mr-2" />
               <span className="text-sm font-medium">Logout</span>
             </button>
           </div>
         </div>
       </motion.header>
+
+      {/* Notification Panel */}
+      <AnimatePresence>
+        {showNotifications && (
+          <NotificationPanel
+            isOpen={showNotifications}
+            onClose={() => setShowNotifications(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Main content */}
       <div className="flex-grow flex">
@@ -144,7 +212,7 @@ const DoctorDashboard = () => {
                   ? 'bg-gradient-to-r from-blue-50 to-transparent text-blue-600'
                   : 'text-gray-600 hover:bg-blue-50/50'
               }`}
-              onClick={() => setActiveTab(item.id as Tab)}
+              onClick={() => handleTabClick(item.id as Tab)}
               whileHover={{ x: 5 }}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}

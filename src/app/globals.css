@@ -11,106 +11,140 @@
 @layer components {
   .glass-card {
     @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.2);
   }
-  
+
   .glass-input {
     @apply bg-white/50 backdrop-blur-xs border border-white/30 focus:border-primary-300 focus:ring-2 focus:ring-primary-300/30 rounded-lg transition-all duration-200;
   }
-  
+
   .btn-primary {
     @apply bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium px-4 py-2 rounded-lg shadow-md hover:shadow-lg transition-all duration-200;
   }
-  
+
   .btn-secondary {
     @apply bg-white hover:bg-gray-50 text-primary-600 font-medium px-4 py-2 rounded-lg shadow-sm hover:shadow-md border border-primary-200 transition-all duration-200;
   }
-  
+
   .nav-link {
     @apply flex items-center gap-2 px-4 py-2 rounded-lg text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-all duration-200;
   }
-  
+
   .nav-link.active {
     @apply bg-primary-50 text-primary-600 font-medium;
   }
-  
+
   .card {
     @apply bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden;
   }
-  
+
   .table-header {
     @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
   }
-  
+
   .table-cell {
     @apply px-6 py-4 whitespace-nowrap text-sm text-gray-900;
   }
-  
+
   .status-badge {
     @apply px-2 py-1 text-xs font-medium rounded-full;
   }
-  
+
   .status-badge.success {
     @apply bg-green-100 text-green-800;
   }
-  
+
   .status-badge.warning {
     @apply bg-yellow-100 text-yellow-800;
   }
-  
+
   .status-badge.error {
     @apply bg-red-100 text-red-800;
   }
-  
+
   .status-badge.info {
     @apply bg-primary-100 text-primary-800;
   }
-  
+
   .input-group {
     @apply flex flex-col gap-1;
   }
-  
+
   .input-label {
     @apply text-sm font-medium text-gray-700;
   }
-  
+
   .input-field {
     @apply glass-input px-3 py-2;
   }
-  
+
   .modal {
     @apply fixed inset-0 flex items-center justify-center z-50;
   }
-  
+
   .modal-overlay {
     @apply absolute inset-0 bg-black/30 backdrop-blur-sm;
   }
-  
+
   .modal-content {
     @apply glass-card relative rounded-xl p-6 max-w-lg w-full mx-4 animate-slide-up;
   }
-  
+
   .sidebar {
     @apply glass-card fixed top-0 left-0 h-full w-64 p-4 transform transition-transform duration-300;
   }
-  
+
   .sidebar.collapsed {
     @apply -translate-x-full;
   }
-  
+
   .header {
     @apply glass-card sticky top-0 z-40 px-6 py-4;
   }
-  
+
   .dashboard-stats {
     @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6;
   }
-  
+
   .stat-card {
     @apply glass-card p-6 rounded-xl;
   }
-  
+
   .chart-container {
     @apply glass-card p-6 rounded-xl;
+  }
+
+  /* Background image utilities */
+  .bg-image {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .bg-pattern {
+    background-size: auto;
+    background-repeat: repeat;
+  }
+
+  .bg-overlay {
+    position: relative;
+  }
+
+  .bg-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 0;
+  }
+
+  .bg-overlay > * {
+    position: relative;
+    z-index: 1;
   }
 }
 
@@ -156,4 +190,8 @@ html {
 /* Glass effect */
 .glass {
   @apply bg-white/80 backdrop-blur-sm border border-white/20;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
 }

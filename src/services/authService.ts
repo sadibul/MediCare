@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { DoctorData } from '@/types/doctor';
-import { samplePatients, PatientData } from '@/types/patient';
+import { samplePatients, PatientData } from '../types/patient';
 
 interface User {
   type: 'patient' | 'doctor' | 'admin';
@@ -28,24 +28,43 @@ type AuthResponse = {
 };
 
 class AuthService {
-  login(email: string, password: string, type: 'patient' | 'doctor' | 'admin') {
+  login(
+    email: string,
+    password: string,
+    type: 'patient' | 'doctor' | 'admin'
+  ): {
+    success: boolean;
+    data: PatientData | null;
+    message?: string;
+  } {
     if (type === 'patient') {
       // Find a patient with matching email and password
       const patient = samplePatients.find(
         (p) => p.email === email && p.password === password
       );
 
-      // Return authentication result
-      return {
-        success: !!patient,
-        data: patient || null,
-      };
+      if (patient) {
+        // If found, return success with patient data
+        return {
+          success: true,
+          data: patient,
+          message: 'Login successful',
+        };
+      } else {
+        // If not found, return failure
+        return {
+          success: false,
+          data: null,
+          message: 'Invalid email or password',
+        };
+      }
     }
 
     // For other types, implement similar logic
     return {
       success: false,
       data: null,
+      message: 'Invalid user type',
     };
   }
 

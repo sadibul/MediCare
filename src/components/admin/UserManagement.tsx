@@ -190,7 +190,9 @@ const UserManagement = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(user.joinDate).toLocaleDateString()}
+                    {new Date(user.joinDate).toLocaleDateString('en-US', {
+                      weekday: 'long', // Keep only the day of week (e.g., "Friday")
+                    })}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(user.lastActive).toLocaleDateString()}
@@ -293,7 +295,12 @@ const UserManagement = () => {
               <div className="flex items-center p-4 bg-gray-50 rounded-xl">
                 <Calendar className="h-5 w-5 text-gray-400 mr-3" />
                 <span className="text-gray-900">
-                  {new Date(selectedUser?.joinDate || '').toLocaleDateString()}
+                  {new Date(selectedUser?.joinDate || '').toLocaleDateString(
+                    'en-US',
+                    {
+                      weekday: 'long', // Keep only the day of week (e.g., "Friday")
+                    }
+                  )}
                 </span>
               </div>
             </div>

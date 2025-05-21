@@ -54,6 +54,30 @@ const PatientRecords = () => {
             temperature: '98.6',
           },
         },
+        {
+          date: '2024-02-10',
+          diagnosis: 'Hypertension - Follow Up',
+          prescription: ['Lisinopril 5mg', 'Hydrochlorothiazide 12.5mg'],
+          notes:
+            'Initial diagnosis of hypertension. Starting on medication regimen. Discussed lifestyle modifications including reduced sodium intake and regular exercise.',
+          vitals: {
+            bloodPressure: '150/95',
+            heartRate: '82',
+            temperature: '98.4',
+          },
+        },
+        {
+          date: '2023-11-22',
+          diagnosis: 'Annual Physical',
+          prescription: [],
+          notes:
+            'Regular check-up. Patient mentioned occasional headaches and dizziness. Recommended monitoring blood pressure at home.',
+          vitals: {
+            bloodPressure: '145/92',
+            heartRate: '78',
+            temperature: '98.7',
+          },
+        },
       ],
     },
     {
@@ -75,6 +99,18 @@ const PatientRecords = () => {
             temperature: '98.4',
           },
         },
+        {
+          date: '2024-01-05',
+          diagnosis: 'Type 2 Diabetes - Medication Adjustment',
+          prescription: ['Metformin 850mg', 'Glipizide 2.5mg'],
+          notes:
+            'Increased dosage of Metformin due to slightly elevated A1C. Discussed importance of regular meal timing and carbohydrate counting.',
+          vitals: {
+            bloodPressure: '125/82',
+            heartRate: '74',
+            temperature: '98.2',
+          },
+        },
       ],
     },
     {
@@ -93,6 +129,199 @@ const PatientRecords = () => {
           vitals: {
             bloodPressure: '118/78',
             heartRate: '88',
+            temperature: '98.8',
+          },
+        },
+        {
+          date: '2023-12-18',
+          diagnosis: 'Upper Respiratory Infection',
+          prescription: [
+            'Amoxicillin 500mg',
+            'Benzonatate 100mg',
+            'Albuterol Inhaler',
+          ],
+          notes:
+            'Patient presented with cough, congestion and wheezing. Increased use of rescue inhaler past week.',
+          vitals: {
+            bloodPressure: '122/80',
+            heartRate: '92',
+            temperature: '100.2',
+          },
+        },
+      ],
+    },
+    {
+      id: '4',
+      name: 'Emily Wilson',
+      age: 41,
+      lastVisit: '2024-03-12',
+      condition: 'Migraine',
+      medicalHistory: [
+        {
+          date: '2024-03-12',
+          diagnosis: 'Chronic Migraines',
+          prescription: ['Sumatriptan 50mg', 'Propranolol 40mg'],
+          notes:
+            'Patient reports 3-4 severe migraines per month. Discussed trigger identification and keeping a headache journal.',
+          vitals: {
+            bloodPressure: '115/75',
+            heartRate: '68',
+            temperature: '98.2',
+          },
+        },
+        {
+          date: '2024-01-20',
+          diagnosis: 'Migraine with Aura',
+          prescription: ['Sumatriptan 25mg'],
+          notes:
+            'Initial visit for migraine evaluation. Patient describes visual disturbances preceding headache. Recommended lifestyle modifications and prescription for acute attacks.',
+          vitals: {
+            bloodPressure: '118/76',
+            heartRate: '72',
+            temperature: '98.4',
+          },
+        },
+      ],
+    },
+    {
+      id: '5',
+      name: 'Michael Chang',
+      age: 56,
+      lastVisit: '2024-03-08',
+      condition: 'Hyperlipidemia',
+      medicalHistory: [
+        {
+          date: '2024-03-08',
+          diagnosis: 'Hyperlipidemia',
+          prescription: ['Atorvastatin 20mg', 'Fenofibrate 145mg'],
+          notes:
+            'Follow-up lipid panel shows improvement. Continue current medication and dietary modifications.',
+          vitals: {
+            bloodPressure: '132/84',
+            heartRate: '65',
+            temperature: '97.8',
+          },
+        },
+        {
+          date: '2023-12-10',
+          diagnosis: 'Hyperlipidemia',
+          prescription: ['Atorvastatin 10mg'],
+          notes:
+            'Initial diagnosis based on lipid panel. LDL: 165, HDL: 38, Triglycerides: 210. Started on statin therapy and provided nutrition counseling.',
+          vitals: {
+            bloodPressure: '136/88',
+            heartRate: '70',
+            temperature: '98.0',
+          },
+        },
+      ],
+    },
+    {
+      id: '6',
+      name: 'Sarah Martinez',
+      age: 35,
+      lastVisit: '2024-03-05',
+      condition: 'Hypothyroidism',
+      medicalHistory: [
+        {
+          date: '2024-03-05',
+          diagnosis: 'Hypothyroidism',
+          prescription: ['Levothyroxine 75mcg'],
+          notes:
+            'TSH levels normalized with current dosage. Patient reports improved energy levels and resolution of cold intolerance.',
+          vitals: {
+            bloodPressure: '110/70',
+            heartRate: '72',
+            temperature: '97.6',
+          },
+        },
+        {
+          date: '2023-09-15',
+          diagnosis: 'Hypothyroidism',
+          prescription: ['Levothyroxine 50mcg'],
+          notes:
+            'Follow-up visit after initial diagnosis. TSH still elevated at 7.2. Increasing dosage and will recheck in 8 weeks.',
+          vitals: {
+            bloodPressure: '112/72',
+            heartRate: '68',
+            temperature: '97.4',
+          },
+        },
+        {
+          date: '2023-07-22',
+          diagnosis: 'Fatigue and Weight Gain',
+          prescription: ['Levothyroxine 25mcg'],
+          notes:
+            'Patient presents with fatigue, weight gain, and hair thinning. TSH elevated at 9.6, consistent with hypothyroidism. Starting on low dose levothyroxine.',
+          vitals: {
+            bloodPressure: '116/74',
+            heartRate: '64',
+            temperature: '97.2',
+          },
+        },
+      ],
+    },
+    {
+      id: '7',
+      name: 'David Anderson',
+      age: 62,
+      lastVisit: '2024-03-01',
+      condition: 'Osteoarthritis',
+      medicalHistory: [
+        {
+          date: '2024-03-01',
+          diagnosis: 'Osteoarthritis - Knees',
+          prescription: ['Meloxicam 15mg', 'Acetaminophen 500mg'],
+          notes:
+            'Pain well controlled with current regimen. Discussed importance of physical therapy exercises and maintaining healthy weight.',
+          vitals: {
+            bloodPressure: '138/82',
+            heartRate: '74',
+            temperature: '98.2',
+          },
+        },
+        {
+          date: '2023-11-05',
+          diagnosis: 'Osteoarthritis - Knees',
+          prescription: ['Meloxicam 7.5mg', 'Acetaminophen 500mg'],
+          notes:
+            'Initial evaluation for knee pain. X-rays show moderate joint space narrowing consistent with osteoarthritis. Referred to physical therapy.',
+          vitals: {
+            bloodPressure: '142/86',
+            heartRate: '78',
+            temperature: '98.4',
+          },
+        },
+      ],
+    },
+    {
+      id: '8',
+      name: 'Lisa Parker',
+      age: 38,
+      lastVisit: '2024-02-28',
+      condition: 'Anxiety Disorder',
+      medicalHistory: [
+        {
+          date: '2024-02-28',
+          diagnosis: 'Generalized Anxiety Disorder',
+          prescription: ['Sertraline 75mg', 'Lorazepam 0.5mg (as needed)'],
+          notes:
+            'Anxiety symptoms improved with medication. Patient continues with cognitive behavioral therapy. Sleep has improved.',
+          vitals: {
+            bloodPressure: '124/78',
+            heartRate: '82',
+            temperature: '98.6',
+          },
+        },
+        {
+          date: '2023-08-15',
+          diagnosis: 'Generalized Anxiety Disorder',
+          prescription: ['Sertraline 50mg', 'Lorazepam 0.5mg (as needed)'],
+          notes:
+            'Initial evaluation for anxiety symptoms. Screening positive for GAD-7. Discussed medication options and referred to therapist.',
+          vitals: {
+            bloodPressure: '130/85',
+            heartRate: '90',
             temperature: '98.8',
           },
         },
@@ -187,9 +416,6 @@ const PatientRecords = () => {
                         <div className="text-sm font-semibold text-gray-900">
                           {patient.name}
                         </div>
-                        <div className="text-xs text-gray-500">
-                          ID: {patient.id}
-                        </div>
                       </div>
                     </div>
                   </td>
@@ -197,7 +423,9 @@ const PatientRecords = () => {
                     {patient.age}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(patient.lastVisit).toLocaleDateString()}
+                    {new Date(patient.lastVisit).toLocaleDateString('en-US', {
+                      weekday: 'long', // Keep only the day of week (e.g., "Friday")
+                    })}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
@@ -250,7 +478,6 @@ const PatientRecords = () => {
             <h3 className="text-xl font-semibold text-gray-900">
               {selectedPatient?.name}
             </h3>
-            <p className="text-gray-500">Patient ID: {selectedPatient?.id}</p>
           </div>
         </div>
 

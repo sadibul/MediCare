@@ -15,63 +15,78 @@ import { motion } from 'framer-motion';
 import { useUser } from '../../context/UserContext';
 
 const PatientProfile = () => {
-  const {
-    profileImage,
-    updateProfileImage,
-    userName,
-    userEmail,
-    userPhone,
-    userAddress,
-    userDob,
-    userBloodType,
-    userHeight,
-    userWeight,
-    userBmi,
-    updateUserName,
-  } = useUser();
+  const { user, getPatientInfo } = useUser();
+  const patientData = getPatientInfo();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [tempImage, setTempImage] = useState<string | null>(null);
+  // Convert any potential object values to strings
   const [profileData, setProfileData] = useState({
-    name: userName,
-    email: userEmail,
-    phone: userPhone,
-    address: userAddress,
-    dob: userDob,
-    bloodType: userBloodType,
-    height: userHeight,
-    weight: userWeight,
-    bmi: userBmi,
-    profileImage: profileImage as string | null,
+    name: patientData?.name ? String(patientData.name) : 'N/A',
+    email: patientData?.email
+      ? typeof patientData.email === 'object'
+        ? JSON.stringify(patientData.email)
+        : String(patientData.email)
+      : 'N/A',
+    phone: patientData?.phone
+      ? typeof patientData.phone === 'object'
+        ? JSON.stringify(patientData.phone)
+        : String(patientData.phone)
+      : 'N/A',
+    address: patientData?.address
+      ? typeof patientData.address === 'object'
+        ? JSON.stringify(patientData.address)
+        : String(patientData.address)
+      : 'N/A',
+    dob: patientData?.dob
+      ? typeof patientData.dob === 'object'
+        ? JSON.stringify(patientData.dob)
+        : String(patientData.dob)
+      : 'N/A',
+    bloodType: patientData?.bloodType ? String(patientData.bloodType) : 'N/A',
+    height: patientData?.height ? String(patientData.height) : 'N/A',
+    weight: patientData?.weight ? String(patientData.weight) : 'N/A',
+    bmi: patientData?.bmi ? String(patientData.bmi) : 'N/A',
+    profileImage: patientData?.profileImage || null,
   });
 
-  // Update local state when context data changes
+  // Update local state when patient data changes
   useEffect(() => {
-    setProfileData({
-      name: userName,
-      email: userEmail,
-      phone: userPhone,
-      address: userAddress,
-      dob: userDob,
-      bloodType: userBloodType,
-      height: userHeight,
-      weight: userWeight,
-      bmi: userBmi,
-      profileImage: profileImage,
-    });
-  }, [
-    userName,
-    userEmail,
-    userPhone,
-    userAddress,
-    userDob,
-    userBloodType,
-    userHeight,
-    userWeight,
-    userBmi,
-    profileImage,
-  ]);
+    if (patientData) {
+      // Safely convert any object values to strings
+      setProfileData({
+        name: patientData.name ? String(patientData.name) : 'N/A',
+        email: patientData.email
+          ? typeof patientData.email === 'object'
+            ? JSON.stringify(patientData.email)
+            : String(patientData.email)
+          : 'N/A',
+        phone: patientData.phone
+          ? typeof patientData.phone === 'object'
+            ? JSON.stringify(patientData.phone)
+            : String(patientData.phone)
+          : 'N/A',
+        address: patientData.address
+          ? typeof patientData.address === 'object'
+            ? JSON.stringify(patientData.address)
+            : String(patientData.address)
+          : 'N/A',
+        dob: patientData.dob
+          ? typeof patientData.dob === 'object'
+            ? JSON.stringify(patientData.dob)
+            : String(patientData.dob)
+          : 'N/A',
+        bloodType: patientData.bloodType
+          ? String(patientData.bloodType)
+          : 'N/A',
+        height: patientData.height ? String(patientData.height) : 'N/A',
+        weight: patientData.weight ? String(patientData.weight) : 'N/A',
+        bmi: patientData.bmi ? String(patientData.bmi) : 'N/A',
+        profileImage: patientData.profileImage || null,
+      });
+    }
+  }, [patientData]);
 
   useEffect(() => {
     // Reset temp image when editing is cancelled
@@ -97,23 +112,31 @@ const PatientProfile = () => {
   };
 
   const handleSave = () => {
-    // Only update global context when saving
-    if (tempImage) {
-      updateProfileImage(tempImage);
-    }
-    updateUserName(profileData.name);
+    // In a real app, you would save changes to a backend
+    // For now, we'll just update local state
     setIsEditing(false);
     setTempImage(null);
+    // You would typically call an API here to update the patient profile
   };
 
   const handleCancel = () => {
     setIsEditing(false);
     setTempImage(null);
-    setProfileData((prev) => ({
-      ...prev,
-      name: userName,
-      profileImage: profileImage,
-    }));
+    // Reset form data to original values
+    if (patientData) {
+      setProfileData({
+        name: patientData.name || 'N/A',
+        email: patientData.email || 'N/A',
+        phone: patientData.phone || 'N/A',
+        address: patientData.address || 'N/A',
+        dob: patientData.dob || 'N/A',
+        bloodType: patientData.bloodType || 'N/A',
+        height: patientData.height || 'N/A',
+        weight: patientData.weight || 'N/A',
+        bmi: patientData.bmi || 'N/A',
+        profileImage: patientData.profileImage || null,
+      });
+    }
   };
 
   return (
@@ -126,7 +149,7 @@ const PatientProfile = () => {
             Manage your personal information and preferences
           </p>
         </div>
-        {isEditing ? (
+        {isEditing && (
           <div className="flex items-center space-x-3">
             <motion.button
               onClick={handleSave}
@@ -147,16 +170,6 @@ const PatientProfile = () => {
               <span>Cancel</span>
             </motion.button>
           </div>
-        ) : (
-          <motion.button
-            onClick={() => setIsEditing(!isEditing)}
-            className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-gray-600 flex items-center space-x-2 hover:bg-gray-50 transition-colors"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <Edit2 size={18} />
-            <span>Edit Profile</span>
-          </motion.button>
         )}
       </div>
 
@@ -168,9 +181,9 @@ const PatientProfile = () => {
               <div className="flex items-center space-x-4">
                 <div className="relative">
                   <div className="w-20 h-20 rounded-full bg-blue-50 flex items-center justify-center overflow-hidden">
-                    {tempImage || profileImage ? (
+                    {tempImage || profileData.profileImage ? (
                       <img
-                        src={tempImage || profileImage || ''}
+                        src={tempImage || profileData.profileImage || ''}
                         alt="Profile"
                         className="w-full h-full object-cover"
                       />
@@ -220,39 +233,47 @@ const PatientProfile = () => {
               </div>
             </div>
             <div className="p-6 space-y-4">
-              {[
-                { icon: Mail, value: 'email' },
-                { icon: Phone, value: 'phone' },
-                { icon: MapPin, value: 'address' },
-                { icon: Calendar, value: 'dob' },
-              ].map((item, index) => (
-                <div key={index} className="flex items-center text-gray-600">
-                  <item.icon className="w-5 h-5 mr-3 text-gray-400" />
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={
-                        profileData[
-                          item.value as keyof typeof profileData
-                        ] as string
-                      }
-                      onChange={(e) =>
-                        setProfileData((prev) => ({
-                          ...prev,
-                          [item.value]: e.target.value,
-                        }))
-                      }
-                      className="flex-1 border border-gray-300 rounded px-2 py-1"
-                    />
-                  ) : (
-                    <span>
-                      {String(
-                        profileData[item.value as keyof typeof profileData]
+              {/* Remove this object being rendered directly in JSX */}
+              {Object.entries(profileData)
+                .filter(([key]) =>
+                  ['email', 'phone', 'address', 'dob'].includes(key)
+                )
+                .map(([key, value]) => {
+                  // Create a mapping for icons
+                  const iconMap = {
+                    email: Mail,
+                    phone: Phone,
+                    address: MapPin,
+                    dob: Calendar,
+                  };
+
+                  // Get the icon component safely
+                  const IconComponent = iconMap[key as keyof typeof iconMap];
+
+                  // Only render if we have a valid icon
+                  if (!IconComponent) return null;
+
+                  return (
+                    <div key={key} className="flex items-center text-gray-600">
+                      <IconComponent className="w-5 h-5 mr-3 text-gray-400" />
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          value={value as string}
+                          onChange={(e) =>
+                            setProfileData((prev) => ({
+                              ...prev,
+                              [key]: e.target.value,
+                            }))
+                          }
+                          className="flex-1 border border-gray-300 rounded px-2 py-1"
+                        />
+                      ) : (
+                        <span>{String(value)}</span>
                       )}
-                    </span>
-                  )}
-                </div>
-              ))}
+                    </div>
+                  );
+                })}
             </div>
           </div>
         </motion.div>
@@ -266,41 +287,46 @@ const PatientProfile = () => {
               Medical Information
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                { label: 'Blood Type', value: 'bloodType' },
-                { label: 'Height', value: 'height' },
-                { label: 'Weight', value: 'weight' },
-                { label: 'BMI', value: 'bmi' },
-              ].map((item, index) => (
-                <div key={index}>
-                  <label className="block text-sm font-medium text-gray-500 mb-1">
-                    {item.label}
-                  </label>
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={
-                        profileData[
-                          item.value as keyof typeof profileData
-                        ] as string
-                      }
-                      onChange={(e) =>
-                        setProfileData((prev) => ({
-                          ...prev,
-                          [item.value]: e.target.value,
-                        }))
-                      }
-                      className="w-full border border-gray-300 rounded px-2 py-1"
-                    />
-                  ) : (
-                    <p className="text-gray-800">
-                      {String(
-                        profileData[item.value as keyof typeof profileData]
+              {/* Remove this object being rendered directly in JSX */}
+              {Object.entries(profileData)
+                .filter(([key]) =>
+                  ['bloodType', 'height', 'weight', 'bmi'].includes(key)
+                )
+                .map(([key, value]) => {
+                  // Create label mapping
+                  const labelMap = {
+                    bloodType: 'Blood Type',
+                    height: 'Height',
+                    weight: 'Weight',
+                    bmi: 'BMI',
+                  };
+
+                  const label = labelMap[key as keyof typeof labelMap];
+                  if (!label) return null;
+
+                  return (
+                    <div key={key}>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">
+                        {label}
+                      </label>
+                      {isEditing ? (
+                        <input
+                          type="text"
+                          value={value as string}
+                          onChange={(e) =>
+                            setProfileData((prev) => ({
+                              ...prev,
+                              [key]: e.target.value,
+                            }))
+                          }
+                          className="w-full border border-gray-300 rounded px-2 py-1"
+                        />
+                      ) : (
+                        <p className="text-gray-800">{String(value)}</p>
                       )}
-                    </p>
-                  )}
-                </div>
-              ))}
+                    </div>
+                  );
+                })}
             </div>
           </motion.div>
         </div>

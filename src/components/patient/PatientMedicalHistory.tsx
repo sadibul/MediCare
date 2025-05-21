@@ -46,6 +46,76 @@ const PatientMedicalHistory = () => {
       notes:
         'Grade 2 sprain of right ankle. R.I.C.E protocol explained. Provided with walking boot and crutches. Physical therapy referral made.',
     },
+    {
+      id: '4',
+      date: '2025-02-18',
+      doctorName: 'Dr. Michael Wong',
+      diagnosis: 'Seasonal Allergies',
+      prescription: ['Loratadine 10mg', 'Fluticasone nasal spray'],
+      notes:
+        'Patient experiencing nasal congestion, sneezing, and itchy eyes. Recommended minimizing outdoor exposure during high pollen count days. Follow up in 1 month if symptoms persist.',
+    },
+    {
+      id: '5',
+      date: '2025-01-10',
+      doctorName: 'Dr. Jessica Patel',
+      diagnosis: 'Bronchitis',
+      prescription: [
+        'Azithromycin 250mg',
+        'Benzonatate 100mg',
+        'Albuterol inhaler',
+      ],
+      notes:
+        'Acute bronchitis with persistent cough for 10 days. Chest x-ray negative for pneumonia. Advised rest, increased fluid intake, and avoiding irritants. Return if shortness of breath develops.',
+    },
+    {
+      id: '6',
+      date: '2024-11-22',
+      doctorName: 'Dr. David Thompson',
+      diagnosis: 'Annual Physical',
+      prescription: ['Multivitamin daily'],
+      notes:
+        'Routine annual physical examination. All vital signs within normal limits. Blood work ordered. Discussed importance of regular exercise and balanced diet. Recommended colonoscopy screening due to family history.',
+    },
+    {
+      id: '7',
+      date: '2024-10-05',
+      doctorName: 'Dr. Sarah Johnson',
+      diagnosis: 'Hypertension Follow-up',
+      prescription: ['Lisinopril 20mg', 'Hydrochlorothiazide 25mg'],
+      notes:
+        'Blood pressure remains elevated despite previous medication. Dosage increased for both medications. Patient reports adherence to reduced sodium diet. Recommended daily blood pressure monitoring and stress management techniques.',
+    },
+    {
+      id: '8',
+      date: '2024-08-17',
+      doctorName: 'Dr. Lisa Rodriguez',
+      diagnosis: 'Migraine',
+      prescription: ['Sumatriptan 50mg', 'Propranolol 40mg'],
+      notes:
+        'Patient experiencing increased frequency of migraine episodes with visual aura and nausea. Prescribed acute treatment and prophylactic medication. Discussed trigger identification and keeping headache journal. Scheduled for follow-up in 6 weeks.',
+    },
+    {
+      id: '9',
+      date: '2024-07-03',
+      doctorName: 'Dr. James Wilson',
+      diagnosis: 'Lower Back Pain',
+      prescription: ['Cyclobenzaprine 10mg', 'Naproxen sodium 500mg'],
+      notes:
+        'Acute lumbar strain following gardening activity. No radicular symptoms or red flags. Advised on proper body mechanics and provided stretching exercises. Muscle relaxant prescribed for short-term use. Physical therapy referral provided.',
+    },
+    {
+      id: '10',
+      date: '2024-05-29',
+      doctorName: 'Dr. Emily Martinez',
+      diagnosis: 'Dermatitis Assessment',
+      prescription: [
+        'Triamcinolone acetonide 0.1% cream',
+        'Cerave moisturizing cream',
+      ],
+      notes:
+        'Follow-up for eczema management. Previous treatment showing good results with significant reduction in rash and itching. Patient to continue current skin care regimen. Advised on identifying and avoiding potential environmental triggers.',
+    },
   ];
 
   const filteredRecords = medicalRecords.filter(
@@ -108,9 +178,7 @@ const PatientMedicalHistory = () => {
                   <span className="flex items-center text-sm text-gray-500 bg-gray-50 px-3 py-1 rounded-full">
                     <Calendar size={14} className="mr-1.5" />
                     {new Date(record.date).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
+                      weekday: 'long', // Keep only the day of week (e.g., "Friday")
                     })}
                   </span>
                 </div>
@@ -185,10 +253,7 @@ const PatientMedicalHistory = () => {
                 {new Date(selectedRecord?.date || '').toLocaleDateString(
                   'en-US',
                   {
-                    weekday: 'long',
-                    month: 'long',
-                    day: 'numeric',
-                    year: 'numeric',
+                    weekday: 'long', // Keep only the day of week (e.g., "Friday")
                   }
                 )}
               </p>

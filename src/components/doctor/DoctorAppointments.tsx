@@ -8,6 +8,9 @@ import {
   XCircle,
 } from 'lucide-react';
 import AddPrescription from './AddPrescription';
+import { toast } from 'react-toastify';
+import ConfirmationDialog from '../common/ConfirmationDialog';
+import { useNotifications } from '../../context/NotificationContext';
 
 interface Appointment {
   id: string;
@@ -16,6 +19,7 @@ interface Appointment {
   date: string;
   time: string;
   reason: string;
+  status?: 'scheduled' | 'completed' | 'cancelled';
 }
 
 const DoctorAppointments = () => {
@@ -26,9 +30,10 @@ const DoctorAppointments = () => {
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
   const [showAddPrescription, setShowAddPrescription] = useState(false);
-
-  // Mock data
-  const appointments: Appointment[] = [
+  const [completedAppointmentIds, setCompletedAppointmentIds] = useState<
+    string[]
+  >([]);
+  const [allAppointments, setAllAppointments] = useState<Appointment[]>([
     {
       id: '1',
       patientName: 'John Smith',
@@ -61,7 +66,109 @@ const DoctorAppointments = () => {
       time: '9:00 AM',
       reason: 'Diabetes management and medication review',
     },
-  ];
+    {
+      id: '5',
+      patientName: 'Robert Johnson',
+      patientAge: 67,
+      date: '2025-06-16',
+      time: '10:30 AM',
+      reason: 'Heart palpitations and chest pain evaluation',
+    },
+    {
+      id: '6',
+      patientName: 'Maria Garcia',
+      patientAge: 41,
+      date: '2025-06-16',
+      time: '1:45 PM',
+      reason: 'Hypertension follow-up and medication adjustment',
+    },
+    {
+      id: '7',
+      patientName: 'David Lee',
+      patientAge: 35,
+      date: '2025-06-16',
+      time: '3:30 PM',
+      reason: 'Stress-related chest tightness and anxiety',
+    },
+    {
+      id: '8',
+      patientName: 'Lisa Wong',
+      patientAge: 29,
+      date: '2025-06-17',
+      time: '9:15 AM',
+      reason: 'New patient consultation - family history of heart disease',
+    },
+    {
+      id: '9',
+      patientName: 'James Wilson',
+      patientAge: 58,
+      date: '2025-06-17',
+      time: '11:00 AM',
+      reason: 'Post-heart attack rehabilitation check-up',
+    },
+    {
+      id: '10',
+      patientName: 'Samantha Brown',
+      patientAge: 43,
+      date: '2025-06-17',
+      time: '2:00 PM',
+      reason: 'Shortness of breath during physical activities',
+    },
+    {
+      id: '11',
+      patientName: 'Thomas Rodriguez',
+      patientAge: 72,
+      date: '2025-06-18',
+      time: '10:00 AM',
+      reason: 'Pacemaker functionality check and battery assessment',
+    },
+    {
+      id: '12',
+      patientName: 'Emma Martinez',
+      patientAge: 25,
+      date: '2025-06-18',
+      time: '1:30 PM',
+      reason: 'Consultation for heart murmur detected during physical',
+    },
+    {
+      id: '13',
+      patientName: 'Alexander Taylor',
+      patientAge: 62,
+      date: '2025-06-19',
+      time: '9:30 AM',
+      reason: 'Coronary artery disease follow-up and statin therapy review',
+    },
+    {
+      id: '14',
+      patientName: 'Olivia Wilson',
+      patientAge: 38,
+      date: '2025-06-19',
+      time: '11:45 AM',
+      reason: 'Unexplained fainting episodes investigation',
+    },
+    {
+      id: '15',
+      patientName: 'William Anderson',
+      patientAge: 54,
+      date: '2025-06-20',
+      time: '10:15 AM',
+      reason: 'Pre-operative cardiovascular assessment for knee surgery',
+    },
+    {
+      id: '16',
+      patientName: 'Sophia Jackson',
+      patientAge: 48,
+      date: '2025-06-20',
+      time: '2:30 PM',
+      reason: 'Arrhythmia monitoring results review',
+    },
+  ]);
+
+  // Add state for confirmation dialog
+  const [showCancelConfirmation, setShowCancelConfirmation] = useState(false);
+
+  // Get notification context
+  const { addNotification } = useNotifications();
 
   const dates = [
     '2025-06-14',
@@ -73,10 +180,13 @@ const DoctorAppointments = () => {
     '2025-06-20',
   ];
 
-  const filteredAppointments = appointments.filter(
+  const filteredAppointments = allAppointments.filter(
     (appointment) =>
       appointment.date === selectedDate &&
-      appointment.patientName.toLowerCase().includes(search.toLowerCase())
+      appointment.patientName.toLowerCase().includes(search.toLowerCase()) &&
+      !completedAppointmentIds.includes(appointment.id) &&
+      appointment.status !== 'completed' &&
+      appointment.status !== 'cancelled'
   );
 
   const handleDateClick = (date: string) => {
@@ -91,10 +201,66 @@ const DoctorAppointments = () => {
     setShowAddPrescription(true);
   };
 
-  const handleFinishPrescription = () => {
+  const handleFinishPrescription = (completedAppointmentId: string) => {
     setShowAddPrescription(false);
     setSelectedAppointment(null);
-    // Here you would update the appointment status to completed
+
+    // Add the completed appointment ID to our list of completed appointments
+    setCompletedAppointmentIds((prev) => [...prev, completedAppointmentId]);
+
+    // Mark the appointment as completed in our list
+    setAllAppointments((prev) =>
+      prev.map((app) =>
+        app.id === completedAppointmentId
+          ? { ...app, status: 'completed' }
+          : app
+      )
+    );
+
+    // Show success notification
+    addNotification(
+      `Prescription saved for ${selectedAppointment?.patientName}. Appointment completed.`,
+      'success'
+    );
+
+    // Show success toast
+    toast.success('Prescription saved and appointment completed');
+  };
+
+  // Handle cancel appointment request
+  const handleCancelRequest = () => {
+    setShowCancelConfirmation(true);
+  };
+
+  // Handle cancel appointment confirmation
+  const handleConfirmCancel = () => {
+    if (!selectedAppointment) return;
+
+    // Mark appointment as cancelled
+    setAllAppointments((prev) =>
+      prev.map((app) =>
+        app.id === selectedAppointment.id
+          ? { ...app, status: 'cancelled' }
+          : app
+      )
+    );
+
+    // Add notification
+    addNotification(
+      `Appointment with ${selectedAppointment.patientName} has been cancelled.`,
+      'warning'
+    );
+
+    // Show success toast
+    toast.info(
+      `Appointment with ${selectedAppointment.patientName} has been cancelled`
+    );
+
+    // Close confirmation dialog
+    setShowCancelConfirmation(false);
+
+    // Return to appointment list
+    setSelectedAppointment(null);
   };
 
   const renderAppointmentsList = () => (
@@ -121,9 +287,7 @@ const DoctorAppointments = () => {
               onClick={() => handleDateClick(date)}
             >
               {new Date(date).toLocaleDateString('en-US', {
-                weekday: 'short',
-                month: 'short',
-                day: 'numeric',
+                weekday: 'long',
               })}
             </button>
           ))}
@@ -272,7 +436,10 @@ const DoctorAppointments = () => {
         </div>
 
         <div className="flex justify-end space-x-4">
-          <button className="px-6 py-2.5 border-2 border-red-500 text-red-500 hover:bg-red-50 rounded-xl font-medium transition duration-300 flex items-center">
+          <button
+            className="px-6 py-2.5 border-2 border-red-500 text-red-500 hover:bg-red-50 rounded-xl font-medium transition duration-300 flex items-center"
+            onClick={handleCancelRequest}
+          >
             <XCircle size={18} className="mr-2" />
             Cancel Appointment
           </button>
@@ -285,6 +452,18 @@ const DoctorAppointments = () => {
           </button>
         </div>
       </div>
+
+      {/* Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={showCancelConfirmation}
+        title="Cancel Appointment"
+        message={`Are you sure you want to cancel the appointment with ${selectedAppointment?.patientName}?`}
+        confirmText="Yes, Cancel"
+        cancelText="No, Keep It"
+        onConfirm={handleConfirmCancel}
+        onCancel={() => setShowCancelConfirmation(false)}
+        type="warning"
+      />
     </>
   );
 
@@ -292,7 +471,9 @@ const DoctorAppointments = () => {
     return (
       <AddPrescription
         appointment={selectedAppointment}
-        onComplete={handleFinishPrescription}
+        onComplete={(completedId) =>
+          handleFinishPrescription(completedId || selectedAppointment.id)
+        }
       />
     );
   }

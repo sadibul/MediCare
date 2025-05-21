@@ -9,6 +9,8 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-toastify'; // Import toast
+import { useNotifications } from '../../context/NotificationContext'; // Import notification context
 
 interface Appointment {
   id: string;
@@ -26,9 +28,9 @@ const AppointmentsManagement = () => {
   const [search, setSearch] = useState('');
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
-
-  // Mock data
-  const appointments: Appointment[] = [
+  const { addNotification } = useNotifications(); // Get addNotification function
+  // Add appointments state to manage appointments
+  const [appointments, setAppointments] = useState<Appointment[]>([
     {
       id: '1',
       patientName: 'John Smith',
@@ -62,13 +64,236 @@ const AppointmentsManagement = () => {
       status: 'scheduled',
       reason: 'Chronic pain management',
     },
-  ];
+    // New appointments added below
+    {
+      id: '4',
+      patientName: 'Jennifer Adams',
+      patientId: 'P004',
+      doctorName: 'Dr. Michael Lee',
+      doctorId: 'D003',
+      date: '2024-03-26',
+      time: '9:15 AM',
+      status: 'scheduled',
+      reason: 'Migraine evaluation',
+    },
+    {
+      id: '5',
+      patientName: 'Robert Thompson',
+      patientId: 'P005',
+      doctorName: 'Dr. Lisa Wong',
+      doctorId: 'D004',
+      date: '2024-03-26',
+      time: '3:30 PM',
+      status: 'scheduled',
+      reason: 'Diabetes management',
+    },
+    {
+      id: '6',
+      patientName: 'Maria Garcia',
+      patientId: 'P006',
+      doctorName: 'Dr. Robert Chen',
+      doctorId: 'D002',
+      date: '2024-03-27',
+      time: '10:45 AM',
+      status: 'scheduled',
+      reason: 'Prenatal check-up',
+    },
+    {
+      id: '7',
+      patientName: 'James Johnson',
+      patientId: 'P007',
+      doctorName: 'Dr. Sarah Johnson',
+      doctorId: 'D001',
+      date: '2024-03-27',
+      time: '1:15 PM',
+      status: 'cancelled',
+      reason: 'Skin rash examination',
+    },
+    {
+      id: '8',
+      patientName: 'David Miller',
+      patientId: 'P008',
+      doctorName: 'Dr. Michael Lee',
+      doctorId: 'D003',
+      date: '2024-03-24',
+      time: '11:00 AM',
+      status: 'completed',
+      reason: 'Post-surgery follow-up',
+    },
+    {
+      id: '9',
+      patientName: 'Sarah Williams',
+      patientId: 'P009',
+      doctorName: 'Dr. Lisa Wong',
+      doctorId: 'D004',
+      date: '2024-03-24',
+      time: '2:30 PM',
+      status: 'completed',
+      reason: 'Thyroid evaluation',
+    },
+    {
+      id: '10',
+      patientName: 'Thomas Brown',
+      patientId: 'P010',
+      doctorName: 'Dr. Robert Chen',
+      doctorId: 'D002',
+      date: '2024-03-28',
+      time: '9:00 AM',
+      status: 'scheduled',
+      reason: 'Cardiovascular assessment',
+    },
+    {
+      id: '11',
+      patientName: 'Elizabeth Taylor',
+      patientId: 'P011',
+      doctorName: 'Dr. Sarah Johnson',
+      doctorId: 'D001',
+      date: '2024-03-28',
+      time: '3:00 PM',
+      status: 'scheduled',
+      reason: 'Respiratory infection symptoms',
+    },
+    {
+      id: '12',
+      patientName: 'Daniel Martinez',
+      patientId: 'P012',
+      doctorName: 'Dr. Michael Lee',
+      doctorId: 'D003',
+      date: '2024-03-23',
+      time: '10:30 AM',
+      status: 'completed',
+      reason: 'Back pain evaluation',
+    },
+    {
+      id: '13',
+      patientName: 'Sophia Anderson',
+      patientId: 'P013',
+      doctorName: 'Dr. Lisa Wong',
+      doctorId: 'D004',
+      date: '2024-03-29',
+      time: '11:45 AM',
+      status: 'scheduled',
+      reason: "Annual women's health check-up",
+    },
+    {
+      id: '14',
+      patientName: 'William Jackson',
+      patientId: 'P014',
+      doctorName: 'Dr. Robert Chen',
+      doctorId: 'D002',
+      date: '2024-03-29',
+      time: '1:30 PM',
+      status: 'scheduled',
+      reason: 'Allergy consultation',
+    },
+    {
+      id: '15',
+      patientName: 'Olivia White',
+      patientId: 'P015',
+      doctorName: 'Dr. Sarah Johnson',
+      doctorId: 'D001',
+      date: '2024-03-25',
+      time: '4:00 PM',
+      status: 'cancelled',
+      reason: 'Digestive issues evaluation',
+    },
+    {
+      id: '16',
+      patientName: 'Christopher Harris',
+      patientId: 'P016',
+      doctorName: 'Dr. Lisa Wong',
+      doctorId: 'D004',
+      date: '2024-03-22',
+      time: '9:45 AM',
+      status: 'completed',
+      reason: 'Neurological assessment',
+    },
+    {
+      id: '17',
+      patientName: 'Ava Robinson',
+      patientId: 'P017',
+      doctorName: 'Dr. Michael Lee',
+      doctorId: 'D003',
+      date: '2024-03-30',
+      time: '2:15 PM',
+      status: 'scheduled',
+      reason: 'Pediatric wellness check',
+    },
+    {
+      id: '18',
+      patientName: 'Joseph Clark',
+      patientId: 'P018',
+      doctorName: 'Dr. Robert Chen',
+      doctorId: 'D002',
+      date: '2024-03-30',
+      time: '4:30 PM',
+      status: 'scheduled',
+      reason: 'Joint pain evaluation',
+    },
+  ]);
 
   const filteredAppointments = appointments.filter(
     (appointment) =>
       appointment.patientName.toLowerCase().includes(search.toLowerCase()) ||
       appointment.doctorName.toLowerCase().includes(search.toLowerCase())
   );
+
+  // Add the missing handler functions
+  const handleCancelAppointment = () => {
+    if (!selectedAppointment) return;
+
+    // Update appointments state with the cancelled status
+    setAppointments((prevAppointments) =>
+      prevAppointments.map((appointment) =>
+        appointment.id === selectedAppointment.id
+          ? { ...appointment, status: 'cancelled' }
+          : appointment
+      )
+    );
+
+    // Show notification
+    addNotification(
+      `Appointment for ${selectedAppointment.patientName} with ${selectedAppointment.doctorName} has been cancelled.`,
+      'warning'
+    );
+
+    // Show toast
+    toast.info(`Appointment successfully cancelled`);
+
+    // Update selected appointment
+    setSelectedAppointment({
+      ...selectedAppointment,
+      status: 'cancelled',
+    });
+  };
+
+  const handleMarkAsCompleted = () => {
+    if (!selectedAppointment) return;
+
+    // Update appointments state with the completed status
+    setAppointments((prevAppointments) =>
+      prevAppointments.map((appointment) =>
+        appointment.id === selectedAppointment.id
+          ? { ...appointment, status: 'completed' }
+          : appointment
+      )
+    );
+
+    // Show notification
+    addNotification(
+      `Appointment for ${selectedAppointment.patientName} with ${selectedAppointment.doctorName} has been marked as completed.`,
+      'success'
+    );
+
+    // Show toast
+    toast.success(`Appointment marked as completed`);
+
+    // Update selected appointment
+    setSelectedAppointment({
+      ...selectedAppointment,
+      status: 'completed',
+    });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -166,9 +391,6 @@ const AppointmentsManagement = () => {
                         <div className="text-sm font-semibold text-gray-900">
                           {appointment.patientName}
                         </div>
-                        <div className="text-xs text-gray-500">
-                          ID: {appointment.patientId}
-                        </div>
                       </div>
                     </div>
                   </td>
@@ -176,13 +398,12 @@ const AppointmentsManagement = () => {
                     <div className="text-sm text-gray-900">
                       {appointment.doctorName}
                     </div>
-                    <div className="text-sm text-gray-500">
-                      ID: {appointment.doctorId}
-                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
-                      {new Date(appointment.date).toLocaleDateString()}
+                      {new Date(appointment.date).toLocaleDateString('en-US', {
+                        weekday: 'long', // Keep only the day of week (e.g., "Friday")
+                      })}
                     </div>
                     <div className="text-sm text-gray-500">
                       {appointment.time}
@@ -259,9 +480,6 @@ const AppointmentsManagement = () => {
                   <div className="font-semibold text-gray-900">
                     {selectedAppointment?.patientName}
                   </div>
-                  <div className="text-sm text-gray-500">
-                    ID: {selectedAppointment?.patientId}
-                  </div>
                 </div>
               </div>
             </div>
@@ -282,9 +500,6 @@ const AppointmentsManagement = () => {
                 <div className="ml-4">
                   <div className="font-semibold text-gray-900">
                     {selectedAppointment?.doctorName}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    ID: {selectedAppointment?.doctorId}
                   </div>
                 </div>
               </div>
@@ -310,7 +525,9 @@ const AppointmentsManagement = () => {
                   <div className="font-medium">
                     {new Date(
                       selectedAppointment?.date || ''
-                    ).toLocaleDateString()}
+                    ).toLocaleDateString('en-US', {
+                      weekday: 'long', // Keep only the day of week (e.g., "Friday")
+                    })}
                   </div>
                 </div>
               </div>
@@ -348,6 +565,7 @@ const AppointmentsManagement = () => {
                 className="flex items-center px-4 py-2 border-2 border-red-500 text-red-500 rounded-xl font-medium hover:bg-red-50 transition-colors"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                onClick={handleCancelAppointment} // Add click handler
               >
                 <XCircle className="h-5 w-5 mr-2" />
                 Cancel Appointment
@@ -356,6 +574,7 @@ const AppointmentsManagement = () => {
                 className="flex items-center px-4 py-2 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                onClick={handleMarkAsCompleted} // Add click handler
               >
                 <CheckCircle className="h-5 w-5 mr-2" />
                 Mark as Completed

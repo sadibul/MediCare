@@ -18,7 +18,11 @@ import DoctorManagement from './DoctorManagement';
 
 type Tab = 'appointments' | 'users' | 'medicines' | 'settings' | 'doctors';
 
-const AdminDashboard = () => {
+type AdminDashboardProps = {
+  onLogout?: () => void;
+};
+
+const AdminDashboard = ({ onLogout }: AdminDashboardProps) => {
   const [activeTab, setActiveTab] = useState<Tab>('appointments');
 
   const renderContent = () => {
@@ -93,7 +97,6 @@ const AdminDashboard = () => {
             <div className="flex items-center mr-8">
               <div className="text-right mr-3">
                 <p className="text-sm font-medium text-gray-700">Admin User</p>
-                <p className="text-xs text-gray-500">Admin ID: A-12345</p>
               </div>
               <motion.button
                 onClick={() => setActiveTab('settings')}
@@ -117,7 +120,10 @@ const AdminDashboard = () => {
               <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full" />
             </button>
 
-            <button className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200 ease-in-out transform hover:scale-105">
+            <button
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200 ease-in-out transform hover:scale-105"
+              onClick={onLogout}
+            >
               <LogOut size={18} className="mr-2" />
               <span className="text-sm font-medium">Logout</span>
             </button>

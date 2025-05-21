@@ -1,14 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Plus, Trash, CheckCircle } from 'lucide-react';
-
-interface Appointment {
-  id: string;
-  patientName: string;
-  patientAge: number;
-  date: string;
-  time: string;
-  reason: string;
-}
+import { Appointment } from '../../types/appointment';
 
 interface Medication {
   id: string;
@@ -103,9 +95,7 @@ const AddPrescription: React.FC<AddPrescriptionProps> = ({
               <p className="text-sm text-gray-500">Date</p>
               <p className="font-medium">
                 {new Date(appointment.date).toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
+                  weekday: 'long', // Keep only the day of week (e.g., "Friday")
                 })}
               </p>
             </div>

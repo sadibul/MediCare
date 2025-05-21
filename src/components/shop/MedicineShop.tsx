@@ -120,36 +120,43 @@ const MedicineShop = () => {
 
   const renderMedicineList = () => (
     <>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Medicine Shop</h2>
-        <button
-          className="relative p-2 rounded-full hover:bg-gray-100"
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-3xl font-bold text-gray-800 bg-gradient-to-r from-teal-600 to-teal-400 bg-clip-text text-transparent">
+          Medicine Shop
+        </h2>
+        <motion.button
+          className="relative p-3 rounded-full hover:bg-gray-100 bg-white shadow-sm border border-gray-100 transition-all duration-200"
           onClick={() => setShowCart(true)}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
         >
-          <ShoppingCart size={24} />
+          <ShoppingCart size={22} className="text-teal-600" />
           {cartItems.length > 0 && (
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+            <motion.span
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium shadow-md"
+            >
               {getTotalItems()}
-            </span>
+            </motion.span>
           )}
-        </button>
+        </motion.button>
       </div>
 
-      <div className="mb-6 relative">
-        <input
-          type="text"
-          placeholder="Search medicines..."
-          className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-teal-500"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <Search
-          size={18}
-          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-        />
+      <div className="mb-8 relative">
+        <div className="relative flex items-center">
+          <Search size={20} className="absolute left-4 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search medicines..."
+            className="w-full pl-12 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:border-transparent bg-white shadow-sm transition-all duration-200"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
       </div>
 
-      <div className="mb-4 flex overflow-x-auto py-2 -mx-2 px-2">
+      <div className="mb-8 flex overflow-x-auto py-2 -mx-2 px-2 scrollbar-hide">
         {[
           'All Categories',
           'Pain Relief',
@@ -157,55 +164,65 @@ const MedicineShop = () => {
           'Allergy',
           'Digestive Health',
         ].map((category) => (
-          <button
+          <motion.button
             key={category}
-            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap mr-2 transition-all ${
+            className={`px-5 py-2.5 rounded-full text-sm font-medium whitespace-nowrap mr-3 transition-all ${
               selectedCategory === category
-                ? 'bg-teal-500 text-white'
-                : 'bg-white border border-gray-300 hover:border-teal-500'
+                ? 'bg-gradient-to-r from-teal-500 to-teal-400 text-white shadow-md'
+                : 'bg-white border border-gray-200 text-gray-700 hover:border-teal-400 hover:shadow-sm'
             }`}
             onClick={() => setSelectedCategory(category)}
+            whileHover={{ y: -2 }}
+            whileTap={{ scale: 0.97 }}
           >
             {category}
-          </button>
+          </motion.button>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
         {filteredMedicines.length > 0 ? (
           filteredMedicines.map((medicine) => (
-            <div
+            <motion.div
               key={medicine.id}
-              className="bg-white rounded-xl shadow-lg hover:shadow-xl border border-gray-200/50 overflow-hidden transition-all duration-200"
+              className="bg-white rounded-2xl shadow hover:shadow-lg border border-gray-100 overflow-hidden transition-all duration-300"
+              whileHover={{
+                y: -4,
+                boxShadow:
+                  '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
             >
               <div className="p-6">
                 {/* Medicine Header */}
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900 text-lg mb-1">
+                    <h3 className="font-bold text-gray-900 text-xl mb-1.5">
                       {medicine.name}
                     </h3>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-50 text-blue-700 shadow-sm">
                       <Package size={14} className="mr-1.5" />
                       {medicine.category.replace('_', ' ')}
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="text-2xl font-bold text-teal-600">
+                    <span className="text-2xl font-bold text-teal-600 bg-gradient-to-r from-teal-600 to-teal-400 bg-clip-text text-transparent">
                       ${medicine.price.toFixed(2)}
                     </span>
                   </div>
                 </div>
 
                 {/* Medicine Description */}
-                <p className="text-gray-600 mb-4 line-clamp-2 min-h-[40px]">
+                <p className="text-gray-600 mb-5 line-clamp-2 min-h-[48px] text-base">
                   {medicine.description}
                 </p>
 
                 {/* Dosage Preview */}
-                <div className="bg-gray-50 rounded-lg p-3 mb-4 flex items-start">
+                <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl p-4 mb-5 flex items-start border border-gray-100">
                   <Pill className="w-5 h-5 text-teal-500 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-gray-600 ml-2 line-clamp-2">
+                  <p className="text-sm text-gray-700 ml-3 line-clamp-2">
                     {medicine.dosage}
                   </p>
                 </div>
@@ -215,8 +232,8 @@ const MedicineShop = () => {
                   {cartItems.find(
                     (item) => item.medicine.id === medicine.id
                   ) ? (
-                    <div className="flex items-center gap-3">
-                      <button
+                    <div className="flex items-center gap-4">
+                      <motion.button
                         onClick={() => {
                           const currentItem = cartItems.find(
                             (item) => item.medicine.id === medicine.id
@@ -228,16 +245,18 @@ const MedicineShop = () => {
                             );
                           }
                         }}
-                        className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors"
+                        className="w-9 h-9 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors border border-gray-200"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                       >
                         <Minus size={16} className="text-gray-600" />
-                      </button>
-                      <span className="font-medium text-gray-900">
+                      </motion.button>
+                      <span className="font-bold text-gray-900 text-lg">
                         {cartItems.find(
                           (item) => item.medicine.id === medicine.id
                         )?.quantity || 0}
                       </span>
-                      <button
+                      <motion.button
                         onClick={() => {
                           const currentItem = cartItems.find(
                             (item) => item.medicine.id === medicine.id
@@ -249,16 +268,18 @@ const MedicineShop = () => {
                             );
                           }
                         }}
-                        className="w-8 h-8 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors"
+                        className="w-9 h-9 rounded-full flex items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors border border-gray-200"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
                       >
                         <Plus size={16} className="text-gray-600" />
-                      </button>
+                      </motion.button>
                     </div>
                   ) : (
                     <motion.button
                       onClick={() => handleQuickAddToCart(medicine)}
-                      className="w-full bg-teal-500 hover:bg-teal-600 text-white py-2 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-                      whileHover={{ scale: 1.02 }}
+                      className="w-full bg-gradient-to-r from-teal-500 to-teal-400 hover:from-teal-600 hover:to-teal-500 text-white py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2 shadow-md"
+                      whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98 }}
                     >
                       <ShoppingCart size={18} />
@@ -267,17 +288,19 @@ const MedicineShop = () => {
                   )}
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))
         ) : (
-          <div className="col-span-full p-8 text-center bg-white rounded-lg shadow-sm">
-            <ShoppingCart size={48} className="mx-auto mb-2 text-gray-400" />
-            <h3 className="text-lg font-medium text-gray-900">
+          <div className="col-span-full p-10 text-center bg-white rounded-2xl shadow-sm border border-dashed border-gray-200">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+              <ShoppingCart size={32} className="text-gray-400" />
+            </div>
+            <h3 className="text-xl font-medium text-gray-900 mb-2">
               No medicines found
             </h3>
-            <p className="mt-1 text-gray-500">
+            <p className="mt-1 text-gray-500 max-w-md mx-auto">
               {search
-                ? 'Try adjusting your search'
+                ? 'Try adjusting your search terms or browse different categories'
                 : 'Browse our categories to find what you need'}
             </p>
           </div>

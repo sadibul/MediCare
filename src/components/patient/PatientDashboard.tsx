@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Calendar,
   FileText,
@@ -7,6 +7,7 @@ import {
   Bell,
   LogOut,
   Activity,
+  X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PatientAppointments from './PatientAppointments';
@@ -17,9 +18,71 @@ import { useUser } from '../../context/UserContext';
 
 type Tab = 'appointments' | 'history' | 'shop' | 'profile';
 
-const PatientDashboard = () => {
-  const { profileImage } = useUser();
-  const [activeTab, setActiveTab] = useState<Tab>('appointments');
+type PatientDashboardProps = {
+  onLogout?: () => void;
+  initialTab?: Tab;
+};
+
+// Health tips that will be shown in the toast
+const healthTips = [
+  {
+    title: 'Stay Hydrated',
+    message:
+      'Remember to drink at least 8 glasses of water daily for optimal health.',
+    icon: '💧',
+  },
+  {
+    title: 'Take Regular Breaks',
+    message:
+      'If you work at a desk, take a 5-minute break every hour to stand up and stretch.',
+    icon: '⏰',
+  },
+  {
+    title: 'Eat Your Veggies',
+    message:
+      'Try to include at least 5 portions of fruits and vegetables in your daily diet.',
+    icon: '🥦',
+  },
+  {
+    title: 'Sleep Well',
+    message:
+      'Aim for 7-8 hours of quality sleep each night to help your body recover.',
+    icon: '😴',
+  },
+];
+
+const PatientDashboard = ({
+  onLogout,
+  initialTab = 'appointments',
+}: PatientDashboardProps) => {
+  const { user, getPatientInfo } = useUser();
+  const patientData = getPatientInfo();
+  const [activeTab, setActiveTab] = useState<Tab>(initialTab);
+
+  // State for health tip toast
+  const [showTip, setShowTip] = useState(false);
+  const [currentTipIndex, setCurrentTipIndex] = useState(0);
+
+  // Set up the interval for showing health tips
+  useEffect(() => {
+    const tipInterval = setInterval(() => {
+      setCurrentTipIndex((prev) => (prev + 1) % healthTips.length);
+      setShowTip(true);
+
+      // Auto-hide toast after 10 seconds if not manually closed
+      const hideTimeout = setTimeout(() => {
+        setShowTip(false);
+      }, 10000);
+
+      return () => clearTimeout(hideTimeout);
+    }, 30000); // Show a new tip every 30 seconds
+
+    // Show first tip immediately
+    setShowTip(true);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(tipInterval);
+  }, []);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -45,7 +108,51 @@ const PatientDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 relative">
-      {/* Background Pattern */}
+      {/* Health Tip Toast */}
+      <AnimatePresence>
+        {showTip && (
+          <motion.div
+            className="fixed bottom-6 right-6 bg-white rounded-xl shadow-xl border border-blue-100 p-4 max-w-sm z-50 flex"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="mr-3 text-2xl">
+              {healthTips[currentTipIndex].icon}
+            </div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-blue-600">
+                {healthTips[currentTipIndex].title}
+              </h4>
+              <p className="text-sm text-gray-600">
+                {healthTips[currentTipIndex].message}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowTip(false)}
+              className="text-gray-400 hover:text-gray-600 p-1 h-6 w-6 flex items-center justify-center rounded-full hover:bg-gray-100"
+            >
+              <X size={16} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 opacity-10 pointer-events-none"
+        style={{
+          backgroundImage:
+            'https://i.pinimg.com/736x/e1/ef/20/e1ef20dd0d6062adc68de880dd7330e7.jpg', // Replace with your image URL
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          zIndex: 0,
+        }}
+      />
+
+      {/* Background Pattern - keeping the existing one */}
       <div
         className="absolute inset-0 bg-grid-gray-200/50 pointer-events-none"
         style={{
@@ -96,8 +203,10 @@ const PatientDashboard = () => {
           <div className="flex items-center">
             <div className="flex items-center mr-8">
               <div className="text-right mr-3">
-                <p className="text-sm font-medium text-gray-700">John Doe</p>
-                <p className="text-xs text-gray-500">Patient ID: P-12345</p>
+                <p className="text-sm font-medium text-gray-700">
+                  {patientData?.name || 'Patient'}
+                </p>
+                {/* Removed patient ID display */}
               </div>
               <motion.button
                 onClick={() => setActiveTab('profile')}
@@ -108,8 +217,10 @@ const PatientDashboard = () => {
                 <div className="w-10 h-10 rounded-full ring-2 ring-gray-200/50 overflow-hidden bg-blue-50 hover:ring-blue-200 transition-all">
                   <img
                     src={
-                      profileImage ||
-                      'https://ui-avatars.com/api/?name=John+Doe&background=random'
+                      patientData?.profileImage ||
+                      `https://ui-avatars.com/api/?name=${
+                        patientData?.name || 'Patient'
+                      }&background=random`
                     }
                     alt="Profile"
                     className="w-full h-full object-cover"
@@ -124,7 +235,10 @@ const PatientDashboard = () => {
               <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full" />
             </button>
 
-            <button className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200 ease-in-out transform hover:scale-105">
+            <button
+              className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200 ease-in-out transform hover:scale-105"
+              onClick={onLogout}
+            >
               <LogOut size={18} className="mr-2" />
               <span className="text-sm font-medium">Logout</span>
             </button>

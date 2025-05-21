@@ -102,15 +102,7 @@ const DoctorProfile = () => {
     <div className="h-full">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold">Doctor Profile</h2>
-        {!isEditing ? (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-md"
-          >
-            <Edit2 size={18} />
-            Edit Profile
-          </button>
-        ) : (
+        {isEditing && (
           <div className="flex gap-2">
             <button
               onClick={handleSave}

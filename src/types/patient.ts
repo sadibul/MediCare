@@ -15,6 +15,7 @@ export interface PatientData {
 
 export const samplePatients: PatientData[] = [
   {
+    id: '1',
     name: 'Patient 1',
     email: 'patient1@gmail.com',
     password: 'x',
@@ -28,6 +29,7 @@ export const samplePatients: PatientData[] = [
     profileImage: null,
   },
   {
+    id: '2',
     name: 'Patient 2',
     email: 'patient2@gmail.com',
     password: 'x',
@@ -41,6 +43,7 @@ export const samplePatients: PatientData[] = [
     profileImage: null,
   },
   {
+    id: '3',
     name: 'Patient 3',
     email: 'patient3@gmail.com',
     password: 'x',
@@ -54,6 +57,7 @@ export const samplePatients: PatientData[] = [
     profileImage: null,
   },
   {
+    id: '4',
     name: 'Patient 4',
     email: 'patient4@gmail.com',
     password: 'x',
@@ -67,6 +71,7 @@ export const samplePatients: PatientData[] = [
     profileImage: null,
   },
   {
+    id: '5',
     name: 'Patient 5',
     email: 'patient5@gmail.com',
     password: 'x',
@@ -80,6 +85,7 @@ export const samplePatients: PatientData[] = [
     profileImage: null,
   },
   {
+    id: '6',
     name: 'Patient 6',
     email: 'patient6@gmail.com',
     password: 'x',
@@ -93,6 +99,7 @@ export const samplePatients: PatientData[] = [
     profileImage: null,
   },
   {
+    id: '7',
     name: 'Patient 7',
     email: 'patient7@gmail.com',
     password: 'x',
@@ -106,6 +113,7 @@ export const samplePatients: PatientData[] = [
     profileImage: null,
   },
   {
+    id: '8',
     name: 'Patient 8',
     email: 'patient8@gmail.com',
     password: 'x',
@@ -119,6 +127,7 @@ export const samplePatients: PatientData[] = [
     profileImage: null,
   },
   {
+    id: '9',
     name: 'Patient 9',
     email: 'patient9@gmail.com',
     password: 'x',
@@ -132,6 +141,7 @@ export const samplePatients: PatientData[] = [
     profileImage: null,
   },
   {
+    id: '10',
     name: 'Patient 10',
     email: 'patient10@gmail.com',
     password: 'x',

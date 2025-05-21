@@ -45,11 +45,17 @@ const Login: React.FC<LoginProps> = ({ onLogin, onRegisterClick }) => {
       if (isAuthenticated) {
         onLogin('patient');
       } else {
-        setError('Invalid email or password');
+        // Modified error message to remove credentials
+        setError('Invalid email or password.');
       }
     } else if (userType === 'admin') {
-      // Admin can sign in without authentication
-      onLogin('admin');
+      // Admin can sign in with any credentials
+      const isAuthenticated = loginUser(email, password, 'admin');
+      if (isAuthenticated) {
+        onLogin('admin');
+      } else {
+        setError('Admin login failed');
+      }
     }
   };
 

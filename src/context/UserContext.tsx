@@ -1,193 +1,133 @@
-import React, { createContext, useContext, useState } from 'react';
+'use client';
+
 import { PatientData } from '../types/patient';
 import { DoctorData } from '../types/doctor';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { authService } from '../services/authService';
 
-interface UserContextType {
-  profileImage: string | null;
-  updateProfileImage: (image: string | null) => void;
-  userType: 'patient' | 'doctor' | 'admin';
-  setUserType: (type: 'patient' | 'doctor' | 'admin') => void;
+// Define the User type
+export type User = {
+  id: string;
+  name?: string;
+  email?: string;
+  type: 'patient' | 'doctor' | 'admin';
+  patientData?: PatientData; // Store full patient data here
+};
 
-  // Doctor-specific data
-  doctorName: string;
-  doctorSpecialty: string;
-  doctorEmail: string;
-  doctorPhone: string;
-  doctorAddress: string;
-  doctorExperience: string;
-  doctorWorkingHours: string;
-  about: string;
-  updateDoctorName: (name: string) => void;
-  updateDoctorSpecialty: (specialty: string) => void;
-  updateDoctorEmail: (email: string) => void;
-  updateDoctorPhone: (phone: string) => void;
-  updateDoctorAddress: (address: string) => void;
-  updateDoctorExperience: (experience: string) => void;
-  updateDoctorWorkingHours: (hours: string) => void;
+// Make sure PatientData fields are properly typed
+export interface UserContextType {
+  user: User | null;
+  doctorData?: DoctorData;
+  profileImage?: string;
+  doctorName?: string;
+  doctorSpecialty?: string;
   setDoctorData: (data: DoctorData) => void;
-  doctorData: DoctorData | null;
-
-  // Patient-specific data
-  userName: string;
-  userEmail: string;
-  userPhone: string;
-  userAddress: string;
-  userDob: string;
-  userBloodType: string;
-  userHeight: string;
-  userWeight: string;
-  userBmi: string;
-  updateUserName: (name: string) => void;
-  updateUserEmail: (email: string) => void;
-  setPatientData: (data: PatientData) => void;
-  patientData: PatientData | null;
-
-  // Authentication
-  loginUser: (
-    email: string,
-    password: string,
-    type: 'patient' | 'doctor' | 'admin'
-  ) => boolean;
+  loginUser: (email: string, password: string, type: string) => boolean;
+  // Update return type to include id
+  getPatientInfo: () =>
+    | {
+        id?: string;
+        name?: string;
+        email?: string;
+        phone?: string;
+        address?: string;
+        dob?: string;
+        bloodType?: string;
+        height?: string;
+        weight?: string;
+        bmi?: string;
+        profileImage?: string | null;
+      }
+    | undefined;
 }
 
-const UserContext = createContext<UserContextType | undefined>(undefined);
+// Create the context with a default value
+const UserContext = createContext<UserContextType>({
+  user: null,
+  setDoctorData: () => {},
+  loginUser: () => false,
+  getPatientInfo: () => undefined,
+});
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
+// Provider component
+export const UserProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-  const [userType, setUserType] = useState<'patient' | 'doctor' | 'admin'>(
-    'patient'
-  );
-  const [doctorData, setDoctorData] = useState<DoctorData | null>(null);
-  const [patientData, setPatientData] = useState<PatientData | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [doctorData, setDoctorDataState] = useState<DoctorData | undefined>();
 
-  // Use doctorData values if available, otherwise use defaults
-  const doctorName = doctorData?.doctorName ?? '';
-  const doctorSpecialty = doctorData?.doctorSpecialty ?? '';
-  const doctorEmail = doctorData?.doctorEmail ?? '';
-  const doctorPhone = doctorData?.doctorPhone ?? '';
-  const doctorAddress = doctorData?.doctorAddress ?? '';
-  const doctorExperience = doctorData?.doctorExperience ?? '';
-  const doctorWorkingHours = doctorData?.doctorWorkingHours ?? '';
-  const about = doctorData?.about ?? '';
-
-  // Patient data
-  const userName = patientData?.name ?? '';
-  const userEmail = patientData?.email ?? '';
-  const userPhone = patientData?.phone ?? '';
-  const userAddress = patientData?.address ?? '';
-  const userDob = patientData?.dob ?? '';
-  const userBloodType = patientData?.bloodType ?? '';
-  const userHeight = patientData?.height ?? '';
-  const userWeight = patientData?.weight ?? '';
-  const userBmi = patientData?.bmi ?? '';
-
-  // Doctor update functions
-  const updateDoctorName = (name: string) =>
-    setDoctorData((prev) => (prev ? { ...prev, doctorName: name } : null));
-  const updateDoctorSpecialty = (specialty: string) =>
-    setDoctorData((prev) =>
-      prev ? { ...prev, doctorSpecialty: specialty } : null
-    );
-  const updateDoctorEmail = (email: string) =>
-    setDoctorData((prev) => (prev ? { ...prev, doctorEmail: email } : null));
-  const updateDoctorPhone = (phone: string) =>
-    setDoctorData((prev) => (prev ? { ...prev, doctorPhone: phone } : null));
-  const updateDoctorAddress = (address: string) =>
-    setDoctorData((prev) =>
-      prev ? { ...prev, doctorAddress: address } : null
-    );
-  const updateDoctorExperience = (experience: string) =>
-    setDoctorData((prev) =>
-      prev ? { ...prev, doctorExperience: experience } : null
-    );
-  const updateDoctorWorkingHours = (hours: string) =>
-    setDoctorData((prev) =>
-      prev ? { ...prev, doctorWorkingHours: hours } : null
-    );
-
-  // Patient update functions
-  const updateUserName = (name: string) =>
-    setPatientData((prev) => (prev ? { ...prev, name } : null));
-  const updateUserEmail = (email: string) =>
-    setPatientData((prev) => (prev ? { ...prev, email } : null));
-
-  const updateProfileImage = (image: string | null) => {
-    setProfileImage(image);
-    if (userType === 'patient' && patientData) {
-      setPatientData({ ...patientData, profileImage: image });
-    } else if (userType === 'doctor' && doctorData) {
-      setDoctorData({ ...doctorData, profileImage: image });
-    }
-  };
-
-  // Authentication function
   const loginUser = (
     email: string,
     password: string,
-    type: 'patient' | 'doctor' | 'admin'
+    type: string
   ): boolean => {
     if (type === 'patient') {
+      // Use authService to validate patient credentials
       const result = authService.login(email, password, 'patient');
+
       if (result.success && result.data) {
-        setUserType('patient');
-        setPatientData(result.data);
-        setProfileImage(result.data.profileImage);
+        // Set user state with patient data
+        setUser({
+          id: result.data.id || `patient-${Date.now()}`,
+          name: result.data.name,
+          email: result.data.email,
+          type: 'patient',
+          patientData: result.data, // Store full patient data
+        });
         return true;
       }
-    } else if (type === 'doctor') {
-      // Doctor authentication is handled by the component through authService.loginDoctor
-      return true;
-    } else if (type === 'admin') {
-      // Simple admin login for demo purposes
-      if (email === 'admin@gmail.com' && password === 'admin') {
-        setUserType('admin');
+      return false;
+    } else if (type === 'doctor' || type === 'admin') {
+      // Mock login logic for doctor and admin (can be enhanced later)
+      if (email && password) {
+        setUser({
+          id: `${type}-${Date.now()}`,
+          email,
+          type: type as 'doctor' | 'admin',
+        });
         return true;
       }
+      return false;
     }
+
     return false;
+  };
+
+  const setDoctorData = (data: DoctorData) => {
+    setDoctorDataState(data);
+  };
+
+  // Update getPatientInfo to include id
+  const getPatientInfo = () => {
+    if (!user || user.type !== 'patient') return undefined;
+
+    // Return a patient data object with string values only, including id
+    return {
+      id: user.id || '', // Add id from user object
+      name: user.name || '',
+      email: user.email || '',
+      phone: user.patientData?.phone || '',
+      address: user.patientData?.address || '',
+      dob: user.patientData?.dob || '',
+      bloodType: user.patientData?.bloodType || '',
+      height: user.patientData?.height || '',
+      weight: user.patientData?.weight || '',
+      bmi: user.patientData?.bmi || '',
+      profileImage: user.patientData?.profileImage || null,
+    };
   };
 
   return (
     <UserContext.Provider
       value={{
-        profileImage,
-        updateProfileImage,
-        userType,
-        setUserType,
-        doctorName,
-        doctorSpecialty,
-        doctorEmail,
-        doctorPhone,
-        doctorAddress,
-        doctorExperience,
-        doctorWorkingHours,
-        about,
-        updateDoctorName,
-        updateDoctorSpecialty,
-        updateDoctorEmail,
-        updateDoctorPhone,
-        updateDoctorAddress,
-        updateDoctorExperience,
-        updateDoctorWorkingHours,
+        user,
         doctorData,
+        profileImage: doctorData?.profileImage || null,
+        doctorName: doctorData?.doctorName,
+        doctorSpecialty: doctorData?.doctorSpecialty,
         setDoctorData,
-        userName,
-        userEmail,
-        userPhone,
-        userAddress,
-        userDob,
-        userBloodType,
-        userHeight,
-        userWeight,
-        userBmi,
-        updateUserName,
-        updateUserEmail,
-        patientData,
-        setPatientData,
         loginUser,
+        getPatientInfo,
       }}
     >
       {children}
@@ -195,10 +135,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useUser = () => {
-  const context = useContext(UserContext);
-  if (context === undefined) {
-    throw new Error('useUser must be used within a UserProvider');
-  }
-  return context;
-};
+// Hook for using the context
+export const useUser = () => useContext(UserContext);
+
+export default UserContext;
